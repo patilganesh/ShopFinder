@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "248747170620",
+    "project_id": "shopfinder-186609"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248747170620:android:3ae7fecebace2537",
+        "android_client_info": {
+          "package_name": "com.gajananmotors.shopfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248747170620-holu2mfa5v0kdkge3g6qo87dic08keer.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "248747170620-ojkfto2g7mc7o8jif958h987r937510q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gajananmotors.shopfinder",
+            "certificate_hash": "a1b6e9d198bbeaa71ef3b24fcd8a953b6d6b6d47"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVD4upwWP42TYH5mufvK1K4PohMCpYeq0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
