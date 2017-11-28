@@ -1,8 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
 
-/**
- * Created by asus on 24-Nov-17.
- */
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
-
 import com.gajananmotors.shopfinder.adapter.CustomAdapter;
 import com.gajananmotors.shopfinder.R;
 

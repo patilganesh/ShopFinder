@@ -1,25 +1,8 @@
 package com.gajananmotors.shopfinder.utility;
 
-/**
- * Created by Gajanan Motars on 11/27/2017.
- */
 
-import android.content.SharedPreferences;
 
-public class
-Constant {
-   /* public static final String MyPREFERENCES = "MyPrefs";
-
-    public static SharedPreferences sharedpreferences;
-    public static String USERID = "strUserId";
-    public static String USERNAME = "name";
-    public static String USERMAIL = "mailid";
-    public static String USERMOBILE = "mobile";
-    public static String USERREFERENCE = "reference_code";
-    public static String USERTYPE = "user_type";
-    public static String REGISTRATION_TYPE = "reg_type";
-    public static final String VEHICLE_ID = "V_id";*/
-
+public class Constant {
     public static final String PROVIDER_URL = "http//control.c2sms.com/api/sendhttp.php";
     public static final String QUESTION_PARAMETER = "?";
     public static final String EQUALS_TO_PARAMETER = "=";

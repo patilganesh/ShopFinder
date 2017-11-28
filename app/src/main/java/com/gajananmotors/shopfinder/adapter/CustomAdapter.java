@@ -1,9 +1,5 @@
 package com.gajananmotors.shopfinder.adapter;
 
-/**
- * Created by asus on 16-Nov-17.
- */
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,14 +29,11 @@ public class CustomAdapter extends BaseAdapter {
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
-
-
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
         return result.length;
     }
-
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
@@ -65,8 +58,8 @@ public class CustomAdapter extends BaseAdapter {
         View rowView;
 
         rowView = inflater.inflate(R.layout.sample_gridlayout, null);
-        holder.text = (TextView) rowView.findViewById(R.id.category_name);
-        holder.images = (ImageView) rowView.findViewById(R.id.category_imgs);
+        holder.text = rowView.findViewById(R.id.category_name);
+        holder.images = rowView.findViewById(R.id.category_imgs);
 
         holder.text.setText(result[position]);
         holder.images.setImageResource(imageId[position]);

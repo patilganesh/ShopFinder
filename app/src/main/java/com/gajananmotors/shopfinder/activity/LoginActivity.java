@@ -2,7 +2,6 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -180,7 +179,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (checkValidation()) {
-
                     Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
@@ -196,7 +194,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 break;
         }
     }
-
     @SuppressLint("StaticFieldLeak")
     public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
         new AsyncTask<Void, Void, Void>() {
@@ -228,24 +225,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 Log.d("mContext", mContext.getResources().getString(R.string.otp_sent_success));
                 super.onPostExecute(aVoid);
-
                 if (responseCode == 200) {
                     saveData();
                 } else {
                     Toast.makeText(mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
                 }
             }
-
             public void startActivity(Intent intent) {
             }
         }.execute();
     }
-
-
     public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
@@ -276,7 +270,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         public void onClick(View v) {
                             Random rn = new Random();
                             otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
-                           // sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
+                            // sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
                         }
                     });
 
@@ -307,12 +301,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         request.setParameters(parameters);
         request.executeAsync();
     }
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -323,7 +315,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
-
     private void revokeAccess() {
 
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
@@ -334,8 +325,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

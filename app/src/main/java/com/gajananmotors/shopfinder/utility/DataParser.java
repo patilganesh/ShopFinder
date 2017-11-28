@@ -1,18 +1,13 @@
 package com.gajananmotors.shopfinder.utility;
 
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by asus on 18-Nov-17.
- */
 
 public class DataParser {
     public List<HashMap<String, String>> parse(String jsonData) {
