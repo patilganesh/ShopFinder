@@ -20,7 +20,7 @@ Constant {
     public static String REGISTRATION_TYPE = "reg_type";
     public static final String VEHICLE_ID = "V_id";*/
 
-    public static final String PROVIDER_URL = "http://control.c2sms.com/api/sendhttp.php";
+    public static final String PROVIDER_URL = "http//control.c2sms.com/api/sendhttp.php";
     public static final String QUESTION_PARAMETER = "?";
     public static final String EQUALS_TO_PARAMETER = "=";
     public static final String AMPERSAND_PARAMETER = "&";

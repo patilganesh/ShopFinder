@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     com.hbb20.CountryCodePicker ccp;
     private String countryCodeAndroid;
     private static final int RC_SIGN_IN = 1;
-    private int success = 0,otp=0,responseCode=0;
+    private int success = 0, otp = 0, responseCode = 0;
     private static final String TAG = LoginActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     String tvDetails;
@@ -182,9 +182,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (checkValidation()) {
 
                     Random rn = new Random();
-                    otp=(rn.nextInt(10)*1000)+(rn.nextInt(10)*100)+(rn.nextInt(10)*10)+(rn.nextInt(10));
-                    Log.d("otp",""+otp);
-                    sendOTP(etUserName.getText().toString(), otp,LoginActivity.this);
+                    otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
+                    Log.d("otp", "" + otp);
+                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
                     startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                 }
                 break;
@@ -204,12 +204,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             protected Void doInBackground(Void... params) {
                 String url = null;
                 if (!TextUtils.isEmpty(mobile) && null != otpCode) {
-                    url = Constant.PROVIDER_URL +Constant. QUESTION_PARAMETER
+                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
                             + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
                             + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
-                            + Constant.MOBILES_PARAMETER +Constant. EQUALS_TO_PARAMETER
+                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
                             + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
-                            +Constant. EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
+                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
                             + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
                             + Constant.SENDER + Constant.AMPERSAND_PARAMETER
                             + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
@@ -220,27 +220,23 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     URL obj = new URL(url);
                     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                     con.setRequestMethod("GET");
-                    responseCode=con.getResponseCode();
-                    Log.e("Response Code", responseCode+"  "+url);
+                    responseCode = con.getResponseCode();
+                    Log.e("Response Code", responseCode + "  " + url);
 
                 } catch (Exception e) {
-                    Log.d("MessageSender" ,"sendOTP : " + e);
+                    Log.d("MessageSender", "sendOTP : " + e);
                 }
                 return null;
-
-
-
             }
-
             @Override
             protected void onPostExecute(Void aVoid) {
                 Log.d("mContext", mContext.getResources().getString(R.string.otp_sent_success));
                 super.onPostExecute(aVoid);
-                // Log.d("MessageSender", " sendSMS() : mobile : " + mobile + "");
-                if(responseCode==200){
+
+                if (responseCode == 200) {
                     saveData();
-                }else{
-                    Toast.makeText( mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -250,13 +246,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-
-
     public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-        final TextView tvResend= confirmDialog.findViewById(R.id.tvResend);
+        final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
         final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("OTP");
@@ -264,38 +258,32 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         alert.setCancelable(false);
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
-
-
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                final ProgressDialog loading = ProgressDialog.show(LoginActivity.this, "Authenticating", "Verifying the entered code...", false, false);
                 final String otpByUser = editTextConfirmOtp.getText().toString().trim();
                 String otPassword = String.valueOf(otp);
                 if (otpByUser.equals(otp + "")) {
 
                     //call api
                     alertDialog.dismiss();
-                }else{
+                } else {
+
                     tvResend.setVisibility(View.VISIBLE);
                     tvResend.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Random rn = new Random();
-                            otp=(rn.nextInt(10)*1000)+(rn.nextInt(10)*100)+(rn.nextInt(10)*10)+(rn.nextInt(10));
-                            sendOTP(etUserName.getText().toString(), otp,LoginActivity.this);
-
+                            otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
+                           // sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
                         }
                     });
 
-                    Toast.makeText(LoginActivity.this, "Wrong OTP. Please try again...",Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(LoginActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
-
     }
 
     public void RequestData() {
@@ -372,9 +360,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
-    public void testMethod()
-    {
-        Toast.makeText(this, "Testing Github.....", Toast.LENGTH_SHORT).show();
-    }
+
 }
 

@@ -39,9 +39,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private int mYear, mMonth, mDay;
     Button btnCalendar;
     com.hbb20.CountryCodePicker ccp;
-    private int success = 0,otp=0,responseCode=0;
+    private int success = 0, otp = 0, responseCode = 0;
     private String countryCodeAndroid;
-    private String pwd,confirmpwd;
+    private String pwd, confirmpwd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,16 +192,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 if (checkValidation()) {
                     Random rn = new Random();
-                    otp=(rn.nextInt(10)*1000)+(rn.nextInt(10)*100)+(rn.nextInt(10)*10)+(rn.nextInt(10));
-                    Log.d("otp",""+otp);
+                    otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
+                    Log.d("otp", "" + otp);
 
-                   sendOTP(etContactNumber.getText().toString(), otp,RegisterActivity.this);
+                   // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
                     startActivity(new Intent(RegisterActivity.this, AddPostActivity.class));
                     Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
     }
+
     @SuppressLint("StaticFieldLeak")
     public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
         new AsyncTask<Void, Void, Void>() {
@@ -209,12 +210,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             protected Void doInBackground(Void... params) {
                 String url = null;
                 if (!TextUtils.isEmpty(mobile) && null != otpCode) {
-                    url = Constant.PROVIDER_URL +Constant. QUESTION_PARAMETER
+                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
                             + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
                             + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
-                            + Constant.MOBILES_PARAMETER +Constant. EQUALS_TO_PARAMETER
+                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
                             + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
-                            +Constant. EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
+                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
                             + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
                             + Constant.SENDER + Constant.AMPERSAND_PARAMETER
                             + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
@@ -225,14 +226,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     URL obj = new URL(url);
                     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                     con.setRequestMethod("GET");
-                    responseCode=con.getResponseCode();
-                    Log.e("Response Code", responseCode+"  "+url);
+                    responseCode = con.getResponseCode();
+                    Log.e("Response Code", responseCode + "  " + url);
 
                 } catch (Exception e) {
-                    Log.d("MessageSender" ,"sendOTP : " + e);
+                    Log.d("MessageSender", "sendOTP : " + e);
                 }
                 return null;
-
 
 
             }
@@ -241,14 +241,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             protected void onPostExecute(Void aVoid) {
                 Log.d("mContext", mContext.getResources().getString(R.string.otp_sent_success));
                 super.onPostExecute(aVoid);
-                // Log.d("MessageSender", " sendSMS() : mobile : " + mobile + "");
-                if(responseCode==200){
+                if (responseCode == 200) {
                     saveData();
-//                    Intent intent=new Intent(mContext,Demo.class);
-//                    startActivity(intent);
-
-                }else{
-                    Toast.makeText( mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -258,13 +254,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-
-
     public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-        final TextView tvResend= confirmDialog.findViewById(R.id.tvResend);
+        final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
         final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("OTP");
@@ -278,26 +272,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                final ProgressDialog loading = ProgressDialog.show(RegisterActivity.this, "Authenticating", "Verifying the entered code...", false, false);
                 final String otpByUser = editTextConfirmOtp.getText().toString().trim();
                 String otPassword = String.valueOf(otp);
                 if (otpByUser.equals(otp + "")) {
 
                     //call api
                     alertDialog.dismiss();
-                }else{
+                } else {
                     tvResend.setVisibility(View.VISIBLE);
                     tvResend.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Random rn = new Random();
-                            otp=(rn.nextInt(10)*1000)+(rn.nextInt(10)*100)+(rn.nextInt(10)*10)+(rn.nextInt(10));
-                            sendOTP(etContactNumber.getText().toString(), otp,RegisterActivity.this);
+                            otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
+                           // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
 
                         }
                     });
 
-                    Toast.makeText(RegisterActivity.this, "Wrong OTP. Please try again...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_SHORT).show();
 
                 }
 

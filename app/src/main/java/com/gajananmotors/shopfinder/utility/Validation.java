@@ -5,6 +5,7 @@ package com.gajananmotors.shopfinder.utility;
  */
 
 import android.widget.EditText;
+
 import java.util.regex.Pattern;
 
 public class Validation {

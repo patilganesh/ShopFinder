@@ -14,6 +14,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import com.gajananmotors.shopfinder.R;
+
 public class AddPostActivity extends AppCompatActivity {
 
 
@@ -21,17 +22,19 @@ public class AddPostActivity extends AppCompatActivity {
     int PLACE_PICKER_REQUEST = 1;
     GoogleApiClient mGoogleApiClient;
     Place place;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-        txtBusinessLocation=findViewById(R.id.txtBusinessLocation);
+        txtBusinessLocation = findViewById(R.id.txtBusinessLocation);
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
     }
+
     public void getAddress(View view) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
@@ -43,10 +46,13 @@ public class AddPostActivity extends AppCompatActivity {
         }
 
     }
+
     public void getPhotos(View view) {
     }
+
     public void submit(View view) {
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

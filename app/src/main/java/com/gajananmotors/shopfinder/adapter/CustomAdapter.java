@@ -17,22 +17,22 @@ import android.widget.Toast;
 import com.gajananmotors.shopfinder.activity.MainActivity;
 import com.gajananmotors.shopfinder.R;
 
-public class CustomAdapter extends BaseAdapter{
+public class CustomAdapter extends BaseAdapter {
 
-    String [] result;
+    String[] result;
     Context context;
-    int [] imageId;
-    private static LayoutInflater inflater=null;
+    int[] imageId;
+    private static LayoutInflater inflater = null;
+
     public CustomAdapter(MainActivity mainActivity, String[] osNameList, int[] osImages) {
         // TODO Auto-generated constructor stub
-        result=osNameList;
-        context=mainActivity;
-        imageId=osImages;
-        inflater = ( LayoutInflater )context.
+        result = osNameList;
+        context = mainActivity;
+        imageId = osImages;
+        inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
-
 
 
     @Override
@@ -53,20 +53,20 @@ public class CustomAdapter extends BaseAdapter{
         return position;
     }
 
-    public class Holder
-    {
+    public class Holder {
         TextView text;
         ImageView images;
     }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        Holder holder=new Holder();
+        Holder holder = new Holder();
         View rowView;
 
         rowView = inflater.inflate(R.layout.sample_gridlayout, null);
-        holder.text =(TextView) rowView.findViewById(R.id.category_name);
-        holder.images =(ImageView) rowView.findViewById(R.id.category_imgs);
+        holder.text = (TextView) rowView.findViewById(R.id.category_name);
+        holder.images = (ImageView) rowView.findViewById(R.id.category_imgs);
 
         holder.text.setText(result[position]);
         holder.images.setImageResource(imageId[position]);
@@ -76,7 +76,7 @@ public class CustomAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_SHORT).show();
 
             }
         });
