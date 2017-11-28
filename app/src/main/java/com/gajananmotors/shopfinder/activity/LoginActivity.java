@@ -372,5 +372,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
+    public void testMethod()
+    {
+        Toast.makeText(this, "Testing Github.....", Toast.LENGTH_SHORT).show();
+    }
 }
 
