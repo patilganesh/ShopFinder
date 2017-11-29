@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.APIInterface;
 
+import com.gajananmotors.shopfinder.category.CategoryList;
 import com.gajananmotors.shopfinder.loginservice.LoginUsers;
 import com.gajananmotors.shopfinder.registerservice.UserRegister;
 
@@ -16,4 +17,6 @@ public interface RestInterface {
     Call<UserRegister>userRegister(@Body UserRegister user);
     @GET("service_url")
     Call<LoginUsers>getUsers();
+    @GET("service_url")
+    Call<CategoryList>getCategoryList();
 }
