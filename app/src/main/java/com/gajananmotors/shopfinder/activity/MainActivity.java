@@ -1,5 +1,8 @@
 package com.gajananmotors.shopfinder.activity;
 
+/**
+ * Created by asus on 24-Nov-17.
+ */
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,17 +12,24 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
-import com.gajananmotors.shopfinder.adapter.CustomAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SearchView;
+
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.adapter.CustomAdapterForCategory;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    GridView gridview;
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
+    RecyclerView recycleView,recycler_view_vertical;
     public static String[] nameList = {
             "Special Offers",
             "Hospitals",
@@ -35,7 +45,7 @@ public class MainActivity extends AppCompatActivity
             "Educational",
             "Business & Jobs",
             "Home Products",
-            "Constructions",
+            "Construction",
             "Finance",
     };
     public static int[] imgs = {
@@ -56,6 +66,12 @@ public class MainActivity extends AppCompatActivity
             R.drawable.medical,
             R.drawable.hospital,
             R.drawable.mobile_shop};
+
+    private CustomAdapterForCategory adapter;
+    private SearchView editsearch;
+    private ImageView nearby;
+    private LinearLayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager_vertical;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +97,33 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        gridview = findViewById(R.id.customgrid);
-        gridview.setAdapter(new CustomAdapter(this, nameList, imgs));
+
+        recycleView = findViewById(R.id.recycler_view);
+        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        mLayoutManager_vertical = new LinearLayoutManager(getApplicationContext());
+        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recycleView.getContext(),
+                mLayoutManager.getOrientation());
+        recycleView.addItemDecoration(dividerItemDecoration);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        adapter = new CustomAdapterForCategory(this, nameList, imgs);
+        recycleView.setLayoutManager(mLayoutManager);
+        recycleView.setItemAnimator(new DefaultItemAnimator());
+        recycleView.setAdapter(adapter);
+
+        adapter = new CustomAdapterForCategory(this, nameList, imgs);
+        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
+        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+        recycler_view_vertical.setAdapter(adapter);
+
+        editsearch =  findViewById(R.id.search);
+        editsearch.setOnQueryTextListener(this);
+        nearby = findViewById(R.id.nearby);
+        nearby.setOnClickListener(this);
     }
 
     @Override
@@ -111,14 +150,13 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
-            case R.id.action_search:
-                return true;
+
             case R.id.action_change_city:
                 return true;
-            case R.id.action_nearby:
+           /* case R.id.action_nearby:
                 Intent i = new Intent(getApplicationContext(), com.gajananmotors.shopfinder.activity.MapsActivity.class);
                 startActivity(i);
-                return true;
+                return true;*/
         }
 
 
@@ -133,16 +171,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view listview_map_activity_data clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_profile) {
+            Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+            startActivity(i);
+        } else if (id == R.id.nav_aboutus) {
 
         } else if (id == R.id.nav_share) {
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBodyText = "https://play.google.com/store?hl=en";
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject here");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
             startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
 
         }
@@ -150,5 +189,25 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.nearby:
+                Intent i = new Intent(getApplicationContext(), com.gajananmotors.shopfinder.activity.MapsActivity.class);
+                startActivity(i);
+                return;
+        }
     }
 }

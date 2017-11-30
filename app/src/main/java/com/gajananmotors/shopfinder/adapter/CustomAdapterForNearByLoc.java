@@ -61,4 +61,5 @@ public class CustomAdapterForNearByLoc extends RecyclerView.Adapter<CustomAdapte
         return name.length;
     }
 
+
 }

@@ -37,4 +37,6 @@
     <string name="String_Date"> Date of Birth</string>
     <string name="string_or">OR</string>
     <string name="dateofbirth">Date of Birth</string>
+
+    <string name="String_Update">UPDATE</string>
 </resources>
