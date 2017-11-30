@@ -1,8 +1,8 @@
-package com.gajananmotors.shopfinder.APIInterface;
+package com.gajananmotors.shopfinder.apiinterface;
 
-import com.gajananmotors.shopfinder.category.CategoryList;
-import com.gajananmotors.shopfinder.loginservice.LoginUsers;
-import com.gajananmotors.shopfinder.registerservice.UserRegister;
+import com.gajananmotors.shopfinder.model.CategoryList;
+import com.gajananmotors.shopfinder.model.LoginUsersList;
+import com.gajananmotors.shopfinder.model.UserRegister;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,7 +16,7 @@ public interface RestInterface {
     @POST("service_url")
     Call<UserRegister>userRegister(@Body UserRegister user);
     @GET("service_url")
-    Call<LoginUsers>getUsers();
+    Call<LoginUsersList>getUsers();
     @GET("service_url")
     Call<CategoryList>getCategoryList();
 }

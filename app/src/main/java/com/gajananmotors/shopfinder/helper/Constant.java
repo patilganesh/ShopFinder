@@ -1,4 +1,4 @@
-package com.gajananmotors.shopfinder.utility;
+package com.gajananmotors.shopfinder.helper;
 
 
 

@@ -1,5 +1,6 @@
-package com.gajananmotors.shopfinder.loginservice;
+package com.gajananmotors.shopfinder.model;
 
+import com.gajananmotors.shopfinder.model.LoginUser;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Ashwin on 11/18/2017.
  */
-public class LoginUsers {
+public class LoginUsersList {
     @SerializedName("users")
     private ArrayList<LoginUser> users=new ArrayList<>();
 

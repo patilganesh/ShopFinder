@@ -3,7 +3,6 @@ package com.gajananmotors.shopfinder.activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -22,9 +21,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gajananmotors.shopfinder.utility.Constant;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.utility.Validation;
-import com.hbb20.CountryCodePicker;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

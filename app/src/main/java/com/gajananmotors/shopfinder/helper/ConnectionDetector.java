@@ -1,4 +1,4 @@
-package com.gajananmotors.shopfinder.activity;
+package com.gajananmotors.shopfinder.helper;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

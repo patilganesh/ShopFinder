@@ -1,5 +1,6 @@
-package com.gajananmotors.shopfinder.category;
+package com.gajananmotors.shopfinder.model;
 
+import com.gajananmotors.shopfinder.model.Category;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;

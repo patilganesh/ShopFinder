@@ -1,4 +1,4 @@
-package com.gajananmotors.shopfinder.loginservice;
+package com.gajananmotors.shopfinder.model;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -31,7 +31,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.utility.Constant;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

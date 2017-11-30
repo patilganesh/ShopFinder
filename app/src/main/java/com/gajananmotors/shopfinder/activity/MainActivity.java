@@ -172,8 +172,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-            startActivity(i);
+
+            startActivity(new Intent(MainActivity.this,ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
         } else if (id == R.id.nav_share) {

@@ -7,14 +7,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
-import com.gajananmotors.shopfinder.R;
 
 public class AddPostActivity extends AppCompatActivity {
     TextView txtBusinessLocation;
