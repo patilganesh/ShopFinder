@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -102,11 +103,12 @@ public class MainActivity extends AppCompatActivity
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-        mLayoutManager_vertical = new LinearLayoutManager(getApplicationContext());
+       // mLayoutManager_vertical = new LinearLayoutManager(getApplicationContext());
+        mLayoutManager_vertical = new GridLayoutManager(this, 2);
         mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recycleView.getContext(),
+      /*  DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recycleView.getContext(),
                 mLayoutManager.getOrientation());
-        recycleView.addItemDecoration(dividerItemDecoration);
+        recycleView.addItemDecoration(dividerItemDecoration);*/
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
