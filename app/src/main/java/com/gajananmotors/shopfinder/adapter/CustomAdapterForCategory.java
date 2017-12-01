@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.MainActivity;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by asus on 29-Nov-17.
@@ -20,13 +21,14 @@ public class CustomAdapterForCategory extends RecyclerView.Adapter<CustomAdapter
 
     String[] name;
     Context context;
-    int[] imageId;
+    String[] imageId;
+    public ImageView images;
 
     private static LayoutInflater inflater = null;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
-        public ImageView images;
+
 
         public MyViewHolder(View rowView) {
             super(rowView);
@@ -37,7 +39,7 @@ public class CustomAdapterForCategory extends RecyclerView.Adapter<CustomAdapter
         }
     }
 
-    public CustomAdapterForCategory(MainActivity mainActivity, String[] namelist, int[] imglist) {
+    public CustomAdapterForCategory(MainActivity mainActivity, String[] namelist, String[] imglist) {
         // TODO Auto-generated constructor stub
         this.name = namelist;
         this.imageId = imglist;
@@ -56,7 +58,8 @@ public class CustomAdapterForCategory extends RecyclerView.Adapter<CustomAdapter
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.text.setText(name[position]);
-        holder.images.setImageResource(imageId[position]);
+        Picasso.with(context).load("http://192.168.2.3/event/images/category/"+imageId[position]).into(images);
+      //  holder.images.setImageResource(imageId[position]);
 
     }
 

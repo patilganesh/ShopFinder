@@ -13,10 +13,11 @@ import retrofit2.http.POST;
  * Created by Ashwin on 11/18/2017.
  */
 public interface RestInterface {
+    String BASE_URL = "http://192.168.2.3/event/";
     @POST("service_url")
     Call<UserRegister>userRegister(@Body UserRegister user);
     @GET("service_url")
     Call<LoginUsersList>getUsers();
-    @GET("service_url")
+    @GET("index.php?r=Category/getCategory")
     Call<CategoryList>getCategoryList();
 }

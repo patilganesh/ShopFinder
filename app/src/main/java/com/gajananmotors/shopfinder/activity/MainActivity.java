@@ -18,19 +18,33 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForCategory;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.model.Category;
+import com.gajananmotors.shopfinder.model.CategoryList;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
     RecyclerView recycleView,recycler_view_vertical;
+    /*
     public static String[] nameList = {
             "Special Offers",
             "Hospitals",
@@ -49,6 +63,7 @@ public class MainActivity extends AppCompatActivity
             "Construction",
             "Finance",
     };
+
     public static int[] imgs = {
 
             R.drawable.specialoffers,
@@ -67,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             R.drawable.medical,
             R.drawable.hospital,
             R.drawable.mobile_shop};
-
+*/
     private CustomAdapterForCategory adapter;
     private SearchView editsearch;
     private ImageView nearby;
@@ -92,13 +107,6 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
         recycleView = findViewById(R.id.recycler_view);
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -111,17 +119,51 @@ public class MainActivity extends AppCompatActivity
         recycleView.addItemDecoration(dividerItemDecoration);*/
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        Retrofit retrofit = new Retrofit.Builder()
+                 .baseUrl(RestInterface.BASE_URL)
+                 .addConverterFactory(GsonConverterFactory.create())
+                 .build();
+        RestInterface restInterface=retrofit.create(RestInterface.class);
+        Call<CategoryList> call=restInterface.getCategoryList();
+        call.enqueue(new Callback<CategoryList>() {
+            @Override
+            public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
+                CategoryList list=response.body();
+                ArrayList<Category>cat_list=list.getCategories();
+                String nameList[]=new String[cat_list.size()];
+                String images[]=new String[cat_list.size()];
+                for(int i=0;i<cat_list.size();i++)
+                {
+                    nameList[i]=cat_list.get(i).getName();
+                    images[i]=cat_list.get(i).getImages();
+                }
+                if(response.isSuccessful())
+                {
+                    Log.i("NameList", "onResponse: "+nameList.length);
 
-        adapter = new CustomAdapterForCategory(this, nameList, imgs);
-        recycleView.setLayoutManager(mLayoutManager);
-        recycleView.setItemAnimator(new DefaultItemAnimator());
-        recycleView.setAdapter(adapter);
+                    adapter = new CustomAdapterForCategory(MainActivity.this, nameList, images);
+                    recycleView.setLayoutManager(mLayoutManager);
+                    recycleView.setItemAnimator(new DefaultItemAnimator());
+                    recycleView.setAdapter(adapter);
+                }
+            }
 
-        adapter = new CustomAdapterForCategory(this, nameList, imgs);
+            @Override
+            public void onFailure(Call<CategoryList> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+       /* adapter = new CustomAdapterForCategory(this, nameList, images);
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setAdapter(adapter);
-
+*/
         editsearch =  findViewById(R.id.search);
         editsearch.setOnQueryTextListener(this);
         nearby = findViewById(R.id.nearby);
