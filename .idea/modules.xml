@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://D:\ShopFinderGithub\ShopFinder.iml" filepath="D:\ShopFinderGithub\ShopFinder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ShopFinderGithub.iml" filepath="$PROJECT_DIR$/ShopFinderGithub.iml" />
-      <module fileurl="file://D:\ShopFinder\ShopFinderGithub.iml" filepath="D:\ShopFinder\ShopFinderGithub.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShopFinderGithubnew.iml" filepath="$PROJECT_DIR$/ShopFinderGithubnew.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

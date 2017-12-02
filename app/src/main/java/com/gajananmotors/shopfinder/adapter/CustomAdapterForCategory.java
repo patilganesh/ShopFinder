@@ -62,8 +62,6 @@ public class CustomAdapterForCategory extends RecyclerView.Adapter<CustomAdapter
       //  holder.images.setImageResource(imageId[position]);
 
     }
-
-
     @Override
     public int getItemCount() {
         return name.length;

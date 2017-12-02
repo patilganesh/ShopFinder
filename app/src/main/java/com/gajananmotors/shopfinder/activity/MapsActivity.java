@@ -235,7 +235,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     public void getplacesBykm() {
         String url = getUrl(latitude, longitude, "hospital");
         Object[] DataTransfer = new Object[2];
