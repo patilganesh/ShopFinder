@@ -43,7 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
-    RecyclerView recycleView,recycler_view_vertical;
+    private RecyclerView recycleView,recycler_view_vertical;
     private CustomAdapterForCategory adapter;
     private SearchView editsearch;
     private ImageView nearby;
