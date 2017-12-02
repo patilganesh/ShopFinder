@@ -8,9 +8,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.gajananmotors.shopfinder.R;
-
-
-
 public class ProfileActivity extends AppCompatActivity {
 
     EditText etName,etEmail,etMobile,etDate;

@@ -44,45 +44,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
     RecyclerView recycleView,recycler_view_vertical;
-    /*
-    public static String[] nameList = {
-            "Special Offers",
-            "Hospitals",
-            "Medicals",
-            "Cloth Shops",
-            "Mobile Shop",
-            "Computers",
-            "Shoes",
-            "Hotels",
-            "Pizza",
-            "Tours & Travels",
-            "Transports",
-            "Educational",
-            "Business & Jobs",
-            "Home Products",
-            "Construction",
-            "Finance",
-    };
-
-    public static int[] imgs = {
-
-            R.drawable.specialoffers,
-            R.drawable.hospital,
-            R.drawable.medical,
-            R.drawable.clothshop,
-            R.drawable.mobile_shop,
-            R.drawable.computers,
-            R.drawable.hotel,
-            R.drawable.hospital,
-            R.drawable.specialoffers,
-            R.drawable.hotel,
-            R.drawable.hospital,
-            R.drawable.clothshop,
-            R.drawable.hospital,
-            R.drawable.medical,
-            R.drawable.hospital,
-            R.drawable.mobile_shop};
-*/
     private CustomAdapterForCategory adapter;
     private SearchView editsearch;
     private ImageView nearby;

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -8,13 +7,16 @@
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <EditText
                 android:id="@+id/txtBusiness"
                 android:layout_width="match_parent"
@@ -44,18 +46,19 @@
                 android:hint="Business Services:"
                 android:textColorHint="#0000FF"
                 android:textSize="15sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/ccp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    app:ccp_textSize="15sp"
-                    />
+                    app:ccp_textSize="15sp" />
 
                 <EditText
                     android:id="@+id/txtBusinessMobile"
@@ -67,31 +70,35 @@
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/txtBusinessLocation"
                     android:layout_width="0dp"
-                    android:layout_weight="0.9"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
+                    android:layout_weight="0.9"
                     android:hint="Enter Location(Area):"
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
+
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_weight="0.1"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_gmap"
                     android:layout_marginTop="25dp"
+                    android:layout_weight="0.1"
                     android:clickable="true"
                     android:onClick="getAddress"
+                    android:src="@drawable/icon_gmap"
 
                     />
             </LinearLayout>
+
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                 android:id="@+id/txtBusinessCategory"
                 android:layout_width="match_parent"
@@ -130,7 +137,7 @@
                 android:layout_marginTop="10dp"
                 android:hint="Select City:"
                 android:textColorHint="#0000FF"
-                app:met_floatingLabel="normal"/>
+                app:met_floatingLabel="normal" />
 
             <EditText
                 android:id="@+id/txtBusinessWebUrl"
@@ -147,27 +154,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:background="#277bec"
+                android:onClick="getPhotos"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="Select Photo"
-                android:textColor="#ffffff"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:onClick="getPhotos"/>
+                android:textColor="#ffffff" />
+
             <Button
                 android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:background="#277bec"
+                android:onClick="submit"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="Submit"
-                android:textColor="#ffffff"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:onClick="submit"/>
+                android:textColor="#ffffff" />
         </LinearLayout>
     </ScrollView>
 
