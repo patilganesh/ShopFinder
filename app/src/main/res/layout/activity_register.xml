@@ -30,6 +30,16 @@
                 android:layout_marginTop="@dimen/side_margin"
                 android:orientation="vertical">
 
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imgProfile"
+                    android:layout_width="76dp"
+                    android:layout_height="66dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_launcher"
+                    app:civ_border_color="@color/colorPrimary"
+                    app:civ_border_width="1dp" />
+
                 <EditText
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
@@ -85,12 +95,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        android:hint="@string/String_Contact_Number"
-                        android:textColorHint="#dadada"
-                        android:maxLength="10"
                         android:digits="0123456789"
+                        android:hint="@string/String_Contact_Number"
                         android:inputType="phone"
+                        android:maxLength="10"
                         android:textColor="#ffffff"
+                        android:textColorHint="#dadada"
                         android:textSize="15sp" />
                 </LinearLayout>
 
@@ -119,16 +129,17 @@
 
                 <Button
                     android:id="@+id/btnSubmit"
-                    android:layout_width="170dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="70dp"
+                    android:layout_marginRight="70dp"
                     android:background="@color/colorPrimary"
+                    android:padding="-250dp"
                     android:text="@string/String_Submit"
                     android:textColor="@color/ButtonTextColor" />
             </LinearLayout>
         </ScrollView>
-
 
 
     </RelativeLayout>

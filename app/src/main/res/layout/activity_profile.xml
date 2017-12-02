@@ -4,96 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.RegisterActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/activity_horizontal_margin">
+        android:layout_height="match_parent">
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="UselessParent">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/side_margin"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtName"
-                    android:layout_width="match_parent"
+                <ImageButton
+                    android:id="@+id/imgProfile"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:hint="@string/String_Name"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:textColor="#ffffff"
-                    android:textColorHint="#dadada" />
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/mobile_shop" />
 
-                <TextView
-                    android:id="@+id/txtEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:hint="@string/String_Email"
-                    android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
-                    android:textColor="#ffffff"
-                    android:textColorHint="#dadada" />
 
-                <TextView
-                    android:id="@+id/etDate"
+                <EditText
+                    android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/side_margin"
+                    android:layout_margin="5dp"
+                    android:layout_marginTop="20dp"
                     android:editable="false"
-                    android:focusable="true"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/dateofbirth"
-                    android:imeOptions="actionNext"
-                    android:textColor="#ffffff"
-                    android:textColorHint="#dadada" />
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:text="Gajanan Patil"
+                    android:textColor="#000000" />
 
-
-                <TextView
-                    android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:hint="@string/String_Email"
-                    android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
-                    android:textColor="#ffffff"
-                    android:textColorHint="#dadada" />
+                    android:layout_margin="5dp"
+                    android:background="@drawable/border"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:text="informidevice@gmail.com" />
 
-                <TextView
-                    android:id="@+id/txtContactNumber"
-                    android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
-                    android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                    android:digits="0123456789"
-                    android:hint="@string/String_Contact_Number"
-                    android:inputType="phone"
-                    android:maxLength="10"
-                    android:textColor="#ffffff"
-                    android:textColorHint="#dadada"
-                    android:textSize="15sp" />
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/border"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:text="9822856200" />
+
+                <EditText
+                    android:id="@+id/etDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/border"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:text="Date of Birth" />
 
                 <Button
-                    android:id="@+id/btnSubmit"
+                    android:id="@+id/btnUpdate"
                     android:layout_width="170dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:background="@color/colorPrimary"
                     android:text="@string/String_Update"
-                    android:textColor="@color/ButtonTextColor" />
+                    android:textColor="@color/colorWhite"
+                    android:visibility="gone" />
+
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>
