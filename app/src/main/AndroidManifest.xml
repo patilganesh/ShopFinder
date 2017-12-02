@@ -41,16 +41,18 @@
         </activity> <activity
             android:name="com.gajananmotors.shopfinder.activity.ProfileActivity"
             android:label="@string/profile"
-            />
+        >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
         <activity
             android:name="com.gajananmotors.shopfinder.activity.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name="com.gajananmotors.shopfinder.activity.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name="com.gajananmotors.shopfinder.activity.LoginActivity" />
         <activity android:name="com.gajananmotors.shopfinder.activity.ConfirmationActivity" />

@@ -25,7 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
         etMobile=findViewById(R.id.etMobile);
         etDate=findViewById(R.id.etDate);
         Button btnUpdate = findViewById(R.id.btnUpdate);
-        ImageButton imgProfile = findViewById(R.id.imgProfile);
+      
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
