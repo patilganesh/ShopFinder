@@ -77,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -116,7 +117,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             case R.id.imgProfile:
                 selectImage();
                 break;
-        }}
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -200,7 +202,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }}
+        }
+    }
+
     private void validation() {
         etName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -296,7 +300,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-
     @SuppressLint("StaticFieldLeak")
     public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
         new AsyncTask<Void, Void, Void>() {
@@ -390,5 +393,5 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    }
+}
 

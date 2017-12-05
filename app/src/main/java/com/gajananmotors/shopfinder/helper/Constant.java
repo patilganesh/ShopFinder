@@ -36,10 +36,10 @@ public class Constant {
     public static final String SENDER = "TR";
     public static final String ROUTE = "4";
     public static final String AUTHKEY = "119718AkintvzJaWd578dd8d3";
-
     public static final String MESSAGE = "Hi, Your otp is:";
-
     public static boolean doubleBackToExitPressedOnce = false;
+
+
     public static String getFormatedDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Calendar cal = Calendar.getInstance();

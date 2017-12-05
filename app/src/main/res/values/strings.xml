@@ -7,10 +7,6 @@
     <string name="action_settings">Settings</string>
     <string name="srch">Search</string>
     <string name="title_activity_maps">Map</string>
-    <string name="name">Name</string>
-    <string name="mob">Mobile No</string>
-    <string name="addrs">Address</string>
-    <string name="web">Website</string>
     <string name="otp_sent_success" />
 
 

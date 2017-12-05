@@ -2,14 +2,13 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import com.gajananmotors.shopfinder.R;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class ConfirmationActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btnConfirm, btnEdit;
@@ -24,7 +23,7 @@ public class ConfirmationActivity extends AppCompatActivity implements View.OnCl
         TextView tvCategory = findViewById(R.id.tvCategory);
         TextView tvAddress = findViewById(R.id.tvAddress);
         TextView tvArea = findViewById(R.id.tvArea);
-        ImageView imgShopName = findViewById(R.id.imgShopName);
+        ImageView imgShopName = findViewById(R.id.imgShop);
         btnConfirm = findViewById(R.id.btnConfirm);
         btnEdit = findViewById(R.id.btnEdit);
         btnConfirm.setOnClickListener(this);

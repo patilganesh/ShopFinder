@@ -1,108 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.ConfirmationActivity">
 
     <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="UselessParent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                card_view:cardCornerRadius="7dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imgShop"
+                    android:layout_width="76dp"
+                    android:layout_height="66dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/ic_launcher"
+                    app:civ_border_color="@color/colorPrimary"
+                    app:civ_border_width="1dp" />
+
+                <TextView
+                    android:id="@+id/tvShopName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="GajananMotors"
+                    android:textColor="@color/TextcolorsBlack"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/tvMobile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/border"
+                    android:text="Mobile:9822856211"
+                    android:textColor="@color/TextcolorsBlack"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/tvCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/side_margin"
+                    android:background="@drawable/border"
+                    android:text="Category / Sub Category /services"
+                    android:textColor="@color/TextcolorsBlack" />
+
+                <TextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/side_margin"
+                    android:background="@drawable/border"
+                    android:ellipsize="end"
+                    android:maxLength="50"
+                    android:text="Address:vinayak residency near Nh4 office no-303, pune-411035"
+                    android:textColor="@color/TextcolorsBlack" />
+
+                <TextView
+                    android:id="@+id/tvArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/side_margin"
+                    android:background="@drawable/border"
+                    android:text="City / State"
+                    android:textColor="@color/TextcolorsBlack" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:weightSum="2">
 
-                    <ImageView
-                        android:id="@+id/imgShopName"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/side_margin"
-                        android:background="#16a085"
-                       />
-
-                    <TextView
-                        android:id="@+id/tvShopName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="GajananMotors"
-                        android:textColor="@color/TextcolorsBlack"
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:id="@+id/tvMobile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="9822856211"
-                        android:textColor="@color/TextcolorsBlack"
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:id="@+id/tvCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                    <Button
+                        android:id="@+id/btnEdit"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
                         android:layout_margin="@dimen/side_margin"
-                        android:text="Category / Sub Category /services"
-                        android:textColor="@color/TextcolorsBlack" />
+                        android:layout_weight="1"
+                        android:background="@drawable/my_button_bg"
+                        android:text="@string/btn_edit"
+                        android:textColor="@color/colorWhite" />
 
-                    <TextView
-                        android:id="@+id/tvAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                    <Button
+                        android:id="@+id/btnConfirm"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
                         android:layout_margin="@dimen/side_margin"
-                        android:ellipsize="end"
-                        android:text="vinayak residency near Nh4 office no-303, pune-411035"
-                        android:textColor="@color/TextcolorsBlack" />
-
-                    <TextView
-                        android:id="@+id/tvArea"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/side_margin"
-                        android:text="City / State"
-                        android:textColor="@color/TextcolorsBlack" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:weightSum="2">
-
-                        <Button
-                            android:id="@+id/btnEdit"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_margin="@dimen/side_margin"
-                            android:background="@color/colorPrimary"
-                            android:layout_weight="1"
-                            android:textColor="@color/colorWhite"
-                            android:text="@string/btn_edit" />
-
-                        <Button
-                            android:id="@+id/btnConfirm"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_margin="@dimen/side_margin"
-                            android:layout_weight="1"
-                            android:textColor="@color/colorWhite"
-                            android:background="@color/colorPrimary"
-                            android:text="@string/btn_confirm" />
-                    </LinearLayout>
-
+                        android:layout_weight="1"
+                        android:background="@drawable/my_button_bg"
+                        android:text="@string/btn_confirm"
+                        android:textColor="@color/colorWhite" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </ScrollView>
-    </LinearLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </ScrollView>
+</LinearLayout>
 
