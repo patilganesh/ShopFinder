@@ -4,12 +4,16 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -27,38 +31,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.activity.AddPostActivity;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.UserRegister;
+import com.gajananmotors.shopfinder.helper.CropingOption;
+import com.gajananmotors.shopfinder.helper.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.utility.Validation;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 import com.gajananmotors.shopfinder.R;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etBirthDate;
+    // private int REQUEST_CAMERA = 0, SELECT_FILE = 1,CROPING_CODE = 301;
+    private final static int REQUEST_PERMISSION_REQ_CODE = 34;
+    private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
+    private static final int REQUEST_CODE_CHOOSE = 23;
+    private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etDate;
     private int mYear, mMonth, mDay;
     Button btnCalendar;
     Bitmap bm = null;
     com.hbb20.CountryCodePicker ccp;
     private int success = 0, otp = 0, responseCode = 0;
-    private String countryCodeAndroid,mobileno;
+    private String countryCodeAndroid;
     private String pwd, confirmpwd;
     private String userChoosenTask;
     ImageView imgProfile;
+    private Uri mImageCaptureUri;
+    private File outPutFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +76,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
-        etBirthDate = findViewById(R.id.etDate);
+        etDate = findViewById(R.id.etDate);
         ccp = findViewById(R.id.ccp);
         etContactNumber = findViewById(R.id.etContactNumber);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         Button btnSubmit = findViewById(R.id.btnSubmit);
+        outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile.setOnClickListener(this);
-        etBirthDate.setOnClickListener(this);
+        etDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         validation();
         ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
@@ -85,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -103,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // Display Selected date in EditText
-                                etBirthDate.setText(dayOfMonth + "/"
+                                etDate.setText(dayOfMonth + "/"
                                         + (monthOfYear + 1) + "/" + year);
                             }
                         }, mYear, mMonth, mDay);
@@ -111,53 +120,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.btnSubmit:
-                Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show();
+
                 if (checkValidation()) {
                     Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
+
                     // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
-                    UserRegister userRegister=new UserRegister();
-                    userRegister.setName(etName.getText().toString());
-                    userRegister.setEmail(etEmail.getText().toString());
-                    userRegister.setMobileNo(etContactNumber.getText().toString());
-                    userRegister.setCountry_code(countryCodeAndroid);
-                    userRegister.setDob(etBirthDate.getText().toString());
-                    userRegister.setPassword(etPassword.getText().toString());
-                    //userRegister.setAddress();
-                    Retrofit retrofit=new Retrofit.Builder()
-                              .baseUrl(RestInterface.BASE_URL)
-                              .addConverterFactory(GsonConverterFactory.create())
-                              .build();
-                    RestInterface restInterface=retrofit.create(RestInterface.class);
-                    Call<UserRegister>call=restInterface.userRegister(userRegister);
-                    call.enqueue(new Callback<UserRegister>() {
-                        @Override
-                        public void onResponse(Call<UserRegister> call, Response<UserRegister> response) {
-                            Toast.makeText(RegisterActivity.this, "Registration Success.......", Toast.LENGTH_SHORT).show();
-
-                            if(response.isSuccessful())
-                            {
-                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserRegister> call, Throwable t) {
-
-                        }
-
-                    });
-
-
+                    startActivity(new Intent(RegisterActivity.this, AddPostActivity.class));
+                    Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.imgProfile:
                 selectImage();
                 break;
-        }
-    }
+        }}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -169,7 +146,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     else if (userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
-
+                    //code for deny
                 }
                 break;
         }
@@ -204,41 +181,93 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void galleryIntent() {
-        Intent intent = new Intent();
+      /*  Intent intent = new Intent();
         intent.setType("image/*" + "");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+        startActivityForResult(Intent.createChooser(intent, "Select File"), GALLERY_CODE);*/
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT) {
+            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+
+        startActivityForResult(i, GALLERY_CODE);
     }
 
     private void cameraIntent() {
+       /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CAMERA);*/
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT) {
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         }
-    }
 
-    private void onCaptureImageResult(Intent data) {
-        bm = (Bitmap) data.getExtras().get("data");
-        imgProfile.setImageBitmap(bm);
-    }
+        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
+        mImageCaptureUri = Uri.fromFile(f);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+        startActivityForResult(intent, CAMERA_CODE);
 
-    @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) {
-        if (data != null) {
+    }
+    /*
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult(data);
+            }
+        }
+
+        private void onCaptureImageResult(Intent data) {
+
+            bm = (Bitmap) data.getExtras().get("data");
+            imgProfile.setImageBitmap(bm);
+        }
+
+        @SuppressWarnings("deprecation")
+        private void onSelectFromGalleryResult(Intent data) {
+            if (data != null) {
+                try {
+                    bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                    imgProfile.setImageBitmap(bm);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }}
+            */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY_CODE && resultCode == RESULT_OK && null != data) {
+            mImageCaptureUri = data.getData();
+            System.out.println("Gallery Image URI : " + mImageCaptureUri);
+            CropingIMG();
+
+        } else if (requestCode == CAMERA_CODE && resultCode == Activity.RESULT_OK) {
+            mImageCaptureUri = data.getData();
+            System.out.println("Camera Image URI : " + mImageCaptureUri);
+            CropingIMG();
+        } else if (requestCode == CROPING_CODE) {
             try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                imgProfile.setImageBitmap(bm);
-            } catch (IOException e) {
+                if (outPutFile.exists()) {
+                    Picasso.with(RegisterActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error while save image", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -267,9 +296,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-        etBirthDate.addTextChangedListener(new TextWatcher() {
+        etDate.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                Validation.hasText(etBirthDate);
+                Validation.hasText(etDate);
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -330,13 +359,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         boolean ret = true;
         if (!Validation.hasText(etName)) ret = false;
         if (!Validation.isEmailAddress(etEmail, true)) ret = false;
-        if (!Validation.hasText(etBirthDate)) ret = false;
+        if (!Validation.hasText(etDate)) ret = false;
         if (!Validation.isPhoneNumber(etContactNumber, true)) ret = false;
         if (!Validation.hasText(etPassword)) ret = false;
         if (!Validation.hasText(etConfirmPassword)) ret = false;
 
         return ret;
     }
+
 
 
     @SuppressLint("StaticFieldLeak")
@@ -430,5 +460,68 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-}
 
+    private void CropingIMG() {
+        final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setType("image/*");
+        List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
+        String profile_img = mImageCaptureUri.toString();
+        // SplashScreenActivity.sharedPreferencesDatabase.addData("profile_img", profile_img);
+
+        int size = list.size();
+        if (size == 0) {
+            Toast.makeText(this, "Cann't find image croping app", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            intent.setData(mImageCaptureUri);
+            intent.putExtra("outputX", 512);
+            intent.putExtra("outputY", 512);
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+            intent.putExtra("scale", true);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outPutFile));
+
+            if (size == 1) {
+                Intent i = new Intent(intent);
+                ResolveInfo res = (ResolveInfo) list.get(0);
+
+                i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+
+                startActivityForResult(i, CROPING_CODE);
+            } else {
+                for (ResolveInfo res : list) {
+                    final CropingOption co = new CropingOption();
+                    co.title = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
+                    co.icon = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
+                    co.appIntent = new Intent(intent);
+                    co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+                    cropOptions.add(co);
+                }
+
+                CropingOptionAdapter adapter = new CropingOptionAdapter(getApplicationContext(), cropOptions);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Choose Croping App");
+                builder.setCancelable(false);
+                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        startActivityForResult(cropOptions.get(item).appIntent, CROPING_CODE);
+                    }
+                });
+
+                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+
+                        if (mImageCaptureUri != null) {
+                            getContentResolver().delete(mImageCaptureUri, null, null);
+                            mImageCaptureUri = null;
+                        }
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+    }
+}
