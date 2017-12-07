@@ -27,7 +27,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
 
 import java.io.IOException;
@@ -38,16 +40,22 @@ import java.util.Random;
 
 import com.gajananmotors.shopfinder.R;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etDate;
+    private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etBirthDate;
     private int mYear, mMonth, mDay;
     Button btnCalendar;
     Bitmap bm = null;
     com.hbb20.CountryCodePicker ccp;
     private int success = 0, otp = 0, responseCode = 0;
-    private String countryCodeAndroid;
+    private String countryCodeAndroid,mobileno;
     private String pwd, confirmpwd;
     private String userChoosenTask;
     ImageView imgProfile;
@@ -59,14 +67,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
-        etDate = findViewById(R.id.etDate);
+        etBirthDate = findViewById(R.id.etDate);
         ccp = findViewById(R.id.ccp);
         etContactNumber = findViewById(R.id.etContactNumber);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         Button btnSubmit = findViewById(R.id.btnSubmit);
         imgProfile.setOnClickListener(this);
-        etDate.setOnClickListener(this);
+        etBirthDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         validation();
         ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
@@ -95,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // Display Selected date in EditText
-                                etDate.setText(dayOfMonth + "/"
+                                etBirthDate.setText(dayOfMonth + "/"
                                         + (monthOfYear + 1) + "/" + year);
                             }
                         }, mYear, mMonth, mDay);
@@ -103,15 +111,46 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.btnSubmit:
-
+                Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show();
                 if (checkValidation()) {
                     Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
-
                     // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
-                    startActivity(new Intent(RegisterActivity.this, AddPostActivity.class));
-                    Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
+                    UserRegister userRegister=new UserRegister();
+                    userRegister.setName(etName.getText().toString());
+                    userRegister.setEmail(etEmail.getText().toString());
+                    userRegister.setMobileNo(etContactNumber.getText().toString());
+                    userRegister.setCountry_code(countryCodeAndroid);
+                    userRegister.setDob(etBirthDate.getText().toString());
+                    userRegister.setPassword(etPassword.getText().toString());
+                    //userRegister.setAddress();
+                    Retrofit retrofit=new Retrofit.Builder()
+                              .baseUrl(RestInterface.BASE_URL)
+                              .addConverterFactory(GsonConverterFactory.create())
+                              .build();
+                    RestInterface restInterface=retrofit.create(RestInterface.class);
+                    Call<UserRegister>call=restInterface.userRegister(userRegister);
+                    call.enqueue(new Callback<UserRegister>() {
+                        @Override
+                        public void onResponse(Call<UserRegister> call, Response<UserRegister> response) {
+                            Toast.makeText(RegisterActivity.this, "Registration Success.......", Toast.LENGTH_SHORT).show();
+
+                            if(response.isSuccessful())
+                            {
+                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserRegister> call, Throwable t) {
+
+                        }
+
+                    });
+
+
                 }
                 break;
             case R.id.imgProfile:
@@ -228,9 +267,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-        etDate.addTextChangedListener(new TextWatcher() {
+        etBirthDate.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                Validation.hasText(etDate);
+                Validation.hasText(etBirthDate);
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -291,7 +330,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         boolean ret = true;
         if (!Validation.hasText(etName)) ret = false;
         if (!Validation.isEmailAddress(etEmail, true)) ret = false;
-        if (!Validation.hasText(etDate)) ret = false;
+        if (!Validation.hasText(etBirthDate)) ret = false;
         if (!Validation.isPhoneNumber(etContactNumber, true)) ret = false;
         if (!Validation.hasText(etPassword)) ret = false;
         if (!Validation.hasText(etConfirmPassword)) ret = false;
@@ -391,7 +430,5 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
-
 }
 

@@ -10,14 +10,32 @@ public class UserRegister {
     private String name;
     @SerializedName("email")
     private String email;
-    @SerializedName("address")
+   /* @SerializedName("address")
     private String address;
-    @SerializedName("mobileNo")
+   */
+    @SerializedName("mobileno")
     private String mobileNo;
     @SerializedName("dob")
     private String dob;
     @SerializedName("password")
     private String password;
+    @SerializedName("image")
+    private String image;
+    @SerializedName("country_code")
+    private String country_code;
+    public String getCountry_code() {
+        return country_code;
+    }
+    public void setCountry_code(String country_code) {
+        this.country_code = country_code;
+    }
+    public String getImage() {
+        return image;
+
+    }
+    public void setImage(String image) {
+        this.image = image;
+    }
     public String getName() {
         return name;
     }
@@ -30,12 +48,12 @@ public class UserRegister {
     public void setEmail(String email) {
         this.email = email;
     }
-    public String getAddress() {
+   /* public String getAddress() {
         return address;
     }
     public void setAddress(String address) {
         this.address = address;
-    }
+    }*/
     public String getMobileNo() {
         return mobileNo;
     }

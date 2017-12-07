@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true"
-   tools:context=".activity.LoginActivity" >
+    android:orientation="vertical"
+    tools:context=".activity.LoginActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -48,11 +48,10 @@
                         android:id="@+id/ccp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#dadada"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        app:ccp_textSize="15sp"
-                        />
+                        android:textColor="#dadada"
+                        app:ccp_textSize="15sp" />
 
                     <EditText
                         android:id="@+id/etUserName"
@@ -60,14 +59,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        android:hint="@string/String_user_name"
-                        android:textColorHint="#dadada"
-                        android:maxLength="10"
                         android:digits="0123456789"
+                        android:hint="@string/String_user_name"
                         android:inputType="phone"
+                        android:maxLength="10"
                         android:textColor="#ffffff"
+                        android:textColorHint="#dadada"
                         android:textSize="15sp" />
                 </LinearLayout>
+
                 <EditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
@@ -76,14 +76,14 @@
                     android:hint="@string/String_password"
                     android:inputType="textPassword"
                     android:textColor="#ffffff"
-                    android:textColorHint="#dadada"
-                    />
+                    android:textColorHint="#dadada" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:weightSum="2">
+
                     <Button
                         android:id="@+id/btnRegister"
                         android:layout_width="0dp"
@@ -99,6 +99,7 @@
                         android:paddingTop="-86dp"
                         android:text="@string/btn_register"
                         android:textColor="@color/ButtonTextColor" />
+
                     <Button
                         android:id="@+id/btnLogin"
                         android:layout_width="0dp"
@@ -122,6 +123,7 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:weightSum="2">
+
                     <View
                         android:layout_width="wrap_content"
                         android:layout_height="0.1dp"
@@ -129,6 +131,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_weight="1"
                         android:background="@android:color/white" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -136,6 +139,7 @@
                         android:text="OR"
                         android:textColor="#ffffff"
                         android:textSize="12sp" />
+
                     <View
                         android:layout_width="wrap_content"
                         android:layout_height="0.1dp"
