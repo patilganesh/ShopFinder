@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     String tvDetails;
     private SignInButton btnSignIn;
-    private String user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
