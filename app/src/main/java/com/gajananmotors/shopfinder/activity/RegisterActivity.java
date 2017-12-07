@@ -169,7 +169,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     else if (userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
-                    //code for deny
+
                 }
                 break;
         }
