@@ -8,43 +8,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.adapter.CustomAdapterForCategory;
-import com.gajananmotors.shopfinder.apiinterface.RestInterface;
-import com.gajananmotors.shopfinder.model.Category;
-import com.gajananmotors.shopfinder.model.CategoryList;
-
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
-    RecyclerView recycleView,recycler_view_vertical;
-    /*
+    RecyclerView recycleView, recycler_view_vertical;
     public static String[] nameList = {
             "Special Offers",
             "Hospitals",
@@ -63,12 +50,11 @@ public class MainActivity extends AppCompatActivity
             "Construction",
             "Finance",
     };
-
     public static int[] imgs = {
 
-            R.drawable.specialoffers,
             R.drawable.hospital,
-            R.drawable.medical,
+            R.drawable.mobile_shop,
+            R.drawable.hospital,
             R.drawable.clothshop,
             R.drawable.mobile_shop,
             R.drawable.computers,
@@ -82,90 +68,69 @@ public class MainActivity extends AppCompatActivity
             R.drawable.medical,
             R.drawable.hospital,
             R.drawable.mobile_shop};
-*/
-    private CustomAdapterForCategory adapter;
-    private SearchView editsearch;
+
     private ImageView nearby;
-    private LinearLayoutManager mLayoutManager;
     private LinearLayoutManager mLayoutManager_vertical;
+    private CustomAdapterForVerticalGridView gridAdapter;
+    private Toolbar toolbar;
+    private FloatingSearchView searchView;
+    private ViewFlipper mViewFlipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mViewFlipper =  this.findViewById(R.id.view_flipper);
+        mViewFlipper.setAutoStart(true);
+        mViewFlipper.setFlipInterval(1000);
+        mViewFlipper.startFlipping();
+        searchView = findViewById(R.id.floating_search_view);
+        searchView.clearSearchFocus();
+
+        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @Override
+            public void onFocus() {
+                toolbar.setVisibility(View.GONE);
+                nearby.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFocusCleared() {
+                toolbar.setVisibility(View.VISIBLE);
+                nearby.setVisibility(View.VISIBLE);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
 
             }
         });
-        recycleView = findViewById(R.id.recycler_view);
-        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mLayoutManager.setOrientation(LinearLayout.HORIZONTAL);
-       // mLayoutManager_vertical = new LinearLayoutManager(getApplicationContext());
-        mLayoutManager_vertical = new GridLayoutManager(this, 2);
-        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
-      /*  DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recycleView.getContext(),
-                mLayoutManager.getOrientation());
-        recycleView.addItemDecoration(dividerItemDecoration);*/
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        Retrofit retrofit = new Retrofit.Builder()
-                 .baseUrl(RestInterface.BASE_URL)
-                 .addConverterFactory(GsonConverterFactory.create())
-                 .build();
-        RestInterface restInterface=retrofit.create(RestInterface.class);
-        Call<CategoryList> call=restInterface.getCategoryList();
-        call.enqueue(new Callback<CategoryList>() {
-            @Override
-            public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
-                CategoryList list=response.body();
-                ArrayList<Category>cat_list=list.getCategories();
-                String nameList[]=new String[cat_list.size()];
-                String images[]=new String[cat_list.size()];
-                for(int i=0;i<cat_list.size();i++)
-                {
-                    nameList[i]=cat_list.get(i).getName();
-                    images[i]=cat_list.get(i).getImages();
-                }
-                if(response.isSuccessful())
-                {
-                    Log.i("NameList", "onResponse: "+nameList.length);
 
-                    adapter = new CustomAdapterForCategory(MainActivity.this, nameList, images);
-                    recycleView.setLayoutManager(mLayoutManager);
-                    recycleView.setItemAnimator(new DefaultItemAnimator());
-                    recycleView.setAdapter(adapter);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CategoryList> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-       /* adapter = new CustomAdapterForCategory(this, nameList, images);
+        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        mLayoutManager_vertical = new GridLayoutManager(this, 3);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imgs);
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
-        recycler_view_vertical.setAdapter(adapter);
-*/
-        editsearch =  findViewById(R.id.search);
-        editsearch.setOnQueryTextListener(this);
+        recycler_view_vertical.setAdapter(gridAdapter);
         nearby = findViewById(R.id.nearby);
         nearby.setOnClickListener(this);
     }
@@ -217,7 +182,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
 
-            startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
         } else if (id == R.id.nav_share) {
@@ -227,7 +192,6 @@ public class MainActivity extends AppCompatActivity
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
             startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
-
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -241,6 +205,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+
     public boolean onQueryTextChange(String newText) {
         return false;
     }
@@ -249,9 +214,13 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nearby:
-                Intent i = new Intent(getApplicationContext(), com.gajananmotors.shopfinder.activity.MapsActivity.class);
+                Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                 startActivity(i);
                 return;
+
         }
     }
+
+
+
 }

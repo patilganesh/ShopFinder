@@ -9,80 +9,141 @@
     tools:context=".activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:orientation="vertical">
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_vertical_margin"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:background="@drawable/border"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <SearchView
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight=".8"
-                android:iconifiedByDefault="false">
-
-            </SearchView>
-
-            <ImageView
-                android:id="@+id/nearby"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight=".2"
-                android:padding="12dp"
-                android:src="@drawable/map1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_top_margin" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_vertical"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_top_margin"
-                android:scrollbars="vertical"/>
+                android:layout_margin="2dp"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <!--  <SearchView
+                      android:id="@+id/search"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_weight=".8"
+                      android:queryHint="Search.."
+                      android:iconifiedByDefault="false"
+                      android:layout_marginTop="7dp"
+                      android:layout_marginBottom="0dp" />
+-->
+                <com.arlib.floatingsearchview.FloatingSearchView
+                    android:id="@+id/floating_search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-16dp"
+                    android:layout_weight=".8"
+                    android:focusable="false"
+                    android:keyboardNavigationCluster="false"
+                    app:floatingSearch_backgroundColor="@color/colorWhite"
+                    app:floatingSearch_close_search_on_keyboard_dismiss="true"
+                    app:floatingSearch_dimBackground="true"
+                    app:floatingSearch_dismissOnOutsideTouch="true"
+                    app:floatingSearch_leftActionMode="showSearch"
+                    app:floatingSearch_searchHint="Search..."
+                    app:floatingSearch_showSearchKey="false"
+                    app:floatingSearch_suggestionsListAnimDuration="250" />
+
+                <ImageView
+                    android:id="@+id/nearby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_weight=".2"
+                    android:src="@drawable/google_map" />
+
+            </LinearLayout>
+
+            <ViewFlipper
+                android:id="@+id/view_flipper"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ads"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:background="@drawable/advertise" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:background="@drawable/ads1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_left_margin"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:background="@drawable/ads2" />
+                </LinearLayout>
+            </ViewFlipper>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_horizontal_top_margin" />
+
+            </LinearLayout>
+            <!-- <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <GridView
+                    android:id="@+id/customgrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/category_name"
+                    android:visibility="gone"
+                    android:numColumns="2" />
+            </LinearLayout>-->
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_left_margin"
-            android:orientation="vertical">
-            <ImageView
-                android:id="@+id/ads"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="@drawable/advertise"/>
-        </LinearLayout>
-        <!-- <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <GridView
-                android:id="@+id/customgrid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/category_name"
-                android:visibility="gone"
-                android:numColumns="2" />
-        </LinearLayout>-->
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
