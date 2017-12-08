@@ -3,6 +3,7 @@ package com.gajananmotors.shopfinder.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,6 +17,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MultiDex.install(this);
         setContentView(R.layout.activity_splash);
         txtscreen = findViewById(R.id.txtscreen);
         getSupportActionBar().hide();
