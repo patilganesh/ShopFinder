@@ -1,26 +1,21 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical"
-   >
-
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/background"
-            android:contentDescription="TODO" />
+            android:src="@drawable/background" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -32,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,6 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <com.hbb20.CountryCodePicker
                         android:id="@+id/ccp"
                         android:layout_width="wrap_content"
@@ -52,8 +49,8 @@
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
                         android:textColor="#dadada"
-                        app:ccp_textSize="15sp"
-                        android:layout_marginStart="@dimen/activity_horizontal_left_margin" />
+                        app:ccp_textSize="15sp" />
+
                     <EditText
                         android:id="@+id/etUserName"
                         android:layout_width="match_parent"
@@ -66,8 +63,7 @@
                         android:maxLength="10"
                         android:textColor="#ffffff"
                         android:textColorHint="#dadada"
-                        android:textSize="15sp"
-                        android:layout_marginStart="@dimen/activity_horizontal_left_margin" />
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <EditText
@@ -79,7 +75,6 @@
                     android:inputType="textPassword"
                     android:textColor="#ffffff"
                     android:textColorHint="#dadada" />
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -101,8 +96,7 @@
                         android:paddingRight="36dp"
                         android:paddingTop="-86dp"
                         android:text="@string/btn_register"
-                        android:textColor="@color/ButtonTextColor"
-                        tools:ignore="ButtonStyle" />
+                        android:textColor="@color/ButtonTextColor" />
 
                     <Button
                         android:id="@+id/btnLogin"
@@ -118,10 +112,8 @@
                         android:paddingRight="36dp"
                         android:paddingTop="-86dp"
                         android:text="@string/btn_login"
-                        android:textColor="@color/ButtonTextColor"
-                        tools:ignore="ButtonStyle" />
+                        android:textColor="@color/ButtonTextColor" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -136,8 +128,7 @@
                         android:layout_marginLeft="36dp"
                         android:layout_marginRight="16dp"
                         android:layout_weight="1"
-                        android:background="@android:color/white"
-                        android:layout_marginEnd="16dp" />
+                        android:background="@android:color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -153,8 +144,7 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="36dp"
                         android:layout_weight="1"
-                        android:background="@android:color/white"
-                        android:layout_marginEnd="36dp" />
+                        android:background="@android:color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -184,7 +174,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_margin="@dimen/side_margin"
                         android:layout_weight="1" />
-
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

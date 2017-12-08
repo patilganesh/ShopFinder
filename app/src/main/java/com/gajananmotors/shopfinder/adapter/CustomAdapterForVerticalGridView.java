@@ -5,6 +5,8 @@ package com.gajananmotors.shopfinder.adapter;
  */
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.MainActivity;
+import com.gajananmotors.shopfinder.activity.SubCategory;
 
 /**
  * Created by asus on 29-Nov-17.
@@ -60,6 +63,12 @@ public class CustomAdapterForVerticalGridView extends RecyclerView.Adapter<Custo
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.text.setText(name[position]);
         holder.images.setImageResource(imageId[position]);
+        holder.images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context,SubCategory.class));
+            }
+        });
 
     }
 
