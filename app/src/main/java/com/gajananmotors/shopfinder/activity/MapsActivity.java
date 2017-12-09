@@ -1,8 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 
-/**
- * Created by asus on 24-Nov-17.
- */
+
 
 import android.Manifest;
 import android.app.Activity;

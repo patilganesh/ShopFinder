@@ -30,15 +30,14 @@
                 android:layout_marginTop="@dimen/side_margin"
                 android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/imgProfile"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-
+                    android:src="@mipmap/ic_launcher"
                     app:civ_border_color="@color/colorPrimary"
-                    app:civ_border_width="1dp"/>
+                    app:civ_border_width="1dp" />
 
                 <EditText
                     android:id="@+id/etName"
@@ -132,8 +131,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="90dp"
                     android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="90dp"
                     android:layout_marginRight="90dp"
                     android:background="@drawable/my_button_bg"
                     android:paddingBottom="-1050dp"
@@ -142,5 +141,5 @@
                     android:textColor="@color/ButtonTextColor" />
             </LinearLayout>
         </ScrollView>
- </RelativeLayout>
+    </RelativeLayout>
 </LinearLayout>

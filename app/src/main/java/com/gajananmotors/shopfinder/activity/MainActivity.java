@@ -1,8 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
 
-/**
- * Created by asus on 24-Nov-17.
- */
 
 import android.content.Intent;
 import android.os.Bundle;
