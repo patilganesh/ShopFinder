@@ -14,7 +14,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -120,7 +122,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             switch (object.type) {
                 case Model.ADVERTISEMENT_TYPE:
                     ((AdvertisementTypeViewHolder) holder).txtType.setText(object.text);
-                    ((ImageTypeViewHolder) holder).image.setImageResource(object.data);
+                    ((AdvertisementTypeViewHolder) holder).image.setImageResource(object.data);
                     ((AdvertisementTypeViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -133,7 +135,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case Model.IMAGE_TYPE:
                     ((ImageTypeViewHolder) holder).txtType.setText(object.text);
                     ((ImageTypeViewHolder) holder).image.setImageResource(object.data);
-                    ((AdvertisementTypeViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
+                    ((ImageTypeViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 
@@ -150,21 +152,22 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
         final TextView tvMobile = confirmDialog.findViewById(R.id.tvMobile);
         final TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
         final TextView tvUrlLink = confirmDialog.findViewById(R.id.tvUrlLink);
-
+        ImageButton btnCancel = confirmDialog.findViewById(R.id.btnCancel);
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle("Details");
         alert.setView(confirmDialog);
         alert.setCancelable(false);
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
-
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
     }
-
-
     @Override
     public int getItemCount() {
         return dataSet.size();
     }
-
-
 }
