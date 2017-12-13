@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/background" />
+            android:background="@drawable/background"
+            />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -30,14 +31,16 @@
                 android:layout_marginTop="@dimen/side_margin"
                 android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.gajananmotors.shopfinder.helper.CircleImageView
                     android:id="@+id/imgProfile"
+                    androidutlineProvider="bounds"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
-                    android:src="@mipmap/ic_launcher"
-                    app:civ_border_color="@color/colorPrimary"
-                    app:civ_border_width="1dp" />
+                    android:background="@mipmap/ic_launcher"
+                    app:civ_border_width="1dp"
+                    app:civ_fill_color="@android:color/darker_gray" />
 
                 <EditText
                     android:id="@+id/etName"

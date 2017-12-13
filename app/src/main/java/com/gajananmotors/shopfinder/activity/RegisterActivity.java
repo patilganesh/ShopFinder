@@ -8,13 +8,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -31,14 +30,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gajananmotors.shopfinder.activity.AddPostActivity;
+import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
+import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.helper.CropingOption;
-import com.gajananmotors.shopfinder.helper.CropingOptionAdapter;
+import com.gajananmotors.shopfinder.model.CropingOption;
 import com.gajananmotors.shopfinder.utility.Validation;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,22 +50,22 @@ import com.squareup.picasso.Picasso;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // private int REQUEST_CAMERA = 0, SELECT_FILE = 1,CROPING_CODE = 301;
+
     private final static int REQUEST_PERMISSION_REQ_CODE = 34;
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private static final int REQUEST_CODE_CHOOSE = 23;
+    private Uri mImageCaptureUri;
+    private File outPutFile;
     private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etDate;
     private int mYear, mMonth, mDay;
     Button btnCalendar;
-    Bitmap bm = null;
     com.hbb20.CountryCodePicker ccp;
     private int success = 0, otp = 0, responseCode = 0;
     private String countryCodeAndroid;
     private String pwd, confirmpwd;
     private String userChoosenTask;
-    ImageView imgProfile;
-    private Uri mImageCaptureUri;
-    private File outPutFile;
+    private CircleImageView imgProfile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +79,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etContactNumber = findViewById(R.id.etContactNumber);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        Button btnSubmit = findViewById(R.id.btnSubmit);
+       Button btnSubmit = findViewById(R.id.btnSubmit);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile.setOnClickListener(this);
         etDate.setOnClickListener(this);
-        btnSubmit.setOnClickListener(this);
+       btnSubmit.setOnClickListener(this);
         validation();
         ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
             @Override
@@ -132,46 +132,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.imgProfile:
-                selectImage();
+                selectImageOption();
                 break;
         }}
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Constant.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if (userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                } else {
-                    //code for deny
-                }
-                break;
-        }
-    }
-
-    private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+    private void selectImageOption() {
+        final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result = Constant.checkPermission(RegisterActivity.this);
+                if (items[item].equals("Capture Photo")) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
+                    mImageCaptureUri = Uri.fromFile(f);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+                    startActivityForResult(intent, CAMERA_CODE);
+                    //cameraIntent();
 
-                if (items[item].equals("Take Photo")) {
-                    userChoosenTask = "Take Photo";
-                    if (result)
-                        cameraIntent();
 
-                } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask = "Choose from Library";
-                    if (result)
-                        galleryIntent();
-
+                } else if (items[item].equals("Choose from Gallery")) {
+                    Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(i, GALLERY_CODE);
+                    // galleryIntent();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -180,63 +164,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         builder.show();
     }
 
-    private void galleryIntent() {
-      /*  Intent intent = new Intent();
-        intent.setType("image/*" + "");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select File"), GALLERY_CODE);*/
-        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT) {
-            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        }
-
-        startActivityForResult(i, GALLERY_CODE);
-    }
-
-    private void cameraIntent() {
-       /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);*/
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT) {
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        }
-
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
-        mImageCaptureUri = Uri.fromFile(f);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-        startActivityForResult(intent, CAMERA_CODE);
-
-    }
-    /*
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == SELECT_FILE)
-                    onSelectFromGalleryResult(data);
-                else if (requestCode == REQUEST_CAMERA)
-                    onCaptureImageResult(data);
-            }
-        }
-
-        private void onCaptureImageResult(Intent data) {
-
-            bm = (Bitmap) data.getExtras().get("data");
-            imgProfile.setImageBitmap(bm);
-        }
-
-        @SuppressWarnings("deprecation")
-        private void onSelectFromGalleryResult(Intent data) {
-            if (data != null) {
-                try {
-                    bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                    imgProfile.setImageBitmap(bm);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }}
-            */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -246,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             CropingIMG();
 
         } else if (requestCode == CAMERA_CODE && resultCode == Activity.RESULT_OK) {
-            mImageCaptureUri = data.getData();
+
             System.out.println("Camera Image URI : " + mImageCaptureUri);
             CropingIMG();
         } else if (requestCode == CROPING_CODE) {
@@ -272,6 +199,71 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
+    private void CropingIMG() {
+        final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setType("image/*");
+        List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
+        String profile_img = mImageCaptureUri.toString();
+        int size = list.size();
+        if (size == 0) {
+            Toast.makeText(this, "Cann't find image croping app", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            intent.setData(mImageCaptureUri);
+            intent.putExtra("outputX", 512);
+            intent.putExtra("outputY", 512);
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+            intent.putExtra("scale", true);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outPutFile));
+
+            if (size == 1) {
+                Intent i = new Intent(intent);
+                ResolveInfo res = list.get(0);
+
+                i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+
+                startActivityForResult(i, CROPING_CODE);
+            } else {
+                for (ResolveInfo res : list) {
+                    final CropingOption co = new CropingOption();
+                    co.title = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
+                    co.icon = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
+                    co.appIntent = new Intent(intent);
+                    co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+                    cropOptions.add(co);
+                }
+
+                CropingOptionAdapter adapter = new CropingOptionAdapter(getApplicationContext(), cropOptions);
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("Choose Croping App");
+                builder.setCancelable(false);
+                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        startActivityForResult(cropOptions.get(item).appIntent, CROPING_CODE);
+                    }
+                });
+
+                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+
+                        if (mImageCaptureUri != null) {
+                            getContentResolver().delete(mImageCaptureUri, null, null);
+                            mImageCaptureUri = null;
+                        }
+                    }
+                });
+
+                android.support.v7.app.AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+    }
+
+
 
     private void validation() {
         etName.addTextChangedListener(new TextWatcher() {
@@ -461,67 +453,5 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void CropingIMG() {
-        final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setType("image/*");
-        List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
-        String profile_img = mImageCaptureUri.toString();
-        // SplashScreenActivity.sharedPreferencesDatabase.addData("profile_img", profile_img);
 
-        int size = list.size();
-        if (size == 0) {
-            Toast.makeText(this, "Cann't find image croping app", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            intent.setData(mImageCaptureUri);
-            intent.putExtra("outputX", 512);
-            intent.putExtra("outputY", 512);
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
-            intent.putExtra("scale", true);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outPutFile));
-
-            if (size == 1) {
-                Intent i = new Intent(intent);
-                ResolveInfo res = (ResolveInfo) list.get(0);
-
-                i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-
-                startActivityForResult(i, CROPING_CODE);
-            } else {
-                for (ResolveInfo res : list) {
-                    final CropingOption co = new CropingOption();
-                    co.title = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
-                    co.icon = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
-                    co.appIntent = new Intent(intent);
-                    co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-                    cropOptions.add(co);
-                }
-
-                CropingOptionAdapter adapter = new CropingOptionAdapter(getApplicationContext(), cropOptions);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Choose Croping App");
-                builder.setCancelable(false);
-                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        startActivityForResult(cropOptions.get(item).appIntent, CROPING_CODE);
-                    }
-                });
-
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-
-                        if (mImageCaptureUri != null) {
-                            getContentResolver().delete(mImageCaptureUri, null, null);
-                            mImageCaptureUri = null;
-                        }
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-        }
-    }
 }

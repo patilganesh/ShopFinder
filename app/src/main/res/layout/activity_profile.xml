@@ -26,12 +26,13 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <com.gajananmotors.shopfinder.helper.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/imgProfile"
-                    android:layout_width="76dp"
-                    android:layout_height="66dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_marginTop="10dp"
+                    androidutlineProvider="bounds"
                     android:layout_gravity="center"
                     android:src="@mipmap/ic_launcher"
                     app:civ_border_color="@color/colorPrimary"
