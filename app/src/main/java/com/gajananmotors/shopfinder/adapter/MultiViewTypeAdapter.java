@@ -1,34 +1,19 @@
 package com.gajananmotors.shopfinder.adapter;
 
-/**
- * Created by Gajanan Motars on 12/9/2017.
- */
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.activity.LoginActivity;
 import com.gajananmotors.shopfinder.model.Model;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 
 public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -153,6 +138,9 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
         final TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
         final TextView tvUrlLink = confirmDialog.findViewById(R.id.tvUrlLink);
         ImageButton btnCancel = confirmDialog.findViewById(R.id.btnCancel);
+        ImageButton btncall = confirmDialog.findViewById(R.id.btncall);
+        ImageButton btnMessage = confirmDialog.findViewById(R.id.btnMessage);
+        ImageButton btnMap = confirmDialog.findViewById(R.id.btnMap);
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle("Details");
         alert.setView(confirmDialog);
@@ -160,6 +148,21 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
         btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });btncall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });btnMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();

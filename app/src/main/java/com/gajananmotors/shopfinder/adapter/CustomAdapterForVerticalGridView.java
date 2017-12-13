@@ -1,8 +1,5 @@
 package com.gajananmotors.shopfinder.adapter;
 
-/**
- * Created by asus on 01-Dec-17.
- */
 
 import android.content.Context;
 import android.content.Intent;

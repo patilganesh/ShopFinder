@@ -7,18 +7,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Base64;
-
-import java.io.ByteArrayOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class Constant {
 
@@ -40,11 +32,7 @@ public class Constant {
     public static boolean doubleBackToExitPressedOnce = false;
 
 
-    public static String getFormatedDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
-        Calendar cal = Calendar.getInstance();
-        return dateFormat.format(cal.getTime());
-    }
+
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -81,17 +69,6 @@ public class Constant {
         }
     }
 
-    /*public static String getEncodedStringFromBitmap(File file) throws IOException {
-      //  byte[] bytes = FileUtils.readFileToByteArray(file);
-        return Base64.encodeToString(bytes, 0);
-    }*/
 
-
-    public static String getEncodedStringFromBitmap(Bitmap bm) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream .toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
 
 }
