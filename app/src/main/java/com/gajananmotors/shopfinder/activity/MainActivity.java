@@ -1,6 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

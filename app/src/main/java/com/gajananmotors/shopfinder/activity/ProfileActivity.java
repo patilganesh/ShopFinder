@@ -1,13 +1,10 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -16,32 +13,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
-import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOption;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText etName,etEmail,etMobile,etDate;
+    EditText etName, etEmail, etMobile, etDate;
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private File outPutFile = null;
     private CircleImageView imgProfile;
     private Uri mImageCaptureUri;
-
-
 
 
     @Override
@@ -49,32 +38,28 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        etName=findViewById(R.id.etName);
-        etEmail=findViewById(R.id.etEmail);
-        etMobile=findViewById(R.id.etMobile);
-        etDate=findViewById(R.id.etDate);
+        etName = findViewById(R.id.etName);
+        etEmail = findViewById(R.id.etEmail);
+        etMobile = findViewById(R.id.etMobile);
+        etDate = findViewById(R.id.etDate);
         Button btnUpdate = findViewById(R.id.btnUpdate);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
-        imgProfile=findViewById(R.id.imgProfile);
+        imgProfile = findViewById(R.id.imgProfile);
         btnUpdate.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
-
-
     }
-
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.btnUpdate:
                 break;
             case R.id.imgProfile:
                 selectImageOption();
         }
-
     }
+
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ProfileActivity.this);
@@ -201,6 +186,4 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
-
-
 }

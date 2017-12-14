@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+
+
+
 import android.widget.TextView;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.model.Model;
@@ -166,6 +170,8 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+
+
             }
         });
     }
