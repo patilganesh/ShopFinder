@@ -12,11 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:textColorHint="@color/colorGray">
             <EditText
                 android:id="@+id/txtBusiness"
                 android:layout_width="match_parent"
@@ -26,7 +31,12 @@
                 android:hint="Business Name:"
                 android:textColorHint="#0000FF"
                 android:textSize="15sp" />
-
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:textColorHint="@color/colorGray">
             <EditText
                 android:id="@+id/txtBusinessAddress"
                 android:layout_width="match_parent"
@@ -36,7 +46,12 @@
                 android:hint="Business Address:"
                 android:textColorHint="#0000FF"
                 android:textSize="15sp" />
-
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:textColorHint="@color/colorGray">
             <EditText
                 android:id="@+id/txtBusinessServices"
                 android:layout_width="match_parent"
@@ -46,6 +61,7 @@
                 android:hint="Business Services:"
                 android:textColorHint="#0000FF"
                 android:textSize="15sp" />
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,7 +75,11 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     app:ccp_textSize="15sp" />
-
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:textColorHint="@color/colorGray">
                 <EditText
                     android:id="@+id/txtBusinessMobile"
                     android:layout_width="match_parent"
@@ -69,13 +89,18 @@
                     android:hint="Business Mobile:"
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:textColorHint="@color/colorGray">
                 <EditText
                     android:id="@+id/txtBusinessLocation"
                     android:layout_width="0dp"
@@ -86,6 +111,7 @@
                     android:hint="Enter Location(Area):"
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
+                </android.support.design.widget.TextInputLayout>
 
                 <ImageView
                     android:layout_width="0dp"
@@ -138,7 +164,11 @@
                 android:hint="Select City:"
                 android:textColorHint="#0000FF"
                 app:met_floatingLabel="normal" />
-
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:textColorHint="@color/colorGray">
             <EditText
                 android:id="@+id/txtBusinessWebUrl"
                 android:layout_width="match_parent"
@@ -148,7 +178,7 @@
                 android:hint="Website Url(optional):"
                 android:textColorHint="#0000FF"
                 android:textSize="15sp" />
-
+            </android.support.design.widget.TextInputLayout>
             <Button
                 android:id="@+id/btnInterior"
                 android:layout_width="wrap_content"

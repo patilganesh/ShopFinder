@@ -46,35 +46,50 @@
                         android:id="@+id/ccp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
                         android:textColor="#dadada"
                         app:ccp_textSize="15sp" />
 
-                    <EditText
-                        android:id="@+id/etUserName"
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        android:digits="0123456789"
-                        android:hint="@string/String_user_name"
-                        android:inputType="phone"
-                        android:maxLength="10"
-                        android:textColor="#ffffff"
-                        android:textColorHint="#dadada"
-                        android:textSize="15sp" />
+                        android:textColorHint="@color/ColorAccent">
+
+                        <EditText
+                            android:id="@+id/etUserName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789"
+                            android:hint="@string/String_Contact_Number"
+                            android:inputType="phone"
+                            android:maxLength="10"
+                            android:textColor="#ffffff"
+                            android:textColorHint="#dadada"
+                            android:textSize="15sp" />
+                    </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/etPassword"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/side_margin"
-                    android:hint="@string/String_password"
-                    android:inputType="textPassword"
-                    android:textColor="#ffffff"
-                    android:textColorHint="#dadada" />
+                    android:layout_margin="15dp"
+                    android:textColorHint="@color/ColorAccent">
+
+                    <EditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/side_margin"
+                        android:hint="@string/String_password"
+                        android:inputType="textPassword"
+                        android:textColor="#ffffff"
+                        android:textColorHint="#dadada" />
+                </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

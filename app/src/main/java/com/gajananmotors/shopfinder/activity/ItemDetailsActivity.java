@@ -6,11 +6,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.MultiViewTypeAdapter;
 import com.gajananmotors.shopfinder.model.Model;
-
 import java.util.ArrayList;
 
 public class ItemDetailsActivity extends AppCompatActivity {
@@ -19,6 +17,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ArrayList<Model> list= new ArrayList<>();
         list.add(new Model(Model.ADVERTISEMENT_TYPE,"Hello. This is the Text-only View Type. Nice to meet you",0));

@@ -21,7 +21,7 @@ public class CustomAdapterForCategory extends RecyclerView.Adapter<CustomAdapter
 
     String[] name;
     Context context;
-    String[] imageId;
+    int[] imageId;
     public ImageView images;
 
     private static LayoutInflater inflater = null;
@@ -39,7 +39,7 @@ public class CustomAdapterForCategory extends RecyclerView.Adapter<CustomAdapter
         }
     }
 
-    public CustomAdapterForCategory(MainActivity mainActivity, String[] namelist, String[] imglist) {
+    public CustomAdapterForCategory(MainActivity mainActivity, String[] namelist, int[] imglist) {
         // TODO Auto-generated constructor stub
         this.name = namelist;
         this.imageId = imglist;

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.MainActivity;
 import com.gajananmotors.shopfinder.activity.SubCategory;
+import com.gajananmotors.shopfinder.helper.CircleImageView;
 
 /**
  * Created by asus on 29-Nov-17.
@@ -30,7 +31,7 @@ public class CustomAdapterForVerticalGridView extends RecyclerView.Adapter<Custo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
-        public ImageView images;
+        public CircleImageView images;
 
         public MyViewHolder(View rowView) {
             super(rowView);

@@ -1,9 +1,13 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
@@ -25,6 +29,9 @@ public class AddPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         txtBusinessLocation = findViewById(R.id.txtBusinessLocation);
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -34,10 +41,10 @@ public class AddPostActivity extends AppCompatActivity {
     }
 
     public void getAddress(View view) {
-        ConnectionDetector detector=new ConnectionDetector(this);
-        if(!detector.isConnectingToInternet())
+        ConnectionDetector detector = new ConnectionDetector(this);
+        if (!detector.isConnectingToInternet())
             Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
-        else{
+        else {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             try {
                 startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
@@ -48,10 +55,45 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
+
     public void getPhotos(View view) {
     }
 
     public void submit(View view) {
+        confirmdetails();
+    }
+
+    private void confirmdetails() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
+        TextView tvShopName = findViewById(R.id.tvShopName);
+        TextView tvMobile = findViewById(R.id.tvMobile);
+        TextView tvCategory = findViewById(R.id.tvCategory);
+        TextView tvAddress = findViewById(R.id.tvAddress);
+        TextView tvArea = findViewById(R.id.tvArea);
+        ImageView imgShopName = findViewById(R.id.imgShop);
+        ImageButton btnEdit = confirmDialog.findViewById(R.id.btnEdit);
+        ImageButton btnConfirm = confirmDialog.findViewById(R.id.btnConfirm);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Confirm");
+        alert.setView(confirmDialog);
+        alert.setCancelable(false);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Toast.makeText(AddPostActivity.this, "Edit Form", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(AddPostActivity.this, "call api", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
     }
 
     @Override

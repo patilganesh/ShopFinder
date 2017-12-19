@@ -1,6 +1,7 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +12,9 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
@@ -22,6 +25,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,12 +35,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private File outPutFile = null;
     private CircleImageView imgProfile;
     private Uri mImageCaptureUri;
+    private int mYear, mMonth, mDay;
+    Button btnCalendar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -48,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile = findViewById(R.id.imgProfile);
         btnUpdate.setOnClickListener(this);
+        etDate.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
     @Override
@@ -57,6 +66,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.imgProfile:
                 selectImageOption();
+                break;
+            case R.id.etDate:
+                // Process to get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                // Launch Date Picker Dialog
+                DatePickerDialog dpd = new DatePickerDialog(this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                // Display Selected date in EditText
+                                etDate.setText(dayOfMonth + "/"
+                                        + (monthOfYear + 1) + "/" + year);
+                            }
+                        }, mYear, mMonth, mDay);
+                dpd.show();
+                break;
         }
     }
 
@@ -108,7 +138,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         public void onSuccess() {
 
                         }
-
                         @Override
                         public void onError() {
 

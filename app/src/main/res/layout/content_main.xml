@@ -46,7 +46,7 @@
                     android:layout_weight=".8"
                     android:focusable="false"
                     android:keyboardNavigationCluster="false"
-                    app:floatingSearch_backgroundColor="@color/colorWhite"
+                    app:floatingSearch_backgroundColor="#00FFFFFF"
                     app:floatingSearch_close_search_on_keyboard_dismiss="true"
                     app:floatingSearch_dimBackground="true"
                     app:floatingSearch_dismissOnOutsideTouch="true"
@@ -86,7 +86,7 @@
                         android:id="@+id/ads"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:background="@drawable/advertise" />
+                        android:background="@drawable/background" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -101,7 +101,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:background="@drawable/ads1" />
+                        android:background="@drawable/background" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -116,7 +116,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:background="@drawable/ads2" />
+                        android:background="@drawable/background" />
                 </LinearLayout>
             </ViewFlipper>
 

@@ -5,6 +5,7 @@
     <color name="colorPrimary">#16a085</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="ColorAccent">#ffffff</color>
     <color name="ButtonTextColor">#ffffff</color>
     <color name="textColorBlack">#000000</color>
     <color name="TextcolorsBlack">#000000</color>

@@ -17,18 +17,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.ViewFlipper;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.adapter.CustomAdapterForCategory;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
-    RecyclerView recycleView, recycler_view_vertical;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
+
+  RecyclerView recycleView, recycler_view_vertical;
     public static String[] nameList = {
-            "Special Offers",
+            "Offers",
             "Hospitals",
             "Medicals",
             "Cloth Shops",
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity
             "Construction",
             "Finance",
     };
-    public static int[] imgs = {
+    public static int[] imglist = {
 
             R.drawable.hospital,
             R.drawable.mobile_shop,
@@ -119,10 +121,11 @@ public class MainActivity extends AppCompatActivity
 
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         mLayoutManager_vertical = new GridLayoutManager(this, 3);
+        mLayoutManager_vertical.setOrientation(LinearLayout.HORIZONTAL);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imgs);
+        gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imglist);
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setAdapter(gridAdapter);
@@ -142,16 +145,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar listview_map_activity_data clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
 
