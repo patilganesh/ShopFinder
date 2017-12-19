@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingSearchView searchView;
     private ViewFlipper mViewFlipper;
+    String str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
