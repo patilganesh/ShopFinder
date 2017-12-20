@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingGPS;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -71,118 +73,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LinearLayoutManager mLayoutManager;
     private CustomAdapterForNearByLoc adapter;
     private TextView textView;
-    private LatLng latLng;
-    private Geocoder geocoder;
     Marker marker;
+    boolean gps_enabled = false;
+    boolean network_enabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
 
-        //Check if Google Play Services Available or not
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
         } else {
             Log.d("onCreate", "Google Play Services available.");
         }
-        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
 
+        textView = findViewById(R.id.txtSeekBar);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        recycleView = findViewById(R.id.mr_recycler_view);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         if (!gps_enabled && !network_enabled) {
-            // notify user
             displayPromptForEnablingGPS(this);
-
         }
-        textView = (TextView) findViewById(R.id.txtSeekBar);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
 
-        recycleView = (RecyclerView) findViewById(R.id.mr_recycler_view);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        org.adw.library.widgets.discreteseekbar.DiscreteSeekBar seek = (org.adw.library.widgets.discreteseekbar.DiscreteSeekBar) findViewById(R.id.seek);
+        DiscreteSeekBar seek = findViewById(R.id.seek);
         seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-
-                textView.setText(value + " km");// + seekBar.getMax());
-
+                textView.setText(value + " km");
             }
 
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-
                 mMap.clear();
-
             }
 
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 distance = seekBar.getProgress();
                 getplacesBykm();
-
-
             }
         });
-/*
-        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                float currentProgress = progress * 0.1f;
-                String yourprogress = String.format("%.1f", currentProgress);
-               // textView.setText(yourprogress + " km");// + seekBar.getMax());
-            }
-        });*/
         mapFragment.getMapAsync(this);
 
     }
 
-
-    public static void displayPromptForEnablingGPS(
-            final Activity activity) {
-        final AlertDialog.Builder builder =
-                new AlertDialog.Builder(activity);
-        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-        final String message = "Enable either GPS or any other location"
-                + " service to find current location.  Click OK to go to"
-                + " location services settings to let you do so.";
-
-        builder.setMessage(message)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                activity.startActivity(new Intent(action));
-                                d.dismiss();
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                d.cancel();
-                            }
-                        });
-        builder.create().show();
-    }
 
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -201,14 +145,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        //Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -219,7 +161,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-
     }
 
     public void getplacesBykm() {
@@ -227,7 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Object[] DataTransfer = new Object[2];
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
-        Log.d("onClick", url);
+
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
         Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
@@ -265,7 +206,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googlePlacesUrl.append("&radius=" + distance * 1000);
         googlePlacesUrl.append("&type=" + nearbyPlace);
         googlePlacesUrl.append("&sensor=true");
-        // googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
         googlePlacesUrl.append("&key=" + "AIzaSyAGaiRVEwaNMzwXK5_OnOG_5PsanNumoMI");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
@@ -278,15 +218,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("onLocationChanged", "entered");
-
         mLastLocation = location;
         Log.d("mLastLocation", "mLastLocation" + mLastLocation);
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
 
-        //Place current location marker
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -295,12 +232,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-
-        //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        Toast.makeText(MapsActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
-
         Log.d("onLocationChanged", String.format("latitude:%.5f longitude:%.5f", latitude, longitude));
 
         //stop location updates
@@ -308,7 +241,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             Log.d("onLocationChanged", "Removing Location Updates");
         }
-        Log.d("onLocationChanged", "Exit");
         setUpMapIfNeeded();
     }
 
@@ -325,17 +257,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
- 
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
-
-
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -351,16 +278,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-
-
-                                       if (ContextCompat.checkSelfPermission(this,
+                    if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
-
                         if (mGoogleApiClient == null) {
                             buildGoogleApiClient();
                         }
@@ -368,13 +290,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
 
                 } else {
-
-                    // Permission denied, Disable the functionality that depends on this permission.
                     Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
-
         }
     }
 
@@ -382,16 +301,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
         String googlePlacesData = " ";
-
         String url;
         public String placeName;
         public String vicinity;
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
@@ -399,9 +315,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // TODO Auto-generated method stub
             super.onCancelled();
             this.cancel(true);
-
         }
-
 
         @Override
         protected String doInBackground(Object... params) {
@@ -426,30 +340,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             DataParser dataParser = new DataParser();
             nearbyPlacesList = dataParser.parse(result);
             ShowNearbyPlaces(nearbyPlacesList);
-
             runOnUiThread(new Runnable() {
-
                 public void run() {
-
                     adapter = new CustomAdapterForNearByLoc(MapsActivity.this, sourcelist.toArray(new String[0]), dest.toArray(new String[0]));
                     recycleView.setLayoutManager(mLayoutManager);
                     recycleView.setItemAnimator(new DefaultItemAnimator());
                     recycleView.setAdapter(adapter);
                 }
             });
-
         }
 
 
         private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
             dest = new ArrayList<>();
             sourcelist = new ArrayList<>();
-            List<HashMap<String, String>> nearbyPlacesListdetails = nearbyPlacesList;
             Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
             mMap.clear();
+
             if (mCurrLocationMarker != null) {
                 mCurrLocationMarker.remove();
             }
+
             for (int i = 0; i < nearbyPlacesList.size(); i++) {
                 MarkerOptions markerOptions = new MarkerOptions();
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
@@ -459,13 +370,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 vicinity = googlePlace.get("vicinity");
                 sourcelist.add(placeName);
                 dest.add(vicinity);
-                LatLng latLng = new LatLng(lat, lng);
 
+                LatLng latLng = new LatLng(lat, lng);
                 markerOptions.position(latLng);
                 markerOptions.title(placeName + " : " + vicinity);
                 mMap.addMarker(markerOptions);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                //move map camera
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
@@ -479,19 +389,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mMap != null) {
             setUpMap();
         }
-
     }
 
     private void setUpMap() {
-
-
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
-                //save current location
-                latLng = point;
-
+                Geocoder geocoder = null;
+                LatLng latLng = point;
                 List<Address> addresses = new ArrayList<>();
                 try {
                     addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1);
@@ -509,18 +415,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(MapsActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
                 }
 
-                //remove previously placed Marker
                 if (marker != null) {
                     marker.remove();
                 }
 
-                //place marker where user just clicked
                 marker = mMap.addMarker(new MarkerOptions().position(point).title("Marker")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-
             }
         });
-
     }
-
 }

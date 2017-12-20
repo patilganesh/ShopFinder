@@ -23,4 +23,9 @@
     <color name="orange">#F5CA8C</color>
     <color name="btnGreen">#39a300</color>
     <color name="btnGreen1">#71a157</color>
+    <color name="colorPrimaryText">#000000</color>
+    <color name="colorSecondaryText">#737373</color>
+    <color name="colorIcons">#FFFFFF</color>
+    <color name="colorDivider">#737373</color>
+    <color name="colorMap">#FAE6D6</color>
 </resources>

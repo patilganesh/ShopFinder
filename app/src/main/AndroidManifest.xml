@@ -3,6 +3,7 @@
     package="com.gajananmotors.shopfinder">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
@@ -11,8 +12,6 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
-
 
     <application
         android:allowBackup="true"
@@ -63,6 +62,9 @@
         </activity>
         <activity android:name=".activity.LoginActivity" />
 
+        <activity
+            android:name=".activity.ItemLocation"
+            android:label="@string/title_activity_item_location"></activity>
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />

@@ -26,6 +26,9 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForCategory;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
+import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
+import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
 
   RecyclerView recycleView, recycler_view_vertical;
@@ -209,10 +212,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nearby:
-                Intent i = new Intent(getApplicationContext(), MapsActivity.class);
-                startActivity(i);
-                return;
-
+                if (!isNetworkAvailable(getApplicationContext())) {
+                    displayPromptForEnablingData(this);
+                } else {
+                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(i);
+                }
         }
     }
 

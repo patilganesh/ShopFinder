@@ -8,6 +8,13 @@
     <string name="srch">Search</string>
     <string name="title_activity_maps">Map</string>
     <string name="otp_sent_success" />
+    <string name="route_distance">Distance</string>
+    <string name="route_distance_value">0 Km</string>
+    <string name="route_duration">Duration</string>
+    <string name="route_duration_value">0 mins</string>
+    <string name="server_error">Server error. Something when wrong with the server</string>
+
+
 
 
     <string name="facebook_app_id">1520238038069950</string>
@@ -36,5 +43,6 @@
 
     <string name="String_Update">UPDATE</string>
     <string name="profile">Profile</string>
+    <string name="title_activity_item_location">Map</string>
 
 </resources>
