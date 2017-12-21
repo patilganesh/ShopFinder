@@ -1,18 +1,7 @@
 package com.gajananmotors.shopfinder.helper;
 
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-
-public class Constant {
+public class Constant{
 
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
@@ -29,13 +18,14 @@ public class Constant {
     public static final String ROUTE = "4";
     public static final String AUTHKEY = "119718AkintvzJaWd578dd8d3";
     public static final String MESSAGE = "Hi, Your otp is:";
+    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     public static boolean doubleBackToExitPressedOnce = false;
 
 
 
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    /*@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static boolean checkPermission(final Context context)
     {
         int currentAPIVersion = Build.VERSION.SDK_INT;
@@ -68,7 +58,7 @@ public class Constant {
             return true;
         }
     }
-
+*/
 
 
 }

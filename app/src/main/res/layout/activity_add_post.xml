@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
@@ -73,19 +75,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginTop="10dp"
                     app:ccp_textSize="15sp" />
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:textColorHint="@color/colorGray">
                 <EditText
                     android:id="@+id/txtBusinessMobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
                     android:hint="Business Mobile:"
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
@@ -183,10 +186,8 @@
                 android:id="@+id/btnInterior"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#277bec"
+             android:layout_gravity="left"
+                android:background="@drawable/my_button_bg"
                 android:onClick="getPhotos"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
@@ -197,13 +198,9 @@
                 android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#277bec"
+                android:background="@drawable/my_button_bg"
+                android:layout_gravity="center_horizontal"
                 android:onClick="submit"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:text="Submit"
                 android:textColor="#ffffff" />
         </LinearLayout>
