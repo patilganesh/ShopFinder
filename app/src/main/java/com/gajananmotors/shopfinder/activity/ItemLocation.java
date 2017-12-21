@@ -49,6 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingGPS;
+import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
+import static com.gajananmotors.shopfinder.common.GeoAddress.getUrlWithDistance;
 
 public class ItemLocation extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -74,8 +76,8 @@ public class ItemLocation extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        distanceValue = (TextView)findViewById(R.id.distance_value);
-        durationValue = (TextView)findViewById(R.id.duration_value);
+        distanceValue = findViewById(R.id.distance_value);
+        durationValue = findViewById(R.id.duration_value);
         LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -171,7 +173,7 @@ public class ItemLocation extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
         String url = getUrl(latitude, longitude, 18.5590, 73.7868);
-        current_address = getAddress(latitude, longitude);
+        current_address = getAddress(latitude, longitude,getApplicationContext());
         current_address = current_address.replaceAll(" ", "+").toLowerCase();
 
         if(!current_address.equalsIgnoreCase("")){
@@ -371,45 +373,6 @@ public class ItemLocation extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private String getUrlWithDistance(String current_address) {
-
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&");
-        googlePlacesUrl.append("origins=" + current_address);
-        googlePlacesUrl.append("&destinations=" + "Hadapsar");
-        googlePlacesUrl.append("&key=" + "AIzaSyDZyQsqWLtFJDQHlckNgpiEVAT4LwuaBj8");
-        Log.d("getUrl", googlePlacesUrl.toString());
-        return (googlePlacesUrl.toString());
-    }
-
-    public String getAddress(double latitude, double longitude) {
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                    sb.append(address.getAddressLine(i)).append(" ");
-                }
-                sb.append(address.getFeatureName()).append(" ");
-                sb.append(address.getThoroughfare()).append(" ");
-                sb.append(address.getSubLocality()).append(" ");
-                sb.append(address.getLocality()).append(" ");
-                sb.append(address.getPostalCode()).append(" ");
-                sb.append(address.getCountryName());
-                result = sb.toString();
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
     private void setRouteDistanceAndDuration(String distance, String duration){
         distanceValue.setText(distance);
         durationValue.setText(duration);

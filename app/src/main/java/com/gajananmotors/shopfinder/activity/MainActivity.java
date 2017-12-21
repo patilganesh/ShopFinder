@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -23,7 +26,6 @@ import android.widget.ViewFlipper;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.adapter.CustomAdapterForCategory;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
@@ -31,7 +33,7 @@ import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailabl
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
 
-  RecyclerView recycleView, recycler_view_vertical;
+    RecyclerView recycleView, recycler_view_vertical;
     public static String[] nameList = {
             "Offers",
             "Hospitals",
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mViewFlipper =  this.findViewById(R.id.view_flipper);
+        mViewFlipper = this.findViewById(R.id.view_flipper);
         mViewFlipper.setAutoStart(true);
         mViewFlipper.setFlipInterval(1000);
         mViewFlipper.startFlipping();
@@ -113,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
-
             }
         });
 
@@ -122,17 +123,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        mLayoutManager_vertical.setOrientation(LinearLayout.HORIZONTAL);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        mLayoutManager_vertical = new GridLayoutManager(this, 3);
+        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
         gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imglist);
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
-        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.item_animation_from_bottom);
+
+        recycler_view_vertical.startAnimation(animation);
         recycler_view_vertical.setAdapter(gridAdapter);
+
         nearby = findViewById(R.id.nearby);
         nearby.setOnClickListener(this);
     }
@@ -166,10 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;*/
         }
 
-
         return super.onOptionsItemSelected(item);
-
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -220,7 +221,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
         }
     }
-
-
-
 }
