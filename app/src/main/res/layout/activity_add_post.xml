@@ -4,16 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -73,20 +70,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginTop="10dp"
                     app:ccp_textSize="15sp" />
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_margin="15dp"
                     android:textColorHint="@color/colorGray">
                 <EditText
                     android:id="@+id/txtBusinessMobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:hint="Business Mobile:"
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
@@ -181,25 +177,52 @@
                 android:textSize="15sp" />
             </android.support.design.widget.TextInputLayout>
             <Button
-                android:id="@+id/btnInterior"
+                android:id="@+id/btn_get_images"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-             android:layout_gravity="left"
-                android:background="@drawable/my_button_bg"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#277bec"
                 android:onClick="getPhotos"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="Select Photo"
                 android:textColor="#ffffff" />
-            <Button
+        <HorizontalScrollView
+            android:id="@+id/hori_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="false"
+            android:foregroundGravity="left">
+            <LinearLayout
+                android:id="@+id/selected_photos_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:animateLayoutChanges="true"
+                android:gravity="left"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
+                <!-- images will be added dynamicall to this layout -->
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <Button
                 android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/my_button_bg"
-                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#277bec"
                 android:onClick="submit"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:text="Submit"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"/>
         </LinearLayout>
     </ScrollView>
 

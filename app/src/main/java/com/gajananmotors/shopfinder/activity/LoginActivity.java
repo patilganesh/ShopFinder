@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
@@ -19,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -90,9 +91,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
-        Button btnLogin = findViewById(R.id.btnLogin);
+       // Button btnLogin = findViewById(R.id.btnLogin);
+        Button btnLogin=findViewById(R.id.btnLogin);
         Button btnRegister = findViewById(R.id.btnRegister);
-        ccp = findViewById(R.id.ccp);
+        //ccp = findViewById(R.id.ccp);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
         callbackManager = CallbackManager.Factory.create();
@@ -122,14 +124,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-        ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
+     /*   ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
             @Override
             public void onCountrySelected() {
                 countryCodeAndroid = ccp.getSelectedCountryCode();
                 Log.d("Country Code", countryCodeAndroid);
             }
         });
-        login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+     */   login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
@@ -349,6 +351,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
-
 }
+
+
+
 

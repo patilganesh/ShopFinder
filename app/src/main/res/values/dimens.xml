@@ -9,5 +9,18 @@
     <dimen name="side_margin">10dp</dimen>
     <dimen name="txtDimension">15dp</dimen>
     <dimen name="activity_horizontal_left_margin">10dp</dimen>
-    <dimen name="activity_horizontal_top_margin">10dp</dimen>
+    <dimen name="activity_horizontal_top_margin">15dp</dimen>
+    <dimen name="ted_picker_selected_image_height">90dp</dimen>
+    <dimen name="ted_picker_fab_elevation">8dp</dimen>
+    <dimen name="ted_picker_fab_size">60dp</dimen>
+    <dimen name="ted_picker_fab_press_translation_z">9dp</dimen>
+
+    <dimen name="app_camera_height">150dp</dimen>
+
+    <dimen name="bottom_height">150dp</dimen>
+    <dimen name="ted_picker_camera_height">350dp</dimen>
+
+
+
+
 </resources>

@@ -9,13 +9,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIClient
 {
 //TODO:Finish this!
-    private static Retrofit retrofit = null;
+    private static Retrofit retrofit;
+    private APIClient(){}
     public static Retrofit getClient() {
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl("https://reqres.in")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if(retrofit==null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl("https://reqres.in")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+        }
         return retrofit;
     }
 }

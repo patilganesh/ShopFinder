@@ -9,8 +9,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -33,11 +35,14 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name=".activity.AddPostActivity"
-            android:parentActivityName="com.gajananmotors.shopfinder.activity.MainActivity"/>
+        <activity
+            android:name=".activity.AddPostActivity"
+            android:parentActivityName=".activity.MainActivity" />
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -46,11 +51,13 @@
         <activity
             android:name=".activity.ProfileActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName="com.gajananmotors.shopfinder.activity.MainActivity"
-            android:label="@string/profile" />
+            android:label="@string/profile"
+            android:parentActivityName=".activity.MainActivity" />
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+
         <activity
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -62,30 +69,40 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.LoginActivity" />
-
         <activity
             android:name=".activity.ItemLocation"
-            android:label="@string/title_activity_item_location"></activity>
+            android:label="@string/title_activity_item_location" />
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+
         <activity
             android:name=".activity.RegisterActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName="com.gajananmotors.shopfinder.activity.LoginActivity"/>
+            android:parentActivityName=".activity.LoginActivity" />
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-        <activity android:name=".activity.SubCategory"
-            android:parentActivityName="com.gajananmotors.shopfinder.activity.MainActivity"/>
+
+        <activity
+            android:name=".activity.SubCategory"
+            android:parentActivityName=".activity.MainActivity" />
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-        <activity android:name=".activity.ItemDetailsActivity"
-            android:parentActivityName="com.gajananmotors.shopfinder.activity.SubCategory"/>
+
+        <activity
+            android:name=".activity.ItemDetailsActivity"
+            android:parentActivityName=".activity.SubCategory" />
+        <activity android:name=".tedpicker.ImagePickerActivity"/>
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+
     </application>
 
 </manifest>

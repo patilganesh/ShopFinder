@@ -2,16 +2,21 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
+import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -19,17 +24,33 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.util.ArrayList;
+
 public class AddPostActivity extends AppCompatActivity {
     TextView txtBusinessLocation;
     int PLACE_PICKER_REQUEST = 1;
     GoogleApiClient mGoogleApiClient;
     Place place;
-
+    private static final int INTENT_REQUEST_GET_IMAGES = 13;
+    private Button  getImages;
+    private static final String TAG = "TedPicker";
+    ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ViewGroup mSelectedImagesContainer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
+        View getImages = findViewById(R.id.btn_get_images);
+        getImages.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+                getImages(new Config());
+            }
+        });
 
 
         txtBusinessLocation = findViewById(R.id.txtBusinessLocation);
@@ -39,6 +60,23 @@ public class AddPostActivity extends AppCompatActivity {
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
     }
+
+    private void getImages(Config config) {
+
+
+        ImagePickerActivity.setConfig(config);
+
+        Intent intent = new Intent(this, ImagePickerActivity.class);
+
+        if (image_uris != null) {
+            intent.putParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS, image_uris);
+        }
+
+
+        startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
+
+    }
+
 
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
@@ -55,11 +93,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
-    public void getPhotos(View view) {
-    }
-
-    public void submit(View view) {
+ public void submit(View view) {
         confirmdetails();
     }
 

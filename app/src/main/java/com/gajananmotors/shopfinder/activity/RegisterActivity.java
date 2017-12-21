@@ -1,5 +1,4 @@
-package com.gajananmotors.shopfinder.activity;
-
+package  com.gajananmotors.shopfinder.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,7 +10,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -26,15 +24,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOption;
 import com.gajananmotors.shopfinder.utility.Validation;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -44,16 +44,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import com.gajananmotors.shopfinder.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private final static int REQUEST_PERMISSION_REQ_CODE = 34;
+    // private final static int REQUEST_PERMISSION_REQ_CODE = 34;
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
-    private static final int REQUEST_CODE_CHOOSE = 23;
+    // private static final int REQUEST_CODE_CHOOSE = 23;
     private Uri mImageCaptureUri;
     private File outPutFile;
     private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etDate;
@@ -81,13 +77,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etContactNumber = findViewById(R.id.etContactNumber);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
-       Button btnSubmit = findViewById(R.id.btnSubmit);
+        Button btnSubmit = findViewById(R.id.btnSubmit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile.setOnClickListener(this);
         etDate.setOnClickListener(this);
-       btnSubmit.setOnClickListener(this);
+        btnSubmit.setOnClickListener(this);
         validation();
         ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
             @Override
