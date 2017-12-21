@@ -1,10 +1,12 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,8 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -30,6 +30,7 @@ import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
+import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
 
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FloatingSearchView searchView;
     private ViewFlipper mViewFlipper;
-    String str;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +87,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         mViewFlipper = this.findViewById(R.id.view_flipper);
         mViewFlipper.setAutoStart(true);
         mViewFlipper.setFlipInterval(1000);
         mViewFlipper.startFlipping();
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
+
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if (!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
 
         searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
@@ -115,28 +125,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
+
             }
         });
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         mLayoutManager_vertical = new GridLayoutManager(this, 3);
         mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imglist);
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.item_animation_from_bottom);
-
-        recycler_view_vertical.startAnimation(animation);
+        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setAdapter(gridAdapter);
-
         nearby = findViewById(R.id.nearby);
         nearby.setOnClickListener(this);
     }
@@ -164,13 +173,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.action_change_city:
                 return true;
-           /* case R.id.action_nearby:
-                Intent i = new Intent(getApplicationContext(), com.gajananmotors.shopfinder.activity.MapsActivity.class);
-                startActivity(i);
-                return true;*/
         }
 
+
         return super.onOptionsItemSelected(item);
+
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -221,4 +229,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
         }
     }
+
+
 }

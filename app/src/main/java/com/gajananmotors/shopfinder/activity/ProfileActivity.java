@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,12 +18,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.model.CropingOption;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,12 +42,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     Button btnCalendar;
 
 
+    private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
+    private static final int REQUEST_PERMISSION_SETTING = 101;
+    private boolean sentToSettings = false;
+    private SharedPreferences permissionStatus;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
 
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -66,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.imgProfile:
                 selectImageOption();
+
                 break;
             case R.id.etDate:
                 // Process to get Current Date
@@ -89,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+
 
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
