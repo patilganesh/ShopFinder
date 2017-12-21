@@ -8,15 +8,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +22,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.activity.ItemLocation;
 import com.gajananmotors.shopfinder.model.Model;
 
 import java.util.ArrayList;
 
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
+import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
 
 public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -39,6 +36,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
     Context mContext;
     int total_types;
     private String mobNo;
+    private String address;
 
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
@@ -142,11 +140,13 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
         final TextView tvMobile = confirmDialog.findViewById(R.id.tvMobile);
         final TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
         final TextView tvUrlLink = confirmDialog.findViewById(R.id.tvUrlLink);
+
         ImageButton btnCancel = confirmDialog.findViewById(R.id.btnCancel);
         ImageButton btnMap = confirmDialog.findViewById(R.id.btnMap);
         ImageButton btnMsg = confirmDialog.findViewById(R.id.btnMessage);
         ImageButton btnCall = confirmDialog.findViewById(R.id.btncall);
         mobNo = tvMobile.getText().toString();
+
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle("Details");
         alert.setView(confirmDialog);
@@ -172,8 +172,13 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                 if (!isNetworkAvailable(mContext)) {
                     displayPromptForEnablingData((Activity) mContext);
                 } else {
-                    Intent i = new Intent(mContext, ItemLocation.class);
-                    mContext.startActivity(i);
+                    address = getAddress(18.50284, 73.9255587, mContext);
+                   // Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
+                    Log.d("MultiViewType","address"+address);
+                    Uri gmmIntentUri = Uri.parse("geo:18.5590,73.7868?q=" + address);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    mContext.startActivity(mapIntent);
                 }
             }
         });

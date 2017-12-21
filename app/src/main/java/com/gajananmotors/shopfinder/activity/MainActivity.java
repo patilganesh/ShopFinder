@@ -125,10 +125,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
-
             }
         });
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -137,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        recycler_view_vertical.setNestedScrollingEnabled(false);
         mLayoutManager_vertical = new GridLayoutManager(this, 3);
         mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
         NavigationView navigationView = findViewById(R.id.nav_view);
