@@ -42,18 +42,14 @@ public class AddPostActivity extends AppCompatActivity {
     private static final String TAG = "TedPicker";
     ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ViewGroup mSelectedImagesContainer;
-    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         setContentView(R.layout.activity_add_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
+        mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
         getImages.setOnClickListener(new View.OnClickListener() {
 
@@ -176,7 +172,7 @@ public class AddPostActivity extends AppCompatActivity {
         for (Uri uri : image_uris) {
 
             View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
-            ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
+            ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
 
             Glide.with(this)
                     .load(uri.toString())

@@ -69,22 +69,22 @@
                     android:id="@+id/ccp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     app:ccp_textSize="15sp" />
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_vertical"
                     android:textColorHint="@color/colorGray">
                 <EditText
                     android:id="@+id/txtBusinessMobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
                     android:hint="Business Mobile:"
-                    android:textColorHint="#0000FF"
                     android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -92,19 +92,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_weight="0.9"
                     android:textColorHint="@color/colorGray">
                 <EditText
                     android:id="@+id/txtBusinessLocation"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="0.9"
                     android:hint="Enter Location(Area):"
                     android:textColorHint="#0000FF"
                     android:textSize="15sp" />
@@ -113,9 +111,9 @@
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
                     android:layout_weight="0.1"
                     android:clickable="true"
+                    android:layout_gravity="center_vertical"
                     android:onClick="getAddress"
                     android:src="@drawable/icon_gmap"
 

@@ -30,14 +30,7 @@ public class BitmapUtil {
         return Bitmap.createScaledBitmap(src, width, height, true);           
     }
     
-    /**
-     * Bitmap을 ratio에 맞춰서 max값 만큼 resize한다.
-     *
-     * @param src
-     * @param max
-     * @param isKeep 작은 크기인 경우 유지할건지 체크.. 
-     * @return
-     */
+
     public static Bitmap resize(Bitmap src, int max, boolean isKeep) {
         if(!isKeep)
             return resizeBitmap(src, max);

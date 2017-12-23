@@ -84,16 +84,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        /*toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
 
 
         mViewFlipper = this.findViewById(R.id.view_flipper);
         mViewFlipper.setAutoStart(true);
         mViewFlipper.setFlipInterval(1000);
         mViewFlipper.startFlipping();
-        searchView = findViewById(R.id.floating_search_view);
-        searchView.clearSearchFocus();
+        /*searchView = findViewById(R.id.floating_search_view);
+        searchView.clearSearchFocus();*/
 
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+       /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolbar.setVisibility(View.VISIBLE);
                 nearby.setVisibility(View.VISIBLE);
             }
-        });
+        });*/
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
