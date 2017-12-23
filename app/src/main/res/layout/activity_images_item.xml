@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="10dp">
+<ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="profile image"
+        android:visibility="visible"
+        android:src="@drawable/google_map"
+        android:layout_gravity="center_horizontal"/>
+<LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:orientation="vertical"
+    android:layout_margin="10dp">
+   <ImageView
+       android:id="@+id/media_image"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:src="@drawable/google_map"/>
+ <Button
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:text="Capture Photo"
+     android:id="@+id/btn_capture"
+     android:layout_margin="10dp"
+     android:layout_gravity="center"/>
+
+</LinearLayout>
+</FrameLayout>

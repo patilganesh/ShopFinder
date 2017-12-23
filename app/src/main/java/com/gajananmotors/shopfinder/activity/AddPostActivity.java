@@ -1,18 +1,24 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
@@ -36,11 +42,17 @@ public class AddPostActivity extends AppCompatActivity {
     private static final String TAG = "TedPicker";
     ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ViewGroup mSelectedImagesContainer;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         setContentView(R.layout.activity_add_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
         getImages.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +142,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+   @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_PICKER_REQUEST) {
@@ -139,5 +151,42 @@ public class AddPostActivity extends AppCompatActivity {
                 txtBusinessLocation.setText(place.getAddress());
             }
         }
+       if (resultCode == Activity.RESULT_OK) {
+           if (requestCode == INTENT_REQUEST_GET_IMAGES) {
+
+               image_uris = data.getParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
+
+               if (image_uris != null) {
+                   showMedia();
+               }
+
+
+           }
+       }
+    }
+    private void showMedia() {
+        // Remove all views before
+        // adding the new ones.
+        mSelectedImagesContainer.removeAllViews();
+        if (image_uris.size() >= 1) {
+            mSelectedImagesContainer.setVisibility(View.VISIBLE);
+        }
+        int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+        int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+        for (Uri uri : image_uris) {
+
+            View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
+            ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
+
+            Glide.with(this)
+                    .load(uri.toString())
+                    .fitCenter()
+                    .into(thumbnail);
+
+            mSelectedImagesContainer.addView(imageHolder);
+
+            thumbnail.setLayoutParams(new FrameLayout.LayoutParams(wdpx, htpx));
+        }
+
     }
 }
