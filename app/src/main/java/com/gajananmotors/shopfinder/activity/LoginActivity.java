@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     String tvDetails;
     private SignInButton btnSignIn;
     String str;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -88,7 +90,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setOnClickListener(this);
 
-
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
        // Button btnLogin = findViewById(R.id.btnLogin);
@@ -99,7 +100,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnRegister.setOnClickListener(this);
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
-
         login.setReadPermissions("public_profile email");
 
         etUserName.addTextChangedListener(new TextWatcher() {
@@ -261,7 +261,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 final String otpByUser = editTextConfirmOtp.getText().toString().trim();
                 String otPassword = String.valueOf(otp);
                 if (otpByUser.equals(otp + "")) {
-
                     //call api
                     alertDialog.dismiss();
                 } else {
