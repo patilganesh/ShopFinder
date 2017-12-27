@@ -2,6 +2,7 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class AddPostActivity extends AppCompatActivity {
     GoogleApiClient mGoogleApiClient;
     Place place;
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
-    private Button  getImages;
+    private Button getImages;
     private static final String TAG = "TedPicker";
     ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ViewGroup mSelectedImagesContainer;
@@ -52,15 +53,11 @@ public class AddPostActivity extends AppCompatActivity {
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
         getImages.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
                 getImages(new Config());
             }
         });
-
-
         txtBusinessLocation = findViewById(R.id.txtBusinessLocation);
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -70,8 +67,6 @@ public class AddPostActivity extends AppCompatActivity {
     }
 
     private void getImages(Config config) {
-
-
         ImagePickerActivity.setConfig(config);
 
         Intent intent = new Intent(this, ImagePickerActivity.class);
@@ -80,12 +75,8 @@ public class AddPostActivity extends AppCompatActivity {
             intent.putParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS, image_uris);
         }
 
-
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
-
     }
-
-
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -101,7 +92,8 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
- public void submit(View view) {
+
+    public void submit(View view) {
         confirmdetails();
     }
 
@@ -138,7 +130,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
 
-   @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_PICKER_REQUEST) {
@@ -147,40 +139,67 @@ public class AddPostActivity extends AppCompatActivity {
                 txtBusinessLocation.setText(place.getAddress());
             }
         }
-       if (resultCode == Activity.RESULT_OK) {
-           if (requestCode == INTENT_REQUEST_GET_IMAGES) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == INTENT_REQUEST_GET_IMAGES) {
 
-               image_uris = data.getParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
+                image_uris = data.getParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
 
-               if (image_uris != null) {
-                   showMedia();
-               }
+                if (image_uris != null) {
+                    showMedia();
+                }
 
 
-           }
-       }
+            }
+        }
     }
+
     private void showMedia() {
-        // Remove all views before
-        // adding the new ones.
         mSelectedImagesContainer.removeAllViews();
+
         if (image_uris.size() >= 1) {
             mSelectedImagesContainer.setVisibility(View.VISIBLE);
+
         }
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-        for (Uri uri : image_uris) {
+        for (final Uri uri : image_uris) {
 
-            View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
-            ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
-
+            final View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
+            final ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
+            imageHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                            AddPostActivity.this);
+                    alertDialog.setTitle("Confirm " +
+                            "" +
+                            "" +
+                            "");
+                    alertDialog.setMessage("Are you sure you select this file?");
+                    alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
+                    alertDialog.setPositiveButton("YES",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    alertDialog.setNegativeButton("NO",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "You clicked on NO", Toast.LENGTH_SHORT)
+                                            .show();
+                                    dialog.cancel();
+                                }
+                            });
+                    alertDialog.show();
+                    }
+            });
             Glide.with(this)
                     .load(uri.toString())
                     .fitCenter()
                     .into(thumbnail);
-
             mSelectedImagesContainer.addView(imageHolder);
-
             thumbnail.setLayoutParams(new FrameLayout.LayoutParams(wdpx, htpx));
         }
 

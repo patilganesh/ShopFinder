@@ -67,7 +67,9 @@
     <string name="min_count_msg">you have to choice %1$d images</string>
 
     <string name="focusing">focusing/flash...wait a minute</string>
-
+    <string name="dialog_fire_missiles">Do</string>
+    <string name="fire">ok</string>
+    <string name="cancel">cancel</string>
 
 
 </resources>

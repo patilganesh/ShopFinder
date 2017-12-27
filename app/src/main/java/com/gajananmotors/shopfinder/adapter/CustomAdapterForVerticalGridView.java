@@ -35,9 +35,6 @@ public class CustomAdapterForVerticalGridView extends RecyclerView.Adapter<Custo
             setFadeAnimation(text,200);
         }
     }
-
-
-
     public CustomAdapterForVerticalGridView(MainActivity mainActivity, String[] namelist, int[] imglist) {
         this.name = namelist;
         this.imageId = imglist;
