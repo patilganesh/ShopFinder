@@ -84,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
         mViewFlipper = this.findViewById(R.id.view_flipper);
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-       /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolbar.setVisibility(View.VISIBLE);
                 nearby.setVisibility(View.VISIBLE);
             }
-        });*/
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

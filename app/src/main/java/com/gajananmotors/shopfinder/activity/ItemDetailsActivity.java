@@ -6,9 +6,12 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.MultiViewTypeAdapter;
+import com.gajananmotors.shopfinder.common.SlideAnimationUtil;
 import com.gajananmotors.shopfinder.model.Model;
+
 import java.util.ArrayList;
 
 public class ItemDetailsActivity extends AppCompatActivity {
@@ -19,18 +22,25 @@ public class ItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ArrayList<Model> list= new ArrayList<>();
-        list.add(new Model(Model.ADVERTISEMENT_TYPE,"Hello. This is the Text-only View Type. Nice to meet you",0));
-        list.add(new Model(Model.IMAGE_TYPE,"Hi. I display a cool image too besides the omnipresent TextView.",R.drawable.advertise));
-        list.add(new Model(Model.IMAGE_TYPE,"Hi again. Another cool image here. Which one is better?",R.drawable.advertise));
+        ArrayList<Model> list = new ArrayList<>();
+        list.add(new Model(Model.ADVERTISEMENT_TYPE, "Hello. This is the Text-only View Type. Nice to meet you", 0));
+        list.add(new Model(Model.IMAGE_TYPE, "Hi. I display a cool image too besides the omnipresent TextView.", R.drawable.advertise));
+        list.add(new Model(Model.IMAGE_TYPE, "Hi again. Another cool image here. Which one is better?", R.drawable.advertise));
 
-        MultiViewTypeAdapter adapter = new MultiViewTypeAdapter(list,this);
+        MultiViewTypeAdapter adapter = new MultiViewTypeAdapter(list, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
 
         RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
+        SlideAnimationUtil.slideInFromLeft(getApplicationContext(), mRecyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(adapter);
 
+       /* ScaleInAnimationAdapter alphaAdapter = new ScaleInAnimationAdapter(adapter);
+        alphaAdapter.setDuration(1000);
+        alphaAdapter.setInterpolator(new AccelerateDecelerateInterpolator());
+        alphaAdapter.notifyDataSetChanged();
+        mRecyclerView.setAdapter(alphaAdapter);*/
     }
 }
+

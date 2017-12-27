@@ -5,27 +5,31 @@ package com.gajananmotors.shopfinder.adapter;
  */
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.model.Model;
-
 import java.util.ArrayList;
-
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
@@ -37,7 +41,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
     int total_types;
     private String mobNo;
     private String address;
-
+    View confirmDialog;
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtType;
@@ -93,11 +97,9 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                 return Model.ADVERTISEMENT_TYPE;
             case 1:
                 return Model.IMAGE_TYPE;
-
             default:
                 return -1;
         }
-
     }
 
     @Override
@@ -135,7 +137,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void showDetails() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View confirmDialog = inflater.inflate(R.layout.dialog_shopdetails, null);
+         confirmDialog = inflater.inflate(R.layout.dialog_shopdetails, null);
         final TextView tvShopName = confirmDialog.findViewById(R.id.tvShopName);
         final TextView tvMobile = confirmDialog.findViewById(R.id.tvMobile);
         final TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
@@ -148,11 +150,13 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
         mobNo = tvMobile.getText().toString();
 
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-        alert.setTitle("Details");
         alert.setView(confirmDialog);
         alert.setCancelable(false);
+
         final AlertDialog alertDialog = alert.create();
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
         alertDialog.show();
+
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,8 +177,8 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                     displayPromptForEnablingData((Activity) mContext);
                 } else {
                     address = getAddress(18.50284, 73.9255587, mContext);
-                   // Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
-                    Log.d("MultiViewType","address"+address);
+                    // Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
+                    Log.d("MultiViewType", "address" + address);
                     Uri gmmIntentUri = Uri.parse("geo:18.5590,73.7868?q=" + address);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
@@ -194,8 +198,83 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
 
 
-
         });
+
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                revealShow(confirmDialog, true, null);
+            }
+        });
+
+        alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                if (i == KeyEvent.KEYCODE_BACK){
+
+                    revealShow(confirmDialog, false, alertDialog);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+
+
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        alertDialog.show();
+    }
+
+
+    private void revealShow(View dialogView, boolean b, final Dialog dialog) {
+
+        final View view = dialogView.findViewById(R.id.dialog);
+
+        int w = view.getWidth();
+        int h = view.getHeight();
+
+        int endRadius = (int) Math.hypot(w, h);
+
+       /* int cx = (int) (fab.getX() + (fab.getWidth()/2));
+        int cy = (int) (fab.getY())+ fab.getHeight() + 56;*/
+        int cx = (int) (20 + (50/2));
+        int cy = (int) (40)+ 50 + 56;
+
+        if(b){
+            Animator revealAnimator = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                revealAnimator = ViewAnimationUtils.createCircularReveal(view, cx,cy, 0, endRadius);
+            }
+
+            view.setVisibility(View.VISIBLE);
+            revealAnimator.setDuration(700);
+            revealAnimator.start();
+
+        } else {
+
+            Animator anim =
+                    null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, endRadius, 0);
+            }
+
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    dialog.dismiss();
+                    view.setVisibility(View.INVISIBLE);
+
+                }
+            });
+            anim.setDuration(700);
+            anim.start();
+        }
+
+
     }
 
     @Override

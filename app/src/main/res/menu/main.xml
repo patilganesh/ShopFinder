@@ -10,13 +10,13 @@
         android:id="@+id/action_nearby"
         android:icon="@drawable/gmap1"
         android:title="Nearby"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/srch"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom" />-->
+        app:showAsAction="ifRoom" />
 
 
 </menu>
