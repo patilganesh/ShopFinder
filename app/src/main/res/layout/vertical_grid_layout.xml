@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp">-->
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +22,6 @@
                 android:layout_gravity="center"
                 android:src="@mipmap/ic_launcher" />-->
             <com.gajananmotors.shopfinder.helper.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/category_imgs_vertical"
                 android:layout_width="76dp"
                 android:layout_height="66dp"
@@ -31,7 +29,6 @@
                 android:layout_gravity="center"
                 app:civ_border_width="1dp"
                 app:civ_border_color="@color/colorPrimary"/>
-
             <TextView
                 android:id="@+id/category_name_vertical"
                 android:layout_width="match_parent"

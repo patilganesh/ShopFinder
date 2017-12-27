@@ -50,7 +50,7 @@ public class ImagePickerActivity extends AppCompatActivity implements CameraHost
      */
 
     public ArrayList<Uri> mSelectedImages;
-   // protected Toolbar toolbar;
+    protected Toolbar toolbar;
     View view_root;
     TextView mSelectedImageEmptyMessage;
     View view_selected_photos_container;
@@ -95,17 +95,17 @@ public class ImagePickerActivity extends AppCompatActivity implements CameraHost
 
     private void initView() {
 
-        /*toolbar = (Toolbar) findViewById(R.id.toolbar);
+       /* toolbar =  findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         view_root = findViewById(R.id.view_root);
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tv_selected_title = (TextView) findViewById(R.id.tv_selected_title);
+        mViewPager =  findViewById(R.id.pager);
+        tabLayout =  findViewById(R.id.tab_layout);
+        tv_selected_title =  findViewById(R.id.tv_selected_title);
 
-        rc_selected_photos = (RecyclerView) findViewById(R.id.rc_selected_photos);
-        mSelectedImageEmptyMessage = (TextView) findViewById(R.id.selected_photos_empty);
+        rc_selected_photos =  findViewById(R.id.rc_selected_photos);
+        mSelectedImageEmptyMessage = findViewById(R.id.selected_photos_empty);
 
         view_selected_photos_container = findViewById(R.id.view_selected_photos_container);
         view_selected_photos_container.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
