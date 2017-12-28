@@ -56,8 +56,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-      /*  toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        String[] catList = {
                 "Offers",
@@ -112,6 +111,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
+
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -193,7 +193,8 @@ public class AddPostActivity extends AppCompatActivity {
 
                if (image_uris != null) {
                    HorizontalScrollView hview=findViewById(R.id.hori_scroll_view);
-                    hview.setVisibility(View.VISIBLE);showMedia();
+                    hview.setVisibility(View.VISIBLE);
+                    showMedia();
                }
           }
         }
@@ -217,10 +218,7 @@ public class AddPostActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                             AddPostActivity.this);
-                    alertDialog.setTitle("Confirm " +
-                            "" +
-                            "" +
-                            "");
+                    alertDialog.setTitle("Confirm ");
                     alertDialog.setMessage("Are you sure you select this file?");
                     alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
                     alertDialog.setPositiveButton("YES",
@@ -239,10 +237,11 @@ public class AddPostActivity extends AppCompatActivity {
                                 }
                             });
                     alertDialog.show();
-                    }
+                }
             });
             Glide.with(this)
                     .load(uri.toString())
+
                     .fitCenter()
                     .into(thumbnail);
             mSelectedImagesContainer.addView(imageHolder);
