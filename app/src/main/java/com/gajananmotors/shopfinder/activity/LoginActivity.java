@@ -67,17 +67,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     String tvDetails;
     private SignInButton btnSignIn;
     String str;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-        //getSupportActionBar().hide();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
+
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -86,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setOnClickListener(this);
+
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
        // Button btnLogin = findViewById(R.id.btnLogin);
@@ -96,13 +100,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnRegister.setOnClickListener(this);
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
-
         login.setReadPermissions("public_profile email");
 
         etUserName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isPhoneNumber(etUserName, true);
             }
+
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
@@ -116,6 +120,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
@@ -256,7 +261,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 final String otpByUser = editTextConfirmOtp.getText().toString().trim();
                 String otPassword = String.valueOf(otp);
                 if (otpByUser.equals(otp + "")) {
-
                     //call api
                     alertDialog.dismiss();
                 } else {
