@@ -73,12 +73,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-        getSupportActionBar().hide();
-
+        //getSupportActionBar().hide();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -87,8 +86,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setOnClickListener(this);
-
-
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
        // Button btnLogin = findViewById(R.id.btnLogin);
@@ -106,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void afterTextChanged(Editable s) {
                 Validation.isPhoneNumber(etUserName, true);
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
@@ -120,7 +116,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });

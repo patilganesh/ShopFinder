@@ -7,19 +7,25 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:actionBarSize">45dp</item>
-   </style>
-  <style name="AppTheme.NoActionBar">
-      <!--  <item name="windowActionBar">false</item>-->
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <!--  <item name="windowActionBar">false</item>-->
         <item name="windowNoTitle">true</item>
-  </style>
+    </style>
 
- <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
- <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-    <style name="MyAppearance" parent="TextAppearance.AppCompat">
-    <item name="android:textColor">?attr/colorPrimaryDark</item>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
 
     </style>
+
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="MyAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?attr/colorPrimaryDark</item>
+
+    </style>
+
     <style name="DialogTheme">
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
         <item name="android:windowExitAnimation">@anim/slide_bottom</item>
