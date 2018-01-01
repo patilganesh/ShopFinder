@@ -134,7 +134,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
     }
-
     private void showDetails() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
          confirmDialog = inflater.inflate(R.layout.dialog_shopdetails, null);

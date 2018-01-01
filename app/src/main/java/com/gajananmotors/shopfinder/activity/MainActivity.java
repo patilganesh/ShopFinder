@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.ViewFlipper;
 
-import com.arlib.floatingsearchview.FloatingSearchView;
+/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
@@ -32,7 +33,7 @@ import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForE
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, android.support.v7.widget.SearchView.OnQueryTextListener {
 
     RecyclerView recycleView, recycler_view_vertical;
     public static String[] nameList = {
@@ -76,24 +77,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridView gridAdapter;
     private Toolbar toolbar;
-    private FloatingSearchView searchView;
-    private ViewFlipper mViewFlipper;
-
-
-    @Override
+ //   private FloatingSearchView searchView;
+    //private ViewFlipper mViewFlipper;
+      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-        mViewFlipper = this.findViewById(R.id.view_flipper);
+      /*  mViewFlipper = this.findViewById(R.id.view_flipper);
         mViewFlipper.setAutoStart(true);
         mViewFlipper.setFlipInterval(1000);
-        mViewFlipper.startFlipping();
-        searchView = findViewById(R.id.floating_search_view);
-        searchView.clearSearchFocus();
+        mViewFlipper.startFlipping();*/
+      /*  searchView = findViewById(R.id.floating_search_view);
+        searchView.clearSearchFocus();*/
 
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -101,9 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
-
-
-        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+       /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
@@ -115,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolbar.setVisibility(View.VISIBLE);
                 nearby.setVisibility(View.VISIBLE);
             }
-        });
+        });*/
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -145,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setAdapter(gridAdapter);
-        nearby = findViewById(R.id.nearby);
-        nearby.setOnClickListener(this);
+       /* nearby = findViewById(R.id.nearby);
+        nearby.setOnClickListener(this);*/
     }
 
     @Override
@@ -159,26 +154,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        MenuItem item=menu.findItem(R.id.action_search);
+        android.support.v7.widget.SearchView searcehView=(android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+        searcehView.setOnQueryTextListener(this);
+        return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
+       /* switch (item.getItemId()) {
 
             case R.id.action_change_city:
                 return true;
-        }
-
-
+        }*/
         return super.onOptionsItemSelected(item);
-
-
-    }
+       
+   }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -205,20 +204,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        /*switch (v.getId()) {
             case R.id.nearby:
                 if (!isNetworkAvailable(getApplicationContext())) {
                     displayPromptForEnablingData(this);
@@ -226,8 +215,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(i);
                 }
-        }
+        }*/
+    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
-
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 }

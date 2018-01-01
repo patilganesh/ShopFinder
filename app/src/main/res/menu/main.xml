@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
+    <!--<item
         android:id="@+id/action_change_city"
         android:title="Pune"
-        app:showAsAction="ifRoom" />
-    <!--<item
+        app:showAsAction="ifRoom" />-->
+   <!--<item
         android:id="@+id/action_nearby"
         android:icon="@drawable/gmap1"
         android:title="Nearby"
@@ -15,8 +15,9 @@
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/srch"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
+
 
 
 </menu>
