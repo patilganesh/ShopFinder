@@ -217,6 +217,7 @@ public class AddPostActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                             AddPostActivity.this);
+                    alertDialog.setCancelable(true);
                     alertDialog.setTitle("Confirm " +
                             "" +
                             "" +
