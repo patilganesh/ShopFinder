@@ -150,8 +150,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setView(confirmDialog);
-        alert.setCancelable(false);
-
+        alert.setCancelable(true);
         final AlertDialog alertDialog = alert.create();
         alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
         alertDialog.show();

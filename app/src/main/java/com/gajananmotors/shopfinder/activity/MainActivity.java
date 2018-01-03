@@ -22,16 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
-import android.widget.ViewFlipper;
 
-/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 
-import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
-import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
+
+/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, android.support.v7.widget.SearchView.OnQueryTextListener {
 

@@ -47,19 +47,16 @@ import java.util.Random;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    // private final static int REQUEST_PERMISSION_REQ_CODE = 34;
+
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
-    // private static final int REQUEST_CODE_CHOOSE = 23;
     private Uri mImageCaptureUri;
     private File outPutFile;
     private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etDate;
     private int mYear, mMonth, mDay;
-    Button btnCalendar;
     com.hbb20.CountryCodePicker ccp;
     private int success = 0, otp = 0, responseCode = 0;
     private String countryCodeAndroid;
     private String pwd, confirmpwd;
-    private String userChoosenTask;
     private CircleImageView imgProfile;
 
 
@@ -197,7 +194,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
     private void CropingIMG() {
         final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -422,8 +418,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         alert.setCancelable(false);
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
-
-
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
