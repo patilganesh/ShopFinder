@@ -181,10 +181,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (checkValidation()) {
-                    Random rn = new Random();
+                  /*  Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
-                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
+                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);*/
                     startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                 }
                 break;
