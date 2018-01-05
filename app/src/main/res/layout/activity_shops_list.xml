@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.8"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical">
 
         <TextView
@@ -18,31 +20,37 @@
             android:text="Shop Name"
             android:textSize="15sp"
             android:textStyle="bold" />
-   <LinearLayout
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal">
-        <TextView
-            android:id="@+id/shop_type"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shoop Type"
-            android:textSize="12sp"/>
-       <TextView
-            android:id="@+id/shop_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="500.0 m"
-            android:textSize="12sp"
-            android:layout_marginLeft="10dp"/>
-   </LinearLayout>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/shop_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shoop Type"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/shop_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="500.0 m"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/shop_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Shop Address"
+            android:singleLine="true"
+
             android:textSize="12sp" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="Call"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <TextView
@@ -71,10 +79,12 @@
             android:text="web url"
             android:textSize="12sp"/>
     </LinearLayout>
-   <ImageView
+
+    <ImageView
         android:id="@+id/shop_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/new_shop_image"
-        android:layout_margin="5dp"/>
+        android:layout_width="0dp"
+        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:src="@drawable/new_shop_image" />
 </LinearLayout>
