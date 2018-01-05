@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,126 +14,146 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="10dp"
-            android:elevation="10dp">
+            android:elevation="10dp"
+            app:cardElevation="10dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:hintTextAppearance="@style/MyAppearance">
-            <EditText
-                android:id="@+id/txtBusiness"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Business Name:"
-                android:textSize="14sp" />
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:hintTextAppearance="@style/MyAppearance">
-                <EditText
-                    android:id="@+id/txtBusinessAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Business Address:"
-                    android:textSize="14sp" />
-            </android.support.design.widget.TextInputLayout>
-           <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:hintTextAppearance="@style/MyAppearance">
-               <EditText
-                   android:id="@+id/txtBusinessServices"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:hint="Services Offered:"
-                   android:textSize="14sp" />
 
-           </android.support.design.widget.TextInputLayout>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_margin="10dp">
-    <com.hbb20.CountryCodePicker
-        android:id="@+id/ccp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:ccp_textSize="14sp" />
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hintTextAppearance="@style/MyAppearance">
-        <EditText
-            android:id="@+id/txtBusinessMobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Mobile Number:"
-            android:textSize="14sp"/>
-    </android.support.design.widget.TextInputLayout>
-</LinearLayout>
-<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp">
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_weight="0.9"
-          android:layout_height="wrap_content"
-          app:hintTextAppearance="@style/MyAppearance">
-      <EditText
-          android:id="@+id/txtBusinessLocation"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="Location(Area):"
-          android:textSize="14sp"/>
-      </android.support.design.widget.TextInputLayout>
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_weight="0.1"
-        android:layout_height="wrap_content"
-        android:src="@drawable/google_map"
-        android:onClick="getAddress"
-        android:clickable="true"
-        android:layout_marginTop="15dp"/>
- </LinearLayout>
-<com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/txtBusinessCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textSize="14sp"
-                    android:hint="Category:"
-                    app:met_floatingLabel="normal"/>
-<com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/txtBusinessSubcategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textSize="14sp"
-                    android:hint="Sub Category:"
-                    app:met_floatingLabel="normal"/>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/txtBusiness"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Business Name:"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/txtBusinessAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Business Address:"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/txtBusinessServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Services Offered:"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:ccp_textSize="14sp" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/MyAppearance">
+
+                        <EditText
+                            android:id="@+id/txtBusinessMobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Mobile Number:"
+                            android:textSize="14sp" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        app:hintTextAppearance="@style/MyAppearance">
+
+                        <EditText
+                            android:id="@+id/txtBusinessLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Location(Area):"
+                            android:textSize="14sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_weight="0.1"
+                        android:clickable="true"
+                        android:onClick="getAddress"
+                        android:src="@drawable/google_map" />
+                </LinearLayout>
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/txtBusinessCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Category:"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="normal" />
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/txtBusinessSubcategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Sub Category:"
+                    android:textSize="14sp"
+                    app:met_floatingLabel="normal" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
                     <EditText
                         android:id="@+id/txtBusinessWebUrl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Website Url(optional):"
-                        android:textSize="14sp"/>
-</android.support.design.widget.TextInputLayout>
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
                 <Button
                     android:id="@+id/btn_get_images"
                     android:layout_width="wrap_content"
@@ -145,6 +165,15 @@
                     android:paddingRight="20dp"
                     android:text="Select Photo"
                     android:textColor="#ffffff" />
+                <TextView
+                    android:id="@+id/tvHeading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select anyone image for ShopProfile"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorBlack"/>
+
                 <HorizontalScrollView
                     android:id="@+id/hori_scroll_view"
                     android:layout_width="match_parent"
@@ -152,38 +181,39 @@
                     android:fillViewport="false"
                     android:foregroundGravity="left"
                     android:visibility="gone">
+
                     <LinearLayout
                         android:id="@+id/selected_photos_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="20dp"
                         android:animateLayoutChanges="true"
                         android:gravity="left"
                         android:orientation="horizontal"
-                        android:visibility="visible"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp">
-                        <!-- images will be added dynamicall to this layout -->
+                        android:visibility="visible">
                     </LinearLayout>
                 </HorizontalScrollView>
+
                 <Button
                     android:id="@+id/btnSubmit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
                     android:layout_margin="10dp"
+                    android:layout_marginBottom="20dp"
                     android:background="@color/colorPrimaryDark"
                     android:onClick="submit"
                     android:paddingLeft="45dp"
                     android:paddingRight="45dp"
                     android:text="Submit"
-                    android:textColor="#ffffff"/>
-</LinearLayout>
-</android.support.v7.widget.CardView>
+                    android:textColor="#ffffff" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
 
-
-</ScrollView>
+    </ScrollView>
 
 </LinearLayout>
 
