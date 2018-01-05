@@ -13,11 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+       <!-- <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/background"
-            android:scaleType="centerCrop" />
+           &lt;!&ndash; android:background="@drawable/background"&ndash;&gt;
+            android:scaleType="centerCrop" />-->
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:elevation="10dp"
+            app:cardElevation="10dp">
+
 
         <ScrollView
             android:layout_width="match_parent"
@@ -45,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etName"
@@ -55,7 +63,6 @@
                         android:hint="@string/String_Name"
                         android:imeOptions="actionNext"
                         android:inputType="text"
-                        android:textColor="#ffffff"
                         android:textColorHint="@color/colorWhite"
                         android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
@@ -64,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etEmail"
@@ -74,8 +81,7 @@
                         android:hint="@string/String_Email"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
-                        android:textColor="#ffffff"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColorHint="@color/colorBlack"
                         android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -83,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etDate"
@@ -95,8 +101,7 @@
                         android:focusableInTouchMode="false"
                         android:hint="@string/dateofbirth"
                         android:imeOptions="actionNext"
-                        android:textColor="#ffffff"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColorHint="@color/colorBlack"
                         android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -112,7 +117,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        android:textColor="@color/colorWhite"
+                        android:textColor="@color/colorBlack"
                         app:ccp_textSize="15sp" />
 
                     <android.support.design.widget.TextInputLayout
@@ -121,7 +126,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        android:textColorHint="@color/colorWhite">
+                        android:textColorHint="@color/colorBlack">
 
                         <EditText
                             android:id="@+id/etContactNumber"
@@ -131,8 +136,7 @@
                             android:hint="@string/String_Contact_Number"
                             android:inputType="phone"
                             android:maxLength="10"
-                            android:textColor="#ffffff"
-                            android:textColorHint="@color/colorWhite"
+                            android:textColorHint="@color/colorBlack"
                             android:textSize="15sp" />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
@@ -141,7 +145,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etPassword"
@@ -151,8 +155,7 @@
                         android:hint="@string/String_Password"
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
-                        android:textColor="#ffffff"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColorHint="@color/colorBlack"
                         android:textSize="15sp"
                         app:passwordToggleEnabled="true"
                         tools:ignore="MissingPrefix" />
@@ -162,7 +165,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:textColorHint="@color/colorWhite">
+                    android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etConfirmPassword"
@@ -171,8 +174,7 @@
                         android:layout_margin="10dp"
                         android:hint="@string/String_Confirm_Password"
                         android:inputType="textPassword"
-                        android:textColor="#ffffff"
-                        android:textColorHint="@color/colorWhite"
+                        android:textColorHint="@color/colorBlack"
                         android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
                 <Button
@@ -190,5 +192,6 @@
                     android:textColor="@color/ButtonTextColor" />
             </LinearLayout>
         </ScrollView>
+        </android.support.v7.widget.CardView>
     </RelativeLayout>
 </LinearLayout>
