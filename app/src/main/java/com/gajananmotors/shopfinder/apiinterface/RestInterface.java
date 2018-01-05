@@ -2,6 +2,7 @@ package com.gajananmotors.shopfinder.apiinterface;
 
 import com.gajananmotors.shopfinder.model.CategoryList;
 import com.gajananmotors.shopfinder.model.LoginUsersList;
+import com.gajananmotors.shopfinder.model.SubCategoryList;
 import com.gajananmotors.shopfinder.model.UserRegister;
 
 import retrofit2.Call;
@@ -20,5 +21,8 @@ public interface RestInterface {
     Call<LoginUsersList>getUsers();
     @GET("index.php?r=Category/getCategory")
     Call<CategoryList>getCategoryList();
+
+    @GET("index.php?r=SubCategory/admin")
+    Call<SubCategoryList> getSubCategoryList();
 
 }

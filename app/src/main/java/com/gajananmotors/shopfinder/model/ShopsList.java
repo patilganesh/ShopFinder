@@ -3,7 +3,6 @@ package com.gajananmotors.shopfinder.model;
 /**
  * Created by Ashwin on 12/30/2017.
  */
-
 public class ShopsList {
     private String name;
     private String distance;
@@ -12,8 +11,9 @@ public class ShopsList {
     private String image;
     private String web_url;
     private String type;
+    private String mobileNo;
 
-    public ShopsList(String name,String distance,String address,String timing,String web_url,String type)
+    public ShopsList(String name, String distance, String address, String timing, String web_url, String type, String mobileNo)
     {
         this.setName(name);
         this.setDistance(distance);
@@ -21,6 +21,7 @@ public class ShopsList {
         this.setTiming(timing);
         this.setWeb_url(web_url);
         this.setType(type);
+        this.setMobileNo(mobileNo);
     }
     public String getType() {
         return type;
@@ -75,5 +76,13 @@ public class ShopsList {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
     }
 }
