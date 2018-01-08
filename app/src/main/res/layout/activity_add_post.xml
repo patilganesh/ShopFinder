@@ -29,68 +29,13 @@
                     app:hintTextAppearance="@style/MyAppearance">
 
                     <EditText
-                        android:id="@+id/txtBusiness"
+                        android:id="@+id/etBusinessName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="text"
                         android:hint="Business Name:"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:hintTextAppearance="@style/MyAppearance">
-
-                    <EditText
-                        android:id="@+id/txtBusinessAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Business Address:"
-                        android:textSize="14sp" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:hintTextAppearance="@style/MyAppearance">
-
-                    <EditText
-                        android:id="@+id/txtBusinessServices"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Services Offered:"
-                        android:textSize="14sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
-
-                    <com.hbb20.CountryCodePicker
-                        android:id="@+id/ccp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        app:ccp_textSize="14sp" />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:hintTextAppearance="@style/MyAppearance">
-
-                        <EditText
-                            android:id="@+id/txtBusinessMobile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Mobile Number:"
-                            android:textSize="14sp" />
-                    </android.support.design.widget.TextInputLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -105,10 +50,12 @@
                         app:hintTextAppearance="@style/MyAppearance">
 
                         <EditText
-                            android:id="@+id/txtBusinessLocation"
+                            android:id="@+id/etBusinessLocation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Location(Area):"
+                            android:clickable="true"
+                            android:onClick="getAddress"
                             android:textSize="14sp" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -122,8 +69,70 @@
                         android:src="@drawable/google_map" />
                 </LinearLayout>
 
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/etBusinessServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="Services Offered:"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/etBusinessEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="Business Email:"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccpCountryCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:ccp_textSize="14sp" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/MyAppearance">
+
+                        <EditText
+                            android:id="@+id/etBusinessMobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Mobile Number:"
+                            android:inputType="phone"
+                            android:digits="0123456789"
+                            android:textSize="14sp" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/txtBusinessCategory"
+                    android:id="@+id/spnBusinessCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -132,7 +141,7 @@
                     app:met_floatingLabel="normal" />
 
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/txtBusinessSubcategory"
+                    android:id="@+id/spnBusinessSubcategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -147,9 +156,10 @@
                     app:hintTextAppearance="@style/MyAppearance">
 
                     <EditText
-                        android:id="@+id/txtBusinessWebUrl"
+                        android:id="@+id/etBusinessWebUrl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="textUri"
                         android:hint="Website Url(optional):"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
