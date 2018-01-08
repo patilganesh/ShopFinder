@@ -54,7 +54,7 @@ public class AddPostActivity extends AppCompatActivity {
     EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
     private Toolbar toolbar;
 
-    String getImages, strBusinessName,strCategory,strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
+    String getImages,state,city, area,strBusinessName,strCategory,strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +144,7 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
         strBusinessEmail = etBusinessEmail.getText().toString().trim();
+
         confirmdetails();
     }
 
@@ -158,9 +159,9 @@ public class AddPostActivity extends AppCompatActivity {
                 String address1 = place.getName().toString();
                 try {
                     List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    String state = addresses.get(0).getAdminArea().toString();
-                    String city = addresses.get(0).getLocality().toString();
-                    String area = addresses.get(0).getSubLocality().toString();
+                     state = addresses.get(0).getAdminArea().toString();
+                     city = addresses.get(0).getLocality().toString();
+                     area = addresses.get(0).getSubLocality().toString();
                     Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area, Toast.LENGTH_SHORT).show();
 
                 } catch (IOException e) {
@@ -252,6 +253,7 @@ public class AddPostActivity extends AppCompatActivity {
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
         tvShopName.setText(strBusinessName);
+        tvArea.setText(city + "," + state);
         tvMobile.setText(strBusinessMobile);
         tvAddress.setText(strBusinessLocation);
         Glide.with(AddPostActivity.this)

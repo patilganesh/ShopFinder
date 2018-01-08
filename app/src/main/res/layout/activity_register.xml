@@ -52,14 +52,13 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
                     android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/String_Name"
                         android:imeOptions="actionNext"
                         android:inputType="text"
@@ -70,14 +69,13 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
                     android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/String_Email"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
@@ -88,14 +86,13 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
                     android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/side_margin"
                         android:editable="false"
                         android:focusable="true"
                         android:focusableInTouchMode="false"
@@ -144,7 +141,7 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
                     android:textColorHint="@color/colorBlack">
 
                     <EditText
@@ -164,14 +161,13 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
+                    android:layout_margin="10dp"
                     android:textColorHint="@color/colorBlack">
 
                     <EditText
                         android:id="@+id/etConfirmPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/String_Confirm_Password"
                         android:inputType="textPassword"
                         android:textColorHint="@color/colorBlack"
