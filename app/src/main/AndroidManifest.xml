@@ -94,6 +94,7 @@
             android:name=".activity.SubCategory"
             android:parentActivityName=".activity.MainActivity" />
 
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
@@ -106,6 +107,12 @@
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+        <activity
+            android:name=".activity.AllPostsActivity"
+            android:parentActivityName=".activity.MainActivity" />
+        <activity
+            android:name=".activity.ViewPostActivity"
+            android:parentActivityName=".activity.MainActivity" />
 
     </application>
 
