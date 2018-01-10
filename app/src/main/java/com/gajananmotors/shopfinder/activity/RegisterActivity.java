@@ -61,6 +61,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+
+
+
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
     private File outPutFile;
@@ -71,11 +74,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String countryCodeAndroid;
     private String pwd, confirmpwd;
     private CircleImageView imgProfile;
-    private Bitmap bitmap;
 
+private Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imgProfile = findViewById(R.id.imgProfile);
@@ -99,55 +103,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onCountrySelected() {
                 countryCodeAndroid = ccp.getSelectedCountryCode();
                 Log.d("Country Code", countryCodeAndroid);
-            }
-        });
-    }
-
-    /*Calling Api and register shop owner's Data*/
-    private void registerUser() {
-        File shop_cover_photo = null;
-        byte[] imgbyte = null;
-        Retrofit retrofit;
-        UserRegister user_data;
-        MultipartBody.Part fileToUpload = null;
-        user_data = new UserRegister();
-        if (mImageCaptureUri != null) {
-            try {
-
-
-                String filepath = mImageCaptureUri.getPath();
-                shop_cover_photo = new File(filepath);
-                RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), shop_cover_photo);
-                fileToUpload = MultipartBody.Part.createFormData("file", shop_cover_photo.getName(), mFile);
-                RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
-
-            } catch (Exception e) {
-            }
-        }
-
-
-        String name = etName.getText().toString();
-        user_data.setOwner_name(etName.getText().toString());
-        user_data.setMob_no(etContactNumber.getText().toString());
-        user_data.setOwner_email(etEmail.getText().toString());
-        user_data.setPassword(etPassword.getText().toString());
-        user_data.setDate_of_birth(etDate.getText().toString());
-        user_data.setImage(fileToUpload);
-        user_data.setDevice_token("");
-        retrofit = APIClient.getClient();
-        RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<UserRegister> user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getImage(), user_data.getPassword(), "");
-        user.enqueue(new retrofit2.Callback<UserRegister>() {
-            @Override
-            public void onResponse(Call<UserRegister> call, retrofit2.Response<UserRegister> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserRegister> call, Throwable t) {
-
             }
         });
     }
@@ -178,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
-                    registerUser();//calling register method for web services
+                    //registerUser();//calling register method for web services
                     // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
 
                     //Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
@@ -204,6 +159,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
                     //cameraIntent();
+
+
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
@@ -316,7 +273,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void validation() {
-        etName.addTextChangedListener(new TextWatcher() {
+       /* etName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isName(etName, true);
             }
@@ -359,7 +316,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-        });
+        });*/
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.hasText(etPassword);

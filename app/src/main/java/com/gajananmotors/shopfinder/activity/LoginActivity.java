@@ -48,10 +48,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -82,6 +80,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_bottom);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         login = findViewById(R.id.login_button);
         login.setReadPermissions("public_profile email");
 
-        etUserName.addTextChangedListener(new TextWatcher() {
+        /*etUserName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isPhoneNumber(etUserName, true);
             }
@@ -134,7 +134,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-        login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+     /*   ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
+            @Override
+            public void onCountrySelected() {
+                countryCodeAndroid = ccp.getSelectedCountryCode();
+                Log.d("Country Code", countryCodeAndroid);
+            }
+        });
+     */   login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 

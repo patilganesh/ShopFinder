@@ -56,7 +56,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
-
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);

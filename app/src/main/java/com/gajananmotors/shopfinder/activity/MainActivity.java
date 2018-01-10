@@ -2,7 +2,6 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -19,17 +18,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
-/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -37,9 +32,9 @@ import com.gajananmotors.shopfinder.model.ShopsList;
 
 import java.util.ArrayList;
 
-import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
-import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
+
+/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -50,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public android.support.v7.widget.SearchView searchView;
     private ShopsList indivisual_list[] = new ShopsList[6];
     private static int RESPONSE_CODE = 1;
-
-
     public static String[] nameList = {
             "Offers",
             "Hospitals",
@@ -160,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -211,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
 
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -222,9 +217,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
-        }  else if (id == R.id.nav_nearby) {
+        } else if (id == R.id.nav_nearby) {
 
             startActivity(new Intent(MainActivity.this, MapsActivity.class));
+
+        } else if (id == R.id.nav_addpost) {
+
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+        } else if (id == R.id.nav_allposts) {
+
+            startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
+
         } else if (id == R.id.nav_share) {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");

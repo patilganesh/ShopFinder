@@ -1,14 +1,18 @@
 package com.gajananmotors.shopfinder.adapter;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.activity.MainActivity;
-
+import com.gajananmotors.shopfinder.activity.ViewPostActivity;
 import com.gajananmotors.shopfinder.holder.ShopsListHolder;
 import com.gajananmotors.shopfinder.model.ShopsList;
 
@@ -19,9 +23,16 @@ import java.util.ArrayList;
  */
 
 public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
+    Activity activity;
     ArrayList<ShopsList> list = new ArrayList<>();
-    Context context;
-    private String query;
+    private LinearLayout viewPostLayout;
+
+    public ShopsListAdpater(Activity activity,LinearLayout viewPostLayout, ArrayList<ShopsList> shops_list) {
+        this.list = shops_list;
+        this.activity = activity;
+        this.viewPostLayout = viewPostLayout;
+    }
+
 
     public ShopsListAdpater(ArrayList<ShopsList> shops_list) {
         this.list = shops_list;
@@ -42,6 +53,23 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         holder.timing.setText(list.get(position).getTiming());
         holder.type.setText(list.get(position).getType());
         holder.weburl.setText(list.get(position).getWeb_url());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                transition();
+            }
+        });
+
+    }
+
+    private void transition() {
+        Log.d("Allpost", "transition");
+
+        Intent intent = new Intent(activity, ViewPostActivity.class);
+        Pair<View, String> p1 = Pair.create((View) viewPostLayout, "view");
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(activity, p1);
+        activity.startActivity(intent, options.toBundle());
     }
 
     @Override
