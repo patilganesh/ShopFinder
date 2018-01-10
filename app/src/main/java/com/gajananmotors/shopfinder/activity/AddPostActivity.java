@@ -10,15 +10,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,26 +47,22 @@ import java.util.List;
 import java.util.Locale;
 
 public class AddPostActivity extends AppCompatActivity {
-    TextView txtBusinessLocation;
-    int PLACE_PICKER_REQUEST = 1;
-    GoogleApiClient mGoogleApiClient;
-    Place place;
+    private TextView txtBusinessLocation;
+    private int PLACE_PICKER_REQUEST = 1;
+    private GoogleApiClient mGoogleApiClient;
+    private Place place;
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
-
     private static final String TAG = "TedPicker";
     ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
-    EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
+    private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
     private Toolbar toolbar;
-
-    String getImages,state,city, area,strBusinessName,strCategory,strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
-
+    private String getImages, area, city, state, strBusinessName, strCategory, strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String[] catList = {
                 "Offers",
@@ -89,8 +91,24 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessServices = findViewById(R.id.etBusinessServices);
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, catList);
+                android.R.layout.simple_spinner_dropdown_item, catList);
         category.setAdapter(categoryAdapter);
+        category.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str_cat_spinner = category.getText().toString();
+            }
+        });
         subcategory.setAdapter(categoryAdapter);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
@@ -120,7 +138,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
-
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -136,7 +153,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
         strBusinessLocation = etBusinessLocation.getText().toString().trim();
@@ -144,7 +160,6 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
         strBusinessEmail = etBusinessEmail.getText().toString().trim();
-
         confirmdetails();
     }
 
@@ -159,9 +174,9 @@ public class AddPostActivity extends AppCompatActivity {
                 String address1 = place.getName().toString();
                 try {
                     List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                     state = addresses.get(0).getAdminArea().toString();
-                     city = addresses.get(0).getLocality().toString();
-                     area = addresses.get(0).getSubLocality().toString();
+                    state = addresses.get(0).getAdminArea().toString();
+                    city = addresses.get(0).getLocality().toString();
+                    area = addresses.get(0).getSubLocality().toString();
                     Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area, Toast.LENGTH_SHORT).show();
 
                 } catch (IOException e) {
@@ -185,6 +200,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
+
     private void showMedia() {
         mSelectedImagesContainer.removeAllViews();
 
@@ -276,7 +292,5 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
-
     }
-
 }

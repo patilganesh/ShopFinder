@@ -1,4 +1,5 @@
-package  com.gajananmotors.shopfinder.activity;
+package com.gajananmotors.shopfinder.activity;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,16 +9,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,14 +33,19 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOption;
+import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,10 +53,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
-
-
-
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
     private File outPutFile;
@@ -58,14 +71,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String countryCodeAndroid;
     private String pwd, confirmpwd;
     private CircleImageView imgProfile;
-
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -90,6 +102,55 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
+    /*Calling Api and register shop owner's Data*/
+    private void registerUser() {
+        File shop_cover_photo = null;
+        byte[] imgbyte = null;
+        Retrofit retrofit;
+        UserRegister user_data;
+        MultipartBody.Part fileToUpload = null;
+        user_data = new UserRegister();
+        if (mImageCaptureUri != null) {
+            try {
+
+
+                String filepath = mImageCaptureUri.getPath();
+                shop_cover_photo = new File(filepath);
+                RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), shop_cover_photo);
+                fileToUpload = MultipartBody.Part.createFormData("file", shop_cover_photo.getName(), mFile);
+                RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
+
+            } catch (Exception e) {
+            }
+        }
+
+
+        String name = etName.getText().toString();
+        user_data.setOwner_name(etName.getText().toString());
+        user_data.setMob_no(etContactNumber.getText().toString());
+        user_data.setOwner_email(etEmail.getText().toString());
+        user_data.setPassword(etPassword.getText().toString());
+        user_data.setDate_of_birth(etDate.getText().toString());
+        user_data.setImage(fileToUpload);
+        user_data.setDevice_token("");
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<UserRegister> user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getImage(), user_data.getPassword(), "");
+        user.enqueue(new retrofit2.Callback<UserRegister>() {
+            @Override
+            public void onResponse(Call<UserRegister> call, retrofit2.Response<UserRegister> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserRegister> call, Throwable t) {
+
+            }
+        });
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -99,7 +160,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 mYear = c.get(Calendar.YEAR);
                 mMonth = c.get(Calendar.MONTH);
                 mDay = c.get(Calendar.DAY_OF_MONTH);
-
                 // Launch Date Picker Dialog
                 DatePickerDialog dpd = new DatePickerDialog(this,
                         new DatePickerDialog.OnDateSetListener() {
@@ -113,23 +173,22 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         }, mYear, mMonth, mDay);
                 dpd.show();
                 break;
-
             case R.id.btnSubmit:
-
                 if (checkValidation()) {
                     Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
-
+                    registerUser();//calling register method for web services
                     // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
-                    startActivity(new Intent(RegisterActivity.this, AddPostActivity.class));
-                    Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
+
+                    //Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.imgProfile:
                 selectImageOption();
                 break;
-        }}
+        }
+    }
 
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
@@ -145,8 +204,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
                     //cameraIntent();
-
-
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
@@ -182,7 +239,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                         @Override
                         public void onError() {
-
                         }
                     });
 
@@ -194,6 +250,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
     private void CropingIMG() {
         final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -256,7 +313,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
 
 
     private void validation() {
@@ -352,7 +408,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         return ret;
     }
-
 
 
     @SuppressLint("StaticFieldLeak")

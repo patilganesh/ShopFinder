@@ -1,12 +1,17 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +32,11 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.model.LoginUsersList;
+import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -41,6 +51,16 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -164,6 +184,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (checkValidation()) {
+                  /*  Random rn = new Random();
+                    otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
+                    Log.d("otp", "" + otp);
+                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);*/
+                    loginService();//calling Api for Authentication
                     startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                 }
                 break;
@@ -176,8 +201,61 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
+    public void loginService() {
+        /*Retrofit retrofit= APIClient.getClient();
+        RestInterface restInterface=retrofit.create(RestInterface.class);
+        Call<LoginUsersList> users=restInterface.getUsers();
+        users.enqueue(new Callback<LoginUsersList>() {
+            @Override
+            public void onResponse(Call<LoginUsersList> call, Response<LoginUsersList> response) {
+                if(response.isSuccessful())
+                {
+                    LoginUsersList loginUsers=response.body();
+                    ArrayList<UserRegister>userRegisters=loginUsers.getUsers();
+                    Toast.makeText(LoginActivity.this, "Size:"+userRegisters.size(), Toast.LENGTH_SHORT).show();
+                }
+            }
 
-    public void saveData() {
+            @Override
+            public void onFailure(Call<LoginUsersList> call, Throwable t) {
+
+            }
+        });
+*/
+    }
+  /*  @SuppressLint("StaticFieldLeak")
+    public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                String url = null;
+                if (!TextUtils.isEmpty(mobile) && null != otpCode) {
+                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
+                            + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
+                            + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
+                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
+                            + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
+                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
+                            + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
+                            + Constant.SENDER + Constant.AMPERSAND_PARAMETER
+                            + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
+                } else {
+                    Log.d("MessageSender", " sendOTP() : mobile : " + mobile + " otpCode : " + otpCode);
+                }
+                try {
+                    URL obj = new URL(url);
+                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                    con.setRequestMethod("GET");
+                    responseCode = con.getResponseCode();
+                    Log.e("Response Code", responseCode + "  " + url);
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+*/
+
+   /* public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
@@ -212,7 +290,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
         });
-    }
+    }*/
 
     public void RequestData() {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
@@ -258,11 +336,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-
                     }
                 });
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -15,11 +15,12 @@ public class APIClient
 
         if(retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("https://reqres.in")
+                    .baseUrl("http://www.findashop.in/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
-
         }
         return retrofit;
     }
 }
+//index.php?r=customerRegister/createOwner
+//http://www.findashop.in
