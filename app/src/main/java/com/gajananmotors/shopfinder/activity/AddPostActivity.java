@@ -8,25 +8,28 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
@@ -44,25 +47,22 @@ import java.util.List;
 import java.util.Locale;
 
 public class AddPostActivity extends AppCompatActivity {
-    TextView txtBusinessLocation;
-    int PLACE_PICKER_REQUEST = 1;
-    GoogleApiClient mGoogleApiClient;
-    Place place;
+    private TextView txtBusinessLocation;
+    private int PLACE_PICKER_REQUEST = 1;
+    private GoogleApiClient mGoogleApiClient;
+    private Place place;
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
-
     private static final String TAG = "TedPicker";
     ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
+    private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
     private Toolbar toolbar;
-    String getImages;
-
-
+    private String getImages, area, city, state, strBusinessName, strCategory, strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String[] catList = {
                 "Offers",
@@ -82,11 +82,33 @@ public class AddPostActivity extends AppCompatActivity {
                 "Construction",
                 "Finance",
         };
-        category = findViewById(R.id.txtBusinessCategory);
-        subcategory = findViewById(R.id.txtBusinessSubcategory);
+        category = findViewById(R.id.spnBusinessCategory);
+        etBusinessName = findViewById(R.id.etBusinessName);
+        etBusinessLocation = findViewById(R.id.etBusinessLocation);
+        etBusinessMobile = findViewById(R.id.etBusinessMobile);
+        etBusinessEmail = findViewById(R.id.etBusinessEmail);
+        etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
+        etBusinessServices = findViewById(R.id.etBusinessServices);
+        subcategory = findViewById(R.id.spnBusinessSubcategory);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, catList);
+                android.R.layout.simple_spinner_dropdown_item, catList);
         category.setAdapter(categoryAdapter);
+        category.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str_cat_spinner = category.getText().toString();
+            }
+        });
         subcategory.setAdapter(categoryAdapter);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
@@ -98,7 +120,7 @@ public class AddPostActivity extends AppCompatActivity {
                 getImages(new Config());
             }
         });
-        txtBusinessLocation = findViewById(R.id.txtBusinessLocation);
+
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -116,7 +138,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
-
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -132,11 +153,15 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     public void submit(View view) {
+        strBusinessName = etBusinessName.getText().toString().trim();
+        strBusinessLocation = etBusinessLocation.getText().toString().trim();
+        strBusinessMobile = etBusinessMobile.getText().toString().trim();
+        strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
+        strBusinessServices = etBusinessServices.getText().toString().trim();
+        strBusinessEmail = etBusinessEmail.getText().toString().trim();
         confirmdetails();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,13 +170,13 @@ public class AddPostActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 place = PlacePicker.getPlace(data, this);
-                txtBusinessLocation.setText(place.getAddress());
+                etBusinessLocation.setText(place.getAddress());
                 String address1 = place.getName().toString();
                 try {
                     List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    String state = addresses.get(0).getAdminArea().toString();
-                    String city = addresses.get(0).getLocality().toString();
-                    String area = addresses.get(0).getSubLocality().toString();
+                    state = addresses.get(0).getAdminArea().toString();
+                    city = addresses.get(0).getLocality().toString();
+                    area = addresses.get(0).getSubLocality().toString();
                     Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area, Toast.LENGTH_SHORT).show();
 
                 } catch (IOException e) {
@@ -235,28 +260,31 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
 
-        Button btnEdit = confirmDialog.findViewById(R.id.btnEdit);
-        Button btnConfirm = confirmDialog.findViewById(R.id.btnConfirm);
+        TextView tvEdit = confirmDialog.findViewById(R.id.tvEdit);
+        TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
         alert.setView(confirmDialog);
         alert.setCancelable(true);
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
-
+        tvShopName.setText(strBusinessName);
+        tvArea.setText(city + "," + state);
+        tvMobile.setText(strBusinessMobile);
+        tvAddress.setText(strBusinessLocation);
         Glide.with(AddPostActivity.this)
                 .load(getImages)
                 .fitCenter()
                 .centerCrop()
                 .into(imgShopProfile);
-        btnEdit.setOnClickListener(new View.OnClickListener() {
+        tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
                 Toast.makeText(AddPostActivity.this, "Edit Form", Toast.LENGTH_SHORT).show();
             }
         });
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(AddPostActivity.this, "call api", Toast.LENGTH_SHORT).show();
@@ -264,7 +292,5 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
-
     }
-
 }

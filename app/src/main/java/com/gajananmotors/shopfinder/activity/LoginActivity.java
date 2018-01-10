@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
@@ -21,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -32,7 +32,11 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.model.LoginUsersList;
+import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -50,7 +54,13 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -68,13 +78,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton btnSignIn;
     String str;
     private View view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       // getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,17 +96,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        // Set the dimensions of the sign-in button.
+
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setOnClickListener(this);
 
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
-       // Button btnLogin = findViewById(R.id.btnLogin);
-        Button btnLogin=findViewById(R.id.btnLogin);
+
+        Button btnLogin = findViewById(R.id.btnLogin);
         Button btnRegister = findViewById(R.id.btnRegister);
-        //ccp = findViewById(R.id.ccp);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
         callbackManager = CallbackManager.Factory.create();
@@ -124,14 +134,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-     /*   ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
-            @Override
-            public void onCountrySelected() {
-                countryCodeAndroid = ccp.getSelectedCountryCode();
-                Log.d("Country Code", countryCodeAndroid);
-            }
-        });
-     */   login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
@@ -181,10 +184,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (checkValidation()) {
-                    Random rn = new Random();
+                  /*  Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
-                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
+                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);*/
+                    loginService();//calling Api for Authentication
                     startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                 }
                 break;
@@ -196,7 +200,30 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 break;
         }
     }
-    @SuppressLint("StaticFieldLeak")
+
+    public void loginService() {
+        /*Retrofit retrofit= APIClient.getClient();
+        RestInterface restInterface=retrofit.create(RestInterface.class);
+        Call<LoginUsersList> users=restInterface.getUsers();
+        users.enqueue(new Callback<LoginUsersList>() {
+            @Override
+            public void onResponse(Call<LoginUsersList> call, Response<LoginUsersList> response) {
+                if(response.isSuccessful())
+                {
+                    LoginUsersList loginUsers=response.body();
+                    ArrayList<UserRegister>userRegisters=loginUsers.getUsers();
+                    Toast.makeText(LoginActivity.this, "Size:"+userRegisters.size(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginUsersList> call, Throwable t) {
+
+            }
+        });
+*/
+    }
+  /*  @SuppressLint("StaticFieldLeak")
     public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -221,28 +248,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     con.setRequestMethod("GET");
                     responseCode = con.getResponseCode();
                     Log.e("Response Code", responseCode + "  " + url);
-
                 } catch (Exception e) {
-                    Log.d("MessageSender", "sendOTP : " + e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                Log.d("mContext", mContext.getResources().getString(R.string.otp_sent_success));
-                super.onPostExecute(aVoid);
-                if (responseCode == 200) {
-                    saveData();
-                } else {
-                    Toast.makeText(mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
                 }
             }
-            public void startActivity(Intent intent) {
-            }
-        }.execute();
+        }
     }
-    public void saveData() {
+*/
+
+   /* public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
@@ -269,9 +282,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     tvResend.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Random rn = new Random();
-                            otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
-                            // sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);
+
                         }
                     });
 
@@ -279,7 +290,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
         });
-    }
+    }*/
 
     public void RequestData() {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
@@ -302,10 +313,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         request.setParameters(parameters);
         request.executeAsync();
     }
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -316,13 +329,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
+
     private void revokeAccess() {
 
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-
                     }
                 });
     }

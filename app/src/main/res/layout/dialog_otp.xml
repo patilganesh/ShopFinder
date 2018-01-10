@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
+    android:layout_height="match_parent"
     android:layout_margin="@dimen/activity_horizontal_margin"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!--<TextView
-        android:textColor="@android:color/black"
-        android:text="@string/dialog_title_otp"
-        android:layout_width="wrap_content"
-        android:textSize="20sp"
-        android:layout_height="wrap_content" />-->
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       <ImageView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:background="@color/colorBlack"
+           android:src="@drawable/shopfinder1"/>
+   </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
 
     <EditText
         android:id="@+id/editTextOtp"
@@ -43,5 +51,6 @@
         android:text="Resend OTP?"
         android:textColor="@color/colorPrimary"
         android:visibility="visible"/>
+    </LinearLayout>
 
 </LinearLayout>

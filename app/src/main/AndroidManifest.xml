@@ -37,7 +37,10 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".activity.AddPostActivity"
-            android:parentActivityName=".activity.MainActivity" />
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".activity.MainActivity">
+
+        </activity>
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
@@ -62,20 +65,18 @@
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".activity.SplashActivity">
-            <intent-filter>
+           <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.LoginActivity"
-            android:parentActivityName=".activity.MainActivity" />
-        <!--
-            <activity
+        <activity android:name=".activity.LoginActivity" android:configChanges="orientation|screenSize"
+            android:parentActivityName=".activity.MainActivity"/>
+     <!--   <activity
             android:name=".activity.ItemLocation"
-            android:label="@string/title_activity_item_location" />
-        -->
+            android:label="@string/title_activity_item_location" />-->
+
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
@@ -100,13 +101,12 @@
         <activity
             android:name=".activity.ItemDetailsActivity"
             android:parentActivityName=".activity.SubCategory" />
-        <activity android:name=".tedpicker.ImagePickerActivity" />
+        <activity android:name=".tedpicker.ImagePickerActivity"/>
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
 
-        <activity android:name=".activity.SearchActivity"></activity>
     </application>
 
 </manifest>

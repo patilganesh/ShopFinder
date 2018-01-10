@@ -23,7 +23,6 @@ public class SplashActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         final Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.move);
-
         Thread thread = new Thread() {
             public void run() {
                 try {

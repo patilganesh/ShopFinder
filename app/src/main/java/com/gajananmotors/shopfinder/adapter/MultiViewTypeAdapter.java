@@ -115,7 +115,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                         @Override
                         public void onClick(View view) {
 
-                            showDetails();
+                            //showDetails();
                         }
                     });
                     break;
@@ -127,7 +127,7 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                         @Override
                         public void onClick(View view) {
 
-                            showDetails();
+                           // showDetails();
                         }
                     });
                     break;

@@ -10,13 +10,13 @@ import java.util.ArrayList;
  */
 public class LoginUsersList {
     @SerializedName("users")
-    private ArrayList<LoginUser> users=new ArrayList<>();
+    private ArrayList<UserRegister> users = new ArrayList<>();
 
-    public ArrayList<LoginUser> getUsers() {
+    public ArrayList<UserRegister> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<LoginUser> users) {
+    public void setUsers(ArrayList<UserRegister> users) {
         this.users = users;
     }
 }
