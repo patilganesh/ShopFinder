@@ -13,7 +13,18 @@
             android:id="@+id/nav_aboutus"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="About us" />
-
+        <item
+            android:id="@+id/nav_nearby"
+            android:icon="@drawable/ic_map"
+            android:title="Near By" />
+        <item
+            android:id="@+id/nav_addpost"
+            android:icon="@drawable/ic_action_done"
+            android:title="Add Post" />
+        <item
+            android:id="@+id/nav_allposts"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="View Posts" />
     </group>
 
     <item android:title="Communicate">

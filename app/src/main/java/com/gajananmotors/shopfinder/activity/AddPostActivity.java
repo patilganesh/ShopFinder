@@ -12,19 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +29,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
+import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -59,6 +56,7 @@ public class AddPostActivity extends AppCompatActivity {
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
     private Toolbar toolbar;
     private String getImages, area, city, state, strBusinessName, strCategory, strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +136,7 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
+
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -153,6 +152,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
+
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
         strBusinessLocation = etBusinessLocation.getText().toString().trim();
@@ -160,7 +160,9 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
         strBusinessEmail = etBusinessEmail.getText().toString().trim();
-        confirmdetails();
+        if (checkValidation()) {
+            confirmdetails();
+        }
     }
 
     @Override
@@ -293,4 +295,18 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
+
+    private boolean checkValidation() {
+
+        boolean ret = true;
+        if (!Validation.hasText(etBusinessName)) ret = false;
+        if (!Validation.hasText(etBusinessLocation)) ret = false;
+        if (!Validation.isEmailAddress(etBusinessEmail, true)) ret = false;
+        if (!Validation.isPhoneNumber(etBusinessMobile, true)) ret = false;
+        if (!Validation.hasText(category)) ret = false;
+        if (!Validation.hasText(subcategory)) ret = false;
+
+        return ret;
+    }
+
 }
