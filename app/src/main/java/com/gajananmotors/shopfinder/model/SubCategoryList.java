@@ -7,15 +7,13 @@ import java.util.ArrayList;
 /**
  * Created by Ashwin on 1/5/2018.
  */
-
 public class SubCategoryList {
-    @SerializedName("subcategory")
+    @SerializedName("sub_categories")
     private ArrayList<SubCategory> subcategory = new ArrayList<>();
 
     public ArrayList<SubCategory> getSubcategory() {
         return subcategory;
     }
-
     public void setSubcategory(ArrayList<SubCategory> subcategory) {
         this.subcategory = subcategory;
     }

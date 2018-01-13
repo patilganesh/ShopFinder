@@ -11,25 +11,35 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.common.AllCategory;
+import com.gajananmotors.shopfinder.common.StringCallback;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
+import com.gajananmotors.shopfinder.model.*;
+import com.gajananmotors.shopfinder.model.SubCategory;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
-import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,6 +53,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class AddPostActivity extends AppCompatActivity {
     private TextView txtBusinessLocation;
     private int PLACE_PICKER_REQUEST = 1;
@@ -50,36 +65,59 @@ public class AddPostActivity extends AppCompatActivity {
     private Place place;
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
-    ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<Category> category_list = new ArrayList<>();
+    private ArrayList<SubCategory> sub_category_list = new ArrayList<>();
+    private AllCategory allCategory;
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
     private Toolbar toolbar;
     private String getImages, area, city, state, strBusinessName, strCategory, strSubcategory, strBusinessEmail, strBusinessLocation, strBusinessMobile, strBusinessWebUrl, strBusinessServices;
-
+    private String str_cat_spinner, str_subCat_spinner;
+    private int int_cat_id, int_subcat_id;
+    private boolean flag = false;
+    private Retrofit retrofit;
+    private RestInterface restInterface;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String[] catList = {
-                "Offers",
-                "Hospitals",
-                "Medicals",
-                "Cloth Shops",
-                "Mobile Shop",
-                "Computers",
-                "Shoes",
-                "Hotels",
-                "Pizza",
-                "Tours & Travels",
-                "Transports",
-                "Educational",
-                "Business & Jobs",
-                "Home Products",
-                "Construction",
-                "Finance",
+        allCategory = new AllCategory();
+        retrofit = APIClient.getClient();
+        restInterface = retrofit.create(RestInterface.class);
+         /*StringCallback stringCallback = new StringCallback() {
+            @Override
+            public void StringCallback(String s) {
+                if (TextUtils.equals(s,"1")){
+                    for(int i=0;i<category_list.size();i++)
+                        categoryNames.add(category_list.get(i).getName().toString());
+                    category_list.clear();
+                    flag=true;
+                }
+          }
         };
+        category_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
+
+        Call<CategoryList> call = restInterface.getCategoryList();
+        call.enqueue(new Callback<CategoryList>() {
+            ArrayList<Category> categoryArrayList = new ArrayList<>();
+
+            @Override
+            public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
+                if (response.isSuccessful()) {
+                    CategoryList categoryList = response.body();
+                    category_list = categoryList.getCategories();
+                    getCategoryData();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryList> call, Throwable t) {
+
+            }
+        });
         category = findViewById(R.id.spnBusinessCategory);
         etBusinessName = findViewById(R.id.etBusinessName);
         etBusinessLocation = findViewById(R.id.etBusinessLocation);
@@ -88,29 +126,8 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
         etBusinessServices = findViewById(R.id.etBusinessServices);
         subcategory = findViewById(R.id.spnBusinessSubcategory);
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, catList);
-        category.setAdapter(categoryAdapter);
-        category.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String str_cat_spinner = category.getText().toString();
-            }
-        });
-        subcategory.setAdapter(categoryAdapter);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
-
         getImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,12 +135,68 @@ public class AddPostActivity extends AppCompatActivity {
                 getImages(new Config());
             }
         });
-
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+    }
+
+    public void getCategoryData() {
+        ArrayList<String> categoryNames = new ArrayList<>();
+        for (int i = 0; i < category_list.size(); i++) {
+            categoryNames.add(category_list.get(i).getName().toString());
+        }
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, categoryNames);
+        category.setAdapter(categoryAdapter);
+        category.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                str_cat_spinner = category.getText().toString();
+                for (Category cat : category_list) {
+                    if (TextUtils.equals(cat.getName(), str_cat_spinner)) {
+                        int_cat_id = cat.getCategory_id();
+                    }
+                }
+               /* Toast.makeText(AddPostActivity.this, "Selected Category:"+str_cat_spinner, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPostActivity.this, "Selected Index:"+int_cat_id, Toast.LENGTH_SHORT).show();*/
+                Call<SubCategoryList> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
+                sub_cat_list.enqueue(new Callback<SubCategoryList>() {
+                    @Override
+                    public void onResponse(Call<SubCategoryList> call, Response<SubCategoryList> response) {
+                        if (response.isSuccessful()) {
+                            SubCategoryList list = response.body();
+                            sub_category_list = list.getSubcategory();
+                            getSubCategoryData();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SubCategoryList> call, Throwable t) {
+                    }
+                });
+            }
+        });
+        // subcategory.setAdapter(categoryAdapter);
+    }
+
+    public void getSubCategoryData() {
+        ArrayList<String> SubCategoryNames = new ArrayList<>();
+        for (int i = 0; i < sub_category_list.size(); i++) {
+            SubCategoryNames.add(sub_category_list.get(i).getName().toString());
+        }
+        ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, SubCategoryNames);
+        subcategory.setAdapter(subCategoryAdapter);
     }
 
     private void getImages(Config config) {
@@ -136,7 +209,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
-
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -152,7 +224,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
         strBusinessLocation = etBusinessLocation.getText().toString().trim();
@@ -160,11 +231,8 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
         strBusinessEmail = etBusinessEmail.getText().toString().trim();
-        if (checkValidation()) {
-            confirmdetails();
-        }
+        confirmdetails();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -179,7 +247,8 @@ public class AddPostActivity extends AppCompatActivity {
                     state = addresses.get(0).getAdminArea().toString();
                     city = addresses.get(0).getLocality().toString();
                     area = addresses.get(0).getSubLocality().toString();
-                    Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area, Toast.LENGTH_SHORT).show();
+                    String country = addresses.get(0).getCountryName();
+                    // Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area+"\nCountry:"+country, Toast.LENGTH_SHORT).show();
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -202,7 +271,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     private void showMedia() {
         mSelectedImagesContainer.removeAllViews();
 
@@ -249,9 +317,7 @@ public class AddPostActivity extends AppCompatActivity {
             mSelectedImagesContainer.addView(imageHolder);
             thumbnail.setLayoutParams(new FrameLayout.LayoutParams(wdpx, htpx));
         }
-
     }
-
     private void confirmdetails() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
@@ -295,18 +361,4 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
-
-    private boolean checkValidation() {
-
-        boolean ret = true;
-        if (!Validation.hasText(etBusinessName)) ret = false;
-        if (!Validation.hasText(etBusinessLocation)) ret = false;
-        if (!Validation.isEmailAddress(etBusinessEmail, true)) ret = false;
-        if (!Validation.isPhoneNumber(etBusinessMobile, true)) ret = false;
-        if (!Validation.hasText(category)) ret = false;
-        if (!Validation.hasText(subcategory)) ret = false;
-
-        return ret;
-    }
-
 }

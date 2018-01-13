@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public class CategoryList {
-   @SerializedName("Category")
+    @SerializedName("categories")
     ArrayList<Category>categories=new ArrayList<>();
 
     public ArrayList<Category> getCategories() {

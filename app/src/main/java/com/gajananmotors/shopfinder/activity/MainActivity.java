@@ -28,16 +28,24 @@ import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.model.Category;
+import com.gajananmotors.shopfinder.model.CategoryList;
 import com.gajananmotors.shopfinder.model.ShopsList;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 /*import com.arlib.floatingsearchview.FloatingSearchView;*/
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
     private RecyclerView recycler_view_vertical, recyclerView;
     private ArrayList<ShopsList> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
@@ -45,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public android.support.v7.widget.SearchView searchView;
     private ShopsList indivisual_list[] = new ShopsList[6];
     private static int RESPONSE_CODE = 1;
+    private ArrayList<Category> category_list = new ArrayList<>();
+    private ArrayList<String> categoryNames = new ArrayList<>();
+    private ArrayList<String> categoryImages = new ArrayList<>();
+    private Retrofit retrofit;
+    private RestInterface restInterface;
     public static String[] nameList = {
             "Offers",
             "Hospitals",
@@ -94,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
-
+        retrofit = APIClient.getClient();
+        restInterface = retrofit.create(RestInterface.class);
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, PERMISSIONS)) {
@@ -108,6 +122,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
+            }
+        });
+        Call<CategoryList> call = restInterface.getCategoryList();
+        call.enqueue(new Callback<CategoryList>() {
+            @Override
+            public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
+                if (response.isSuccessful()) {
+                    CategoryList categoryList = response.body();
+                    category_list = categoryList.getCategories();
+                    for (Category model : category_list) {
+                        categoryNames.add(model.getName());
+                        categoryImages.add(model.getImage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryList> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Fail to Load Categories", Toast.LENGTH_SHORT).show();
+
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

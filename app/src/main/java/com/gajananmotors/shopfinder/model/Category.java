@@ -7,20 +7,21 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Category {
-    @SerializedName("id")
-    private int id;
+    @SerializedName("category_id")
+    private int category_id;
     @SerializedName("name")
     private String name;
-    @SerializedName("images")
-    private String images;
+    @SerializedName("image")
+    private String image;
+    @SerializedName("status")
+    private String status;
 
-
-    public int getId() {
-        return id;
+    public int getCategory_id() {
+        return category_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCategory_id(int category_id) {
+        this.category_id = category_id;
     }
 
     public String getName() {
@@ -31,12 +32,19 @@ public class Category {
         this.name = name;
     }
 
-    public String getImages() {
-        return images;
+    public String getImage() {
+        return image;
     }
 
-    public void setImages(String images) {
-        this.images = images;
+    public void setImage(String image) {
+        this.image = image;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

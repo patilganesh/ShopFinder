@@ -23,23 +23,20 @@ public class UserRegister {
     private String date_of_birth;
     @SerializedName("image")
     private MultipartBody.Part image;
+    @SerializedName("image")
+    private String image1;
     @SerializedName("password")
     private String password;
     @SerializedName("device_token")
     private String device_token;
-
+    @SerializedName("msg")
+    private String msg;
     public String getMsg() {
         return msg;
     }
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    @SerializedName("msg")
-    private String msg;
-
-    public UserRegister() {
     }
 
     public int getOwner_id() {
@@ -52,6 +49,14 @@ public class UserRegister {
 
     public String getOwner_name() {
         return owner_name;
+    }
+
+    public String getImage1() {
+        return image1;
+    }
+
+    public void setImage1(String image1) {
+        this.image1 = image1;
     }
 
     public void setOwner_name(String owner_name) {

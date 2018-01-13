@@ -15,13 +15,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,9 +41,7 @@ import com.gajananmotors.shopfinder.utility.Validation;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,13 +53,9 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
-
-
-
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
     private File outPutFile;
@@ -74,12 +66,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String countryCodeAndroid;
     private String pwd, confirmpwd;
     private CircleImageView imgProfile;
+    private Bitmap bitmap;
 
-private Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imgProfile = findViewById(R.id.imgProfile);
@@ -106,6 +97,57 @@ private Bitmap bitmap;
             }
         });
     }
+
+    /*Calling Api and register shop owner's Data*/
+    private void registerUser() {
+        File shop_cover_photo = null;
+        byte[] imgbyte = null;
+        Retrofit retrofit;
+        UserRegister user_data;
+        MultipartBody.Part fileToUpload = null;
+        user_data = new UserRegister();
+        if (outPutFile != null) {
+            try {
+              /*  String file_Path = mImageCaptureUri.getPath();
+                // String filepath = mImageCaptureUri.getPath();
+                shop_cover_photo = new File(file_Path);*/
+
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
+                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
+                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
+            } catch (Exception e) {
+                Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+        String name = etName.getText().toString();
+        user_data.setOwner_name(etName.getText().toString());
+        user_data.setMob_no(etContactNumber.getText().toString());
+        user_data.setOwner_email(etEmail.getText().toString());
+        user_data.setPassword(etPassword.getText().toString());
+        user_data.setDate_of_birth(etDate.getText().toString());
+        //user_data.setImage(shop_cover_photo);
+        user_data.setDevice_token("");
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<UserRegister> user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), fileToUpload, user_data.getPassword(), "");
+        user.enqueue(new retrofit2.Callback<UserRegister>() {
+            @Override
+            public void onResponse(Call<UserRegister> call, retrofit2.Response<UserRegister> response) {
+                if (response.isSuccessful()) {
+                    UserRegister user = response.body();
+                    Toast.makeText(RegisterActivity.this, "Image:" + user.getImage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserRegister> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
+                Log.e("failure", "onFailure: " + t.toString());
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -133,7 +175,7 @@ private Bitmap bitmap;
                     Random rn = new Random();
                     otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
                     Log.d("otp", "" + otp);
-                    //registerUser();//calling register method for web services
+                    registerUser();//calling register method for web services
                     // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
 
                     //Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
@@ -154,13 +196,11 @@ private Bitmap bitmap;
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Capture Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
-                    mImageCaptureUri = Uri.fromFile(f);
+                    outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
+                    mImageCaptureUri = Uri.fromFile(outPutFile);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
                     //cameraIntent();
-
-
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
@@ -226,7 +266,6 @@ private Bitmap bitmap;
             intent.putExtra("aspectY", 1);
             intent.putExtra("scale", true);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outPutFile));
-
             if (size == 1) {
                 Intent i = new Intent(intent);
                 ResolveInfo res = list.get(0);
@@ -243,7 +282,6 @@ private Bitmap bitmap;
                     co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
                     cropOptions.add(co);
                 }
-
                 CropingOptionAdapter adapter = new CropingOptionAdapter(getApplicationContext(), cropOptions);
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
                 builder.setTitle("Choose Croping App");
@@ -271,9 +309,8 @@ private Bitmap bitmap;
         }
     }
 
-
     private void validation() {
-       /* etName.addTextChangedListener(new TextWatcher() {
+        etName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isName(etName, true);
             }
@@ -316,7 +353,7 @@ private Bitmap bitmap;
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-        });*/
+        });
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.hasText(etPassword);
@@ -352,7 +389,6 @@ private Bitmap bitmap;
             }
         });
     }
-
     private boolean checkValidation() {
 
         boolean ret = true;
@@ -365,8 +401,6 @@ private Bitmap bitmap;
 
         return ret;
     }
-
-
     @SuppressLint("StaticFieldLeak")
     public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
         new AsyncTask<Void, Void, Void>() {
@@ -397,8 +431,6 @@ private Bitmap bitmap;
                     Log.d("MessageSender", "sendOTP : " + e);
                 }
                 return null;
-
-
             }
 
             @Override

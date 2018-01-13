@@ -1,25 +1,17 @@
 package com.gajananmotors.shopfinder.activity;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -35,9 +27,8 @@ import com.facebook.login.widget.LoginButton;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.model.LoginUser;
-import com.gajananmotors.shopfinder.model.LoginUsersList;
 import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
@@ -50,12 +41,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,61 +51,49 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
-
-    CallbackManager callbackManager;
-    LoginButton login;
+    private CallbackManager callbackManager;
+    private LoginButton login;
     private String facebook_id, f_name, m_name, l_name, gender, profile_image, full_name, email_id;
     private EditText etUserName, etPassword;
-    com.hbb20.CountryCodePicker ccp;
+    private com.hbb20.CountryCodePicker ccp;
     private String countryCodeAndroid;
     private static final int RC_SIGN_IN = 1;
     private int success = 0, otp = 0, responseCode = 0;
     private static final String TAG = LoginActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
-    String tvDetails;
+    private String tvDetails;
     private SignInButton btnSignIn;
-    String DeviceToken;
-    private View view;
-    private static final String MyPREFERENCES = "MyPrefs";
-    private SharedPreferences sharedpreferences;
+    private Button btnLogin, btnRegister;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.slide_up, R.anim.slide_bottom);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        DeviceToken=sharedpreferences.getString(Constant.DEVICETOKEN,"");
-        Log.d("token",DeviceToken);
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setOnClickListener(this);
-
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
-
-        Button btnLogin = findViewById(R.id.btnLogin);
-        Button btnRegister = findViewById(R.id.btnRegister);
+        btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
         login.setReadPermissions("public_profile email");
-
-        /*etUserName.addTextChangedListener(new TextWatcher() {
+        etUserName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isPhoneNumber(etUserName, true);
             }
@@ -139,19 +115,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-     /*   ccp.setOnCountryChangeListener(new com.hbb20.CountryCodePicker.OnCountryChangeListener() {
-            @Override
-            public void onCountrySelected() {
-                countryCodeAndroid = ccp.getSelectedCountryCode();
-                Log.d("Country Code", countryCodeAndroid);
-            }
-        });
-     */   login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
                 facebook_id = f_name = m_name = l_name = gender = profile_image = full_name = email_id = "";
-
                 if (AccessToken.getCurrentAccessToken() != null) {
                     RequestData();
                     Profile profile = Profile.getCurrentProfile();
@@ -174,7 +141,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onError(FacebookException exception) {
             }
         });
-
     }
 
     @Override
@@ -184,10 +150,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private boolean checkValidation() {
         boolean ret = true;
-
         if (!Validation.isPhoneNumber(etUserName, true)) ret = false;
         if (!Validation.hasText(etPassword)) ret = false;
-
         return ret;
     }
 
@@ -196,9 +160,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (checkValidation()) {
-                 
-                    loginService();//calling Api for Authentication
-                    startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
+                    ConnectionDetector detector = new ConnectionDetector(this);
+                    if (detector.isConnectingToInternet())
+                        loginService();//calling Api for Authentication
+                    else
+                        Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.btnRegister:
@@ -211,22 +177,113 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void loginService() {
-        Retrofit retrofit= APIClient.getClient();
-        RestInterface restInterface=retrofit.create(RestInterface.class);
-        Call<LoginUser> userList=restInterface.loginUsersList(etUserName.getText().toString(),etPassword.getText().toString(),"device_token");
-        userList.enqueue(new Callback<LoginUser>() {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<LoginUser> loginUser = restInterface.loginUsersList(etUserName.getText().toString(), etPassword.getText().toString(), "device_token");
+        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setLeft(20);
+        // btnLogin.setVisibility(View.GONE);
+        progressBar.setIndeterminate(true);
+        progressBar.setProgress(500);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            progressBar.setMin(0);
+        }
+        progressBar.setMax(100);
+        loginUser.enqueue(new Callback<LoginUser>() {
             @Override
             public void onResponse(Call<LoginUser> call, Response<LoginUser> response) {
-                LoginUser loginUser=response.body();
+                if (response.isSuccessful()) {
+                    LoginUser user = response.body();
+                    String msg = user.getMsg();
+                    String name = user.getOwner_name();
+                    String email = user.getOwner_email();
+                    String mobile = user.getMob_no();
+                    String dob = user.getDate_of_birth();
+                    Toast.makeText(LoginActivity.this, "Name:" + name
+                                    + "\nEmail:" + email + "\nMobile:" + mobile + "\nDob:" + dob
+                            , Toast.LENGTH_LONG).show();
+                    if (user.getResult() == 1)
+                        startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
 
+                    else
+                        Toast.makeText(LoginActivity.this, "Fail to Login:", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
             public void onFailure(Call<LoginUser> call, Throwable t) {
-
+                Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
             }
         });
     }
+  /*  @SuppressLint("StaticFieldLeak")
+    public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                String url = null;
+                if (!TextUtils.isEmpty(mobile) && null != otpCode) {
+                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
+                            + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
+                            + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
+                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
+                            + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
+                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
+                            + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
+                            + Constant.SENDER + Constant.AMPERSAND_PARAMETER
+                            + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
+                } else {
+                    Log.d("MessageSender", " sendOTP() : mobile : " + mobile + " otpCode : " + otpCode);
+                }
+                try {
+                    URL obj = new URL(url);
+                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                    con.setRequestMethod("GET");
+                    responseCode = con.getResponseCode();
+                    Log.e("Response Code", responseCode + "  " + url);
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+*/
+   /* public void saveData() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
+        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+        final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
+        final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("OTP");
+        alert.setView(confirmDialog);
+        alert.setCancelable(false);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                final String otpByUser = editTextConfirmOtp.getText().toString().trim();
+                String otPassword = String.valueOf(otp);
+                if (otpByUser.equals(otp + "")) {
+                    //call api
+                    alertDialog.dismiss();
+                } else {
+
+                    tvResend.setVisibility(View.VISIBLE);
+                    tvResend.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    Toast.makeText(LoginActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }*/
+
     public void RequestData() {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -274,6 +331,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -291,6 +349,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         "\n Given Name :" + acct.getGivenName() +
                         "\n ID :" + acct.getId();
                 Log.e("google result", tvDetails);
+
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
                 // .into(ivProfileImage);
