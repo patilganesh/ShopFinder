@@ -35,12 +35,23 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <service
+            android:name=".helper.FirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".service.FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".activity.AddPostActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activity.MainActivity">
-
-        </activity>
+            android:parentActivityName=".activity.MainActivity" />
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
@@ -65,17 +76,23 @@
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".activity.SplashActivity">
-           <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity" android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activity.MainActivity"/>
-     <!--   <activity
+
+
+        <activity
+            android:name=".activity.LoginActivity"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".activity.MainActivity" />
+        <!--
+            <activity
             android:name=".activity.ItemLocation"
-            android:label="@string/title_activity_item_location" />-->
+            android:label="@string/title_activity_item_location" />
+        -->
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
@@ -94,7 +111,6 @@
             android:name=".activity.SubCategory"
             android:parentActivityName=".activity.MainActivity" />
 
-
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
@@ -102,17 +118,19 @@
         <activity
             android:name=".activity.ItemDetailsActivity"
             android:parentActivityName=".activity.SubCategory" />
-        <activity android:name=".tedpicker.ImagePickerActivity"/>
+        <activity android:name=".tedpicker.ImagePickerActivity" />
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+
         <activity
             android:name=".activity.AllPostsActivity"
             android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.ViewPostActivity"
             android:parentActivityName=".activity.MainActivity" />
+
 
     </application>
 

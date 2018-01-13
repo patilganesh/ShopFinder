@@ -6,7 +6,8 @@ import android.content.SharedPreferences;
 public class Constant{
 
 
-
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
     public static final String NAME = "name";
     public static final String  ADDRESS= "address";
     public static final String MOBILE = "mobile";
@@ -14,8 +15,8 @@ public class Constant{
     public static final String DATEOFBIRTH = "dateofbirth";
     public static final String USER_ID = "userid";
     public static final String USER_PROFILE = "userprofile";
-    private static final String MyPREFERENCES = "MyPrefs";
-    private static SharedPreferences mAppSharedPrefs;
+    public static final String DEVICETOKEN = "devicetoken";
+
 
 
     public static final String PROVIDER_URL = "http//control.c2sms.com/api/sendhttp.php";

@@ -28,6 +28,17 @@ public class UserRegister {
     @SerializedName("device_token")
     private String device_token;
 
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    @SerializedName("msg")
+    private String msg;
+
     public UserRegister() {
     }
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.model.LoginUser;
 import com.gajananmotors.shopfinder.model.LoginUsersList;
 import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
@@ -74,19 +76,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     String tvDetails;
     private SignInButton btnSignIn;
-    String str;
+    String DeviceToken;
     private View view;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_up, R.anim.slide_bottom);
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().hide();
-
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        DeviceToken=sharedpreferences.getString(Constant.DEVICETOKEN,"");
+        Log.d("token",DeviceToken);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -191,10 +196,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (checkValidation()) {
-                  /*  Random rn = new Random();
-                    otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
-                    Log.d("otp", "" + otp);
-                    //sendOTP(etUserName.getText().toString(), otp, LoginActivity.this);*/
+                 
                     loginService();//calling Api for Authentication
                     startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                 }
@@ -209,96 +211,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void loginService() {
-        /*Retrofit retrofit= APIClient.getClient();
+        Retrofit retrofit= APIClient.getClient();
         RestInterface restInterface=retrofit.create(RestInterface.class);
-        Call<LoginUsersList> users=restInterface.getUsers();
-        users.enqueue(new Callback<LoginUsersList>() {
+        Call<LoginUser> userList=restInterface.loginUsersList(etUserName.getText().toString(),etPassword.getText().toString(),"device_token");
+        userList.enqueue(new Callback<LoginUser>() {
             @Override
-            public void onResponse(Call<LoginUsersList> call, Response<LoginUsersList> response) {
-                if(response.isSuccessful())
-                {
-                    LoginUsersList loginUsers=response.body();
-                    ArrayList<UserRegister>userRegisters=loginUsers.getUsers();
-                    Toast.makeText(LoginActivity.this, "Size:"+userRegisters.size(), Toast.LENGTH_SHORT).show();
-                }
+            public void onResponse(Call<LoginUser> call, Response<LoginUser> response) {
+                LoginUser loginUser=response.body();
+
             }
 
             @Override
-            public void onFailure(Call<LoginUsersList> call, Throwable t) {
+            public void onFailure(Call<LoginUser> call, Throwable t) {
 
             }
         });
-*/
     }
-  /*  @SuppressLint("StaticFieldLeak")
-    public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                String url = null;
-                if (!TextUtils.isEmpty(mobile) && null != otpCode) {
-                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
-                            + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
-                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
-                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
-                            + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + Constant.SENDER + Constant.AMPERSAND_PARAMETER
-                            + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
-                } else {
-                    Log.d("MessageSender", " sendOTP() : mobile : " + mobile + " otpCode : " + otpCode);
-                }
-                try {
-                    URL obj = new URL(url);
-                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                    con.setRequestMethod("GET");
-                    responseCode = con.getResponseCode();
-                    Log.e("Response Code", responseCode + "  " + url);
-                } catch (Exception e) {
-                }
-            }
-        }
-    }
-*/
-
-   /* public void saveData() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
-        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-        final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
-        final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("OTP");
-        alert.setView(confirmDialog);
-        alert.setCancelable(false);
-        final AlertDialog alertDialog = alert.create();
-        alertDialog.show();
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                final String otpByUser = editTextConfirmOtp.getText().toString().trim();
-                String otPassword = String.valueOf(otp);
-                if (otpByUser.equals(otp + "")) {
-                    //call api
-                    alertDialog.dismiss();
-                } else {
-
-                    tvResend.setVisibility(View.VISIBLE);
-                    tvResend.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-
-                    Toast.makeText(LoginActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }*/
-
     public void RequestData() {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -363,7 +291,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         "\n Given Name :" + acct.getGivenName() +
                         "\n ID :" + acct.getId();
                 Log.e("google result", tvDetails);
-
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
                 // .into(ivProfileImage);
