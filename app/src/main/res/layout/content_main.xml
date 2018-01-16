@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
-
     <include layout="@layout/toolbar" />
 
     <ScrollView
@@ -25,24 +24,25 @@
                 android:id="@+id/ads"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:background="@drawable/background"
                 android:layout_marginBottom="@dimen/activity_horizontal_left_margin"
                 android:layout_marginLeft="@dimen/activity_horizontal_left_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_left_margin"
-                android:layout_marginTop="10dp" />
-
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background" />
             <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/activity_horizontal_top_margin" />
+                android:id="@+id/recycler_view_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/activity_horizontal_top_margin" />
 
-            <android.support.v7.widget.RecyclerView
+            <!--<android.support.v7.widget.RecyclerView
                 android:id="@+id/rcv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_margin="@dimen/activity_horizontal_left_margin"></android.support.v7.widget.RecyclerView>
+                android:layout_margin="@dimen/activity_horizontal_left_margin"
+                android:visibility="gone">
+
+            </android.support.v7.widget.RecyclerView>-->
         </LinearLayout>
 
     </ScrollView>

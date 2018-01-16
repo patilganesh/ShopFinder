@@ -12,17 +12,21 @@ import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.ItemDetailsActivity;
+import com.gajananmotors.shopfinder.activity.SubCategoryActivity;
+
+import java.util.ArrayList;
 
 /**
  * Created by asus on 29-Nov-17.
  */
-
 public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdapterForSubCategory.MyViewHolder> {
 
-
-    String[] name;
-    Context context;
-    int[] imageId;
+    private ArrayList<String> subCategoryNames = new ArrayList<>();
+    private ArrayList<String> subCategoryImages = new ArrayList<>();
+    private ArrayList<Integer> subCatId = new ArrayList<>();
+    private String[] name;
+    private Context context;
+    private int[] imageId;
 
     public CustomAdapterForSubCategory(Activity subCategory, String[] nameList, int[] imglist) {
         this.name = nameList;
@@ -30,6 +34,13 @@ public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdap
         context = subCategory;
     }
 
+    public CustomAdapterForSubCategory(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, ArrayList<Integer> subCatId) {
+        context = subCategoryActivity;
+        this.subCategoryNames = subCategoryNames;
+        this.subCategoryImages = subCategoryImages;
+        this.subCatId = subCatId;
+
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView text;
@@ -38,14 +49,11 @@ public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdap
 
         public MyViewHolder(View rowView) {
             super(rowView);
-
             text = rowView.findViewById(R.id.txtsubcategory);
             images = rowView.findViewById(R.id.imgsubcategory);
 
         }
     }
-
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -56,9 +64,15 @@ public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.text.setText(name[position]);
-        holder.images.setImageResource(imageId[position]);
-
+        // holder.text.setText(name[position]);
+        holder.text.setText(subCategoryNames.get(position).toString());
+        /*holder.images.setImageResource(imageId[position]);
+        String imagePath= APIClient.getImagePath()+imageList.get(position);
+        Glide.with(context)
+                .load(imagePath)
+                .fitCenter()
+                .centerCrop()
+                .into(holder.images);*/
         holder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +90,7 @@ public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdap
 
     @Override
     public int getItemCount() {
-        return name.length;
+        return subCategoryNames.size();
     }
 
     @Override

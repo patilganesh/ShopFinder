@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by Ashwin on 11/18/2017.
@@ -19,6 +20,9 @@ public class APIClient {
     private APIClient() {
     }
 
+    public static String getImagePath() {
+        return "http://www.findashop.in/images/";
+    }
 
     public static Retrofit getClient() {
 

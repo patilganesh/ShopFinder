@@ -23,7 +23,7 @@ public class UserRegister {
     private String date_of_birth;
     @SerializedName("image")
     private MultipartBody.Part image;
-    @SerializedName("image")
+    @SerializedName("image1")
     private String image1;
     @SerializedName("password")
     private String password;
@@ -31,6 +31,17 @@ public class UserRegister {
     private String device_token;
     @SerializedName("msg")
     private String msg;
+    @SerializedName("result")
+    private int result;
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
+    }
+
     public String getMsg() {
         return msg;
     }

@@ -1,9 +1,7 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -20,28 +18,21 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.helper.CircleImageView;
-import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.Category;
 import com.gajananmotors.shopfinder.model.CategoryList;
 import com.gajananmotors.shopfinder.model.ShopsList;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -52,7 +43,7 @@ import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
-
+/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
@@ -65,11 +56,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Category> category_list = new ArrayList<>();
     private ArrayList<String> categoryNames = new ArrayList<>();
     private ArrayList<String> categoryImages = new ArrayList<>();
+    private ArrayList<Integer> categoryId = new ArrayList<>();
     private Retrofit retrofit;
     private RestInterface restInterface;
-    private static final String MyPREFERENCES = "MyPrefs";
-    private SharedPreferences sharedpreferences;
-
     public static String[] nameList = {
             "Offers",
             "Hospitals",
@@ -111,17 +100,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridView gridAdapter;
     private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
+        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        mLayoutManager_vertical = new GridLayoutManager(this, 3);
+        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
+        recycler_view_vertical.setNestedScrollingEnabled(false);
+        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
+      /*  gridAdapter=new CustomAdapterForVerticalGridView(this,nameList,imglist);
+        recycler_view_vertical.setAdapter(gridAdapter);*/
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, PERMISSIONS)) {
@@ -147,13 +142,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     for (Category model : category_list) {
                         categoryNames.add(model.getName());
                         categoryImages.add(model.getImage());
+                        categoryId.add(model.getCategory_id());
+
                     }
+                    setadapter(categoryNames, categoryImages, categoryId);
+
                 }
             }
 
             @Override
             public void onFailure(Call<CategoryList> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Fail to Load Categories", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -162,39 +161,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        recycler_view_vertical.setNestedScrollingEnabled(false);
-        mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
-
-
         NavigationView navigationView = findViewById(R.id.nav_view);
-
-if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
-    navigationView.removeHeaderView(navigationView.getHeaderView(0));
-   View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-   // navigationView.addHeaderView(headerView);
-    TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
-    TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
-    CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
-
-    tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
-    tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
-    Picasso.with(MainActivity.this)
-            .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
-            .into(user_profile);
-
-
-}
         navigationView.setNavigationItemSelectedListener(this);
-        gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imglist);
-        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
-        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
-        recycler_view_vertical.setAdapter(gridAdapter);
-
-       /* nearby = findViewById(R.id.nearby);
-        nearby.setOnClickListener(this);*/
-        recyclerView = findViewById(R.id.rcv);
+      /* nearby = findViewById(R.id.nearby);
+      nearby.setOnClickListener(this);*/
+        // below code is for feature refernce,please dont delete this code.
+        /*recyclerView = findViewById(R.id.rcv);
         shops_list.add(new ShopsList("Gajana Motors Pvt.Ltd.", "500.00 m", "Vinayak Residencey,near DMart,Baner", "Opens 24 Hours", "http:/www.informedevice.com", "Hotel", "9856237845"));
         shops_list.add(new ShopsList("Aloha Technology Pvt.Ltd.", "400.00 m", "2nd & 3rd Floor, Kumar Crystals, New D P Road, Opposite Converses, Aundh, Baner, Pune", "Opens 9Am-10PM", "http:/www.aloha.com", "IT", "7812345645"));
         shops_list.add(new ShopsList("Xoriant Technology", "200.00 m", "501-502, 5th Floor, Amar Paradigm, Baner Road, Near D-Mart, Baner, Pune", "Opens 9.30Am-6PM", "http:/www.xoriant.com", "IT", "8185868231"));
@@ -207,7 +179,12 @@ if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
+    }
+
+    public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
+        gridAdapter = new CustomAdapterForVerticalGridView(this, arrayList_name, arrayList_image, arrayList_id);
+        recycler_view_vertical.setAdapter(gridAdapter);
     }
 
     @Override
@@ -219,10 +196,8 @@ if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
             super.onBackPressed();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
@@ -235,14 +210,12 @@ if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 if (newText.length() > 0) {
                     recycler_view_vertical.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
                 newText = newText.toLowerCase();
                 search_text = newText;
-
                 ArrayList<ShopsList> suggest_list = new ArrayList<>();
                 for (ShopsList s : shops_list) {
                     if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))

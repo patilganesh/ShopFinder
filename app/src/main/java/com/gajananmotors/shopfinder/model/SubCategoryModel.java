@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Ashwin on 1/5/2018.
  */
-public class SubCategory {
+public class SubCategoryModel {
     @SerializedName("sub_category_id")
     private int sub_category_id;
     @SerializedName("category_id")
