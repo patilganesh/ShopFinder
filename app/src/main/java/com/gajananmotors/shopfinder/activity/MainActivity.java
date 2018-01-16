@@ -1,7 +1,9 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
@@ -30,9 +33,12 @@ import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.helper.CircleImageView;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.Category;
 import com.gajananmotors.shopfinder.model.CategoryList;
 import com.gajananmotors.shopfinder.model.ShopsList;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -59,53 +65,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Integer> categoryId = new ArrayList<>();
     private Retrofit retrofit;
     private RestInterface restInterface;
-    public static String[] nameList = {
-            "Offers",
-            "Hospitals",
-            "Medicals",
-            "Cloth Shops",
-            "Mobile Shop",
-            "Computers",
-            "Shoes",
-            "Hotels",
-            "Pizza",
-            "Tours & Travels",
-            "Transports",
-            "Educational",
-            "Business & Jobs",
-            "Home Products",
-            "Construction",
-            "Finance",
-    };
-    public static int[] imglist = {
-
-            R.drawable.hospital,
-            R.drawable.mobile_shop,
-            R.drawable.hospital,
-            R.drawable.clothshop,
-            R.drawable.mobile_shop,
-            R.drawable.computers,
-            R.drawable.hotel,
-            R.drawable.hospital,
-            R.drawable.specialoffers,
-            R.drawable.hotel,
-            R.drawable.hospital,
-            R.drawable.clothshop,
-            R.drawable.hospital,
-            R.drawable.medical,
-            R.drawable.hospital,
-            R.drawable.mobile_shop
-    };
     private ImageView nearby;
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridView gridAdapter;
     private Toolbar toolbar;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
@@ -146,14 +119,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     }
                     setadapter(categoryNames, categoryImages, categoryId);
-
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryList> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
-
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -163,6 +133,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
+            tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
+            tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
+            Picasso.with(MainActivity.this)
+                    .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .into(user_profile);
+        }
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
         // below code is for feature refernce,please dont delete this code.
