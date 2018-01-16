@@ -3,6 +3,7 @@ package com.gajananmotors.shopfinder.activity;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOption;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -46,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private static final int REQUEST_PERMISSION_SETTING = 101;
     private boolean sentToSettings = false;
     private SharedPreferences permissionStatus;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
 
 
     @Override
@@ -54,8 +58,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+    //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
@@ -65,8 +69,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile = findViewById(R.id.imgProfile);
+        if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
+            etName.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
+            etEmail.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
+            etMobile.setText(sharedpreferences.getString(Constant.MOBILE, ""));
+            etDate.setText(sharedpreferences.getString(Constant.DATE_OF_BIRTH, ""));
+            Picasso.with(ProfileActivity.this)
+                    .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .into(imgProfile);
+        }
         btnUpdate.setOnClickListener(this);
-        etDate.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
     @Override

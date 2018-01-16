@@ -8,14 +8,14 @@ public class Constant{
 
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
-    public static final String NAME = "name";
+    public static final String OWNER_NAME = "owner_name";
     public static final String  ADDRESS= "address";
-    public static final String MOBILE = "mobile";
-    public static final String EMAIL = "email";
-    public static final String DATEOFBIRTH = "dateofbirth";
-    public static final String USER_ID = "userid";
-    public static final String USER_PROFILE = "userprofile";
-    public static final String DEVICETOKEN = "devicetoken";
+    public static final String MOBILE = "mob_no";
+    public static final String OWNWER_EMAIL = "owner_email";
+    public static final String DATE_OF_BIRTH = "date_of_birth";
+    public static final String OWNER_ID = "owner_id";
+    public static final String OWNER_PROFILE = "owner_profile";
+    public static final String DEVICE_TOKEN = "device_token";
 
 
 

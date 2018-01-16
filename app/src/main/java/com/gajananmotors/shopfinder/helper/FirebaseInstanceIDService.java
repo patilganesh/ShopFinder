@@ -22,12 +22,9 @@ public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
 //      setting values to sharedpreferences keys.
-            editor.putString(Constant.DEVICETOKEN, refreshedToken);
+            editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
             editor.apply();
-            // If you want to send messages to this application instance or
-            // manage this apps subscriptions on the server side, send the
-            // Instance ID token to your app server.
-           // sendRegistrationToServer(refreshedToken);
+
         }
 }
 

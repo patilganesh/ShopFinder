@@ -1,6 +1,8 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +30,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.LoginUser;
 import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
@@ -65,7 +68,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton btnSignIn;
     private Button btnLogin, btnRegister;
     private ProgressBar progressBar;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
 
+
+    String  Device_Token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +81,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        Device_Token=sharedpreferences.getString(Constant.DEVICE_TOKEN,"");
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -128,7 +138,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         m_name = profile.getMiddleName();
                         l_name = profile.getLastName();
                         full_name = profile.getName();
-                        profile_image = profile.getProfilePictureUri(400, 400).toString();
+                        profile_image = profile.getProfilePictureUri(50, 50).toString();
+                        Bundle b = new Bundle();
+                        b.putString("owner_name",profile.getName());
+                        b.putString("owner_profile", profile_image);
+                        Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
+                        in.putExtras(b);
+                        startActivity(in);
                     }
                 }
             }
@@ -199,8 +215,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String email = user.getOwner_email();
                     String mobile = user.getMob_no();
                     String dob = user.getDate_of_birth();
+                    String image = user.getImage();
+                    int owner_id = user.getOwner_id();
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+//      setting values to sharedpreferences keys.
+                    editor.putInt(Constant.OWNER_ID, owner_id);
+                    editor.putString(Constant.OWNER_NAME, name);
+                    editor.putString(Constant.OWNWER_EMAIL, email);
+                    editor.putString(Constant.DATE_OF_BIRTH, dob);
+                    editor.putString(Constant.MOBILE, mobile);
+                    editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/"+image);
+                    editor.apply();
                     Toast.makeText(LoginActivity.this, "Name:" + name
-                                    + "\nEmail:" + email + "\nMobile:" + mobile + "\nDob:" + dob
+                                    + "\nEmail:" + email + "\nMobile:" + mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/"+image
                             , Toast.LENGTH_LONG).show();
                     if (user.getResult() == 1)
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
@@ -216,37 +243,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
-  /*  @SuppressLint("StaticFieldLeak")
-    public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                String url = null;
-                if (!TextUtils.isEmpty(mobile) && null != otpCode) {
-                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
-                            + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
-                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
-                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
-                            + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + Constant.SENDER + Constant.AMPERSAND_PARAMETER
-                            + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
-                } else {
-                    Log.d("MessageSender", " sendOTP() : mobile : " + mobile + " otpCode : " + otpCode);
-                }
-                try {
-                    URL obj = new URL(url);
-                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                    con.setRequestMethod("GET");
-                    responseCode = con.getResponseCode();
-                    Log.e("Response Code", responseCode + "  " + url);
-                } catch (Exception e) {
-                }
-            }
-        }
-    }
-*/
    /* public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
@@ -294,7 +290,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     if (json != null) {
                         String text = "<b>Name:</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
+
+
+
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -304,6 +304,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         parameters.putString("fields", "id,name,link,email,picture");
         request.setParameters(parameters);
         request.executeAsync();
+
+
     }
 
     private void signIn() {
@@ -349,10 +351,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         "\n Given Name :" + acct.getGivenName() +
                         "\n ID :" + acct.getId();
                 Log.e("google result", tvDetails);
-
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
-                // .into(ivProfileImage);
+
+                Bundle b = new Bundle();
+                b.putString("owner_name", acct.getDisplayName());
+                b.putString("owner_email", acct.getEmail());
+                b.putString("owner_profile", acct.getPhotoUrl().toString());
+                Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
+                in.putExtras(b);
+                startActivity(in);
             }
         }
     }

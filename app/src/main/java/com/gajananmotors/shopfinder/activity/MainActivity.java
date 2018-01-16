@@ -1,7 +1,9 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -18,21 +20,28 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridView;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.helper.CircleImageView;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.Category;
 import com.gajananmotors.shopfinder.model.CategoryList;
 import com.gajananmotors.shopfinder.model.ShopsList;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -43,7 +52,7 @@ import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
-/*import com.arlib.floatingsearchview.FloatingSearchView;*/
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
@@ -58,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> categoryImages = new ArrayList<>();
     private Retrofit retrofit;
     private RestInterface restInterface;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
+
     public static String[] nameList = {
             "Offers",
             "Hospitals",
@@ -106,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
@@ -153,7 +166,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recycler_view_vertical.setNestedScrollingEnabled(false);
         mLayoutManager_vertical = new GridLayoutManager(this, 3);
         mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
+
+
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
+    navigationView.removeHeaderView(navigationView.getHeaderView(0));
+   View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+   // navigationView.addHeaderView(headerView);
+    TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+    TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+    CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
+
+    tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
+    tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
+    Picasso.with(MainActivity.this)
+            .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+            .into(user_profile);
+
+
+}
         navigationView.setNavigationItemSelectedListener(this);
         gridAdapter = new CustomAdapterForVerticalGridView(this, nameList, imglist);
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);

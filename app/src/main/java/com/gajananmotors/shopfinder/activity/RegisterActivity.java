@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -67,12 +68,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String pwd, confirmpwd;
     private CircleImageView imgProfile;
     private Bitmap bitmap;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -82,6 +89,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         Button btnSubmit = findViewById(R.id.btnSubmit);
+
+
+        Intent in = getIntent();
+        Bundle b = in.getExtras();
+        if(b.getString("owner_email").isEmpty()) {
+            String name = b.getString("owner_name");
+            String profile = b.getString("owner_profile");
+            etName.setText(name);
+            Picasso.with(RegisterActivity.this)
+                    .load(profile)
+                    .into(imgProfile);
+        }else{String name = b.getString("owner_name");
+            String email = b.getString("owner_email");
+            String profile = b.getString("owner_profile");
+            etName.setText(name);
+            etEmail.setText(email);
+            Picasso.with(RegisterActivity.this)
+                    .load(profile)
+                    .into(imgProfile);}
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
@@ -135,7 +161,22 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<UserRegister> call, retrofit2.Response<UserRegister> response) {
                 if (response.isSuccessful()) {
                     UserRegister user = response.body();
-                    Toast.makeText(RegisterActivity.this, "Image:" + user.getImage(), Toast.LENGTH_LONG).show();
+                    String msg = user.getMsg();
+                    String name = user.getOwner_name();
+                    String email = user.getOwner_email();
+                    String mobile = user.getMob_no();
+                    String dob = user.getDate_of_birth();
+                    String image = user.getImage1();
+                    int owner_id = user.getOwner_id();
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+//      setting values to sharedpreferences keys.
+                    editor.putInt(Constant.OWNER_ID, owner_id);
+                    editor.putString(Constant.OWNER_NAME, name);
+                    editor.putString(Constant.OWNWER_EMAIL, email);
+                    editor.putString(Constant.DATE_OF_BIRTH, dob);
+                    editor.putString(Constant.MOBILE, mobile);
+                    editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/"+image);
+                    editor.apply();
                     Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
                 }
             }
@@ -164,21 +205,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // Display Selected date in EditText
-                                etDate.setText(dayOfMonth + "/"
-                                        + (monthOfYear + 1) + "/" + year);
+                                etDate.setText( year+ "/"
+                                        + (monthOfYear + 1) + "/" + dayOfMonth);
                             }
                         }, mYear, mMonth, mDay);
                 dpd.show();
                 break;
             case R.id.btnSubmit:
                 if (checkValidation()) {
-                    Random rn = new Random();
-                    otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
-                    Log.d("otp", "" + otp);
-                    registerUser();//calling register method for web services
-                    // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
 
-                    //Toast.makeText(getApplicationContext(), "Thank you", Toast.LENGTH_SHORT).show();
+                    registerUser();//calling register method for web services
+
                 }
                 break;
             case R.id.imgProfile:
@@ -401,55 +438,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         return ret;
     }
-    @SuppressLint("StaticFieldLeak")
-    public void sendOTP(final String mobile, final Integer otpCode, final Context mContext) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                String url = null;
-                if (!TextUtils.isEmpty(mobile) && null != otpCode) {
-                    url = Constant.PROVIDER_URL + Constant.QUESTION_PARAMETER
-                            + Constant.AUTHKEY_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + Constant.AUTHKEY + Constant.AMPERSAND_PARAMETER
-                            + Constant.MOBILES_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + mobile + Constant.AMPERSAND_PARAMETER + Constant.MESSAGE_PARAMETER
-                            + Constant.EQUALS_TO_PARAMETER + otpCode + Constant.MESSAGE
-                            + Constant.AMPERSAND_PARAMETER + Constant.SENDER_PARAMETER + Constant.EQUALS_TO_PARAMETER
-                            + Constant.SENDER + Constant.AMPERSAND_PARAMETER
-                            + Constant.ROUTE_PARAMETER + Constant.EQUALS_TO_PARAMETER + Constant.ROUTE;
-                } else {
-                    Log.d("MessageSender", " sendOTP() : mobile : " + mobile + " otpCode : " + otpCode);
-                }
-                try {
-                    URL obj = new URL(url);
-                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                    con.setRequestMethod("GET");
-                    responseCode = con.getResponseCode();
-                    Log.e("Response Code", responseCode + "  " + url);
-
-                } catch (Exception e) {
-                    Log.d("MessageSender", "sendOTP : " + e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                Log.d("mContext", mContext.getResources().getString(R.string.otp_sent_success));
-                super.onPostExecute(aVoid);
-                if (responseCode == 200) {
-                    saveData();
-                } else {
-                    Toast.makeText(mContext, "Sending data Fail please try again...", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            public void startActivity(Intent intent) {
-            }
-        }.execute();
-    }
 
 
+/*
     public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
@@ -488,6 +479,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+*/
 
 
 }
