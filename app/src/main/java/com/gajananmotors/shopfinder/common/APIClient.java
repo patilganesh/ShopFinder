@@ -35,6 +35,7 @@ public class APIClient {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.findashop.in/")
+                    .addConverterFactory(ScalarsConverterFactory.create())
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();

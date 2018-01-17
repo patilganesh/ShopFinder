@@ -29,17 +29,18 @@ public interface RestInterface {
             @Part("password") String password,
             @Part("device_token") String device_token
     );
-    Call<UserRegister> userRegister(
-            @Part("owner_name") String owner_name,
-            @Part("owner_email") String owner_email,
-            @Part("mob_no") String mob_no,
-            @Part("date_of_birth") String date_of_birth,
-            @Part("image1") String image1,
-            @Part("password") String password,
-            @Part("device_token") String device_token,
-            @Part("msg") String msg,
-            @Part("result") int result
-    );
+
+    /* Call<UserRegister> userRegister(
+             @Part("owner_name") String owner_name,
+             @Part("owner_email") String owner_email,
+             @Part("mob_no") String mob_no,
+             @Part("date_of_birth") String date_of_birth,
+             @Part("image1") String image1,
+             @Part("password") String password,
+             @Part("device_token") String device_token,
+             @Part("msg") String msg,
+             @Part("result") int result
+     );*/
     @FormUrlEncoded
     @POST("index.php/mobile_api/login_user")
     Call<LoginUser> loginUsersList(
@@ -47,25 +48,24 @@ public interface RestInterface {
             @Field("password") String password,
             @Field("device_token") String device_token
     );
-    Call<LoginUser> loginUsersList(
-            @Field("mob_no") String mob_no,
-            @Field("password") String password,
-            @Field("device_token") String device_token,
-            @Field("msg") String msg,
-            @Field("owner_name") String owner_name,
-            @Field("owner_email") String owner_email,
-            @Field("otp") String otp,
-            @Field("image") String image
-    );
+
+    /* Call<LoginUser> loginUsersList(
+             @Field("mob_no") String mob_no,
+             @Field("password") String password,
+             @Field("device_token") String device_token,
+             @Field("msg") String msg,
+             @Field("owner_name") String owner_name,
+             @Field("owner_email") String owner_email,
+             @Field("otp") String otp,
+             @Field("image") String image
+     );*/
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryList> getCategoryList();
-
     @FormUrlEncoded
     @POST("index.php/mobile_api/get_sub_categories")
     Call<SubCategoryList> getSubCategoryList(
             @Field("category_id") int category_id
     );
-
     Call<SubCategoryList> getSubCategoryList(
             @Field("category_id") int category_id,
             @Field("sub_category_id") int sub_category_id,
