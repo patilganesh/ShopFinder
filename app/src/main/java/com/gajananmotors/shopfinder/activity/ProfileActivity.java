@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
     //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             etDate.setText(sharedpreferences.getString(Constant.DATE_OF_BIRTH, ""));
             Picasso.with(ProfileActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .fit()
                     .into(imgProfile);
         }
         btnUpdate.setOnClickListener(this);

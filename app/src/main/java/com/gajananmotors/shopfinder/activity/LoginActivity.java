@@ -68,7 +68,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton btnSignIn;
     private Button btnLogin, btnRegister;
     private ProgressBar progressBar;
-    private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
 
 
@@ -81,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         Device_Token=sharedpreferences.getString(Constant.DEVICE_TOKEN,"");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

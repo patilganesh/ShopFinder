@@ -68,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String pwd, confirmpwd;
     private CircleImageView imgProfile;
     private Bitmap bitmap;
-    private static final String MyPREFERENCES = "MyPrefs";
+
     private SharedPreferences sharedpreferences;
 
     @Override
@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
@@ -93,21 +93,26 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Intent in = getIntent();
         Bundle b = in.getExtras();
-        if(b.getString("owner_email").isEmpty()) {
-            String name = b.getString("owner_name");
-            String profile = b.getString("owner_profile");
-            etName.setText(name);
-            Picasso.with(RegisterActivity.this)
-                    .load(profile)
-                    .into(imgProfile);
-        }else{String name = b.getString("owner_name");
-            String email = b.getString("owner_email");
-            String profile = b.getString("owner_profile");
-            etName.setText(name);
-            etEmail.setText(email);
-            Picasso.with(RegisterActivity.this)
-                    .load(profile)
-                    .into(imgProfile);}
+        if(!b.isEmpty()) {
+            if (b.getString("owner_email").isEmpty()) {
+                String name = b.getString("owner_name");
+                String profile = b.getString("owner_profile");
+                etName.setText(name);
+                Picasso.with(RegisterActivity.this)
+                        .load(profile)
+                        .fit()
+                        .into(imgProfile);
+            } else {
+                String name = b.getString("owner_name");
+                String email = b.getString("owner_email");
+                String profile = b.getString("owner_profile");
+                etName.setText(name);
+                etEmail.setText(email);
+                Picasso.with(RegisterActivity.this)
+                        .load(profile)
+                        .into(imgProfile);
+            }
+        }
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");

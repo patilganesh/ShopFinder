@@ -13,19 +13,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,13 +29,14 @@ import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.common.AllCategory;
-import com.gajananmotors.shopfinder.common.StringCallback;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
-import com.gajananmotors.shopfinder.model.*;
-import com.gajananmotors.shopfinder.model.SubCategory;
+import com.gajananmotors.shopfinder.model.Category;
+import com.gajananmotors.shopfinder.model.CategoryList;
+import com.gajananmotors.shopfinder.model.SubCategoryList;
+import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
+import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,8 +64,8 @@ public class AddPostActivity extends AppCompatActivity {
     private static final String TAG = "TedPicker";
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ArrayList<Category> category_list = new ArrayList<>();
-    private ArrayList<SubCategory> sub_category_list = new ArrayList<>();
-    private AllCategory allCategory;
+    private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
+    //private AllCategory allCategory;
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices;
@@ -84,7 +81,7 @@ public class AddPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        allCategory = new AllCategory();
+        //allCategory = new AllCategory();
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
          /*StringCallback stringCallback = new StringCallback() {
@@ -96,14 +93,12 @@ public class AddPostActivity extends AppCompatActivity {
                     category_list.clear();
                     flag=true;
                 }
-          }
+            }
         };
         category_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
-
         Call<CategoryList> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryList>() {
             ArrayList<Category> categoryArrayList = new ArrayList<>();
-
             @Override
             public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
                 if (response.isSuccessful()) {
@@ -112,7 +107,6 @@ public class AddPostActivity extends AppCompatActivity {
                     getCategoryData();
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryList> call, Throwable t) {
 
@@ -141,7 +135,6 @@ public class AddPostActivity extends AppCompatActivity {
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
     }
-
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_list.size(); i++) {
@@ -175,7 +168,7 @@ public class AddPostActivity extends AppCompatActivity {
                     public void onResponse(Call<SubCategoryList> call, Response<SubCategoryList> response) {
                         if (response.isSuccessful()) {
                             SubCategoryList list = response.body();
-                            sub_category_list = list.getSubcategory();
+                          sub_category_list=list.getSubcategory();
                             getSubCategoryData();
                         }
                     }
@@ -201,9 +194,7 @@ public class AddPostActivity extends AppCompatActivity {
 
     private void getImages(Config config) {
         ImagePickerActivity.setConfig(config);
-
         Intent intent = new Intent(this, ImagePickerActivity.class);
-
         if (image_uris != null) {
             intent.putParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS, image_uris);
         }
@@ -231,7 +222,8 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
         strBusinessEmail = etBusinessEmail.getText().toString().trim();
-        confirmdetails();
+        if (checkValidation())
+            confirmdetails();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,7 +241,6 @@ public class AddPostActivity extends AppCompatActivity {
                     area = addresses.get(0).getSubLocality().toString();
                     String country = addresses.get(0).getCountryName();
                     // Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area+"\nCountry:"+country, Toast.LENGTH_SHORT).show();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -327,7 +318,6 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
-
         TextView tvEdit = confirmDialog.findViewById(R.id.tvEdit);
         TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -360,5 +350,20 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private boolean checkValidation() {
+
+        boolean ret = true;
+        if (!Validation.hasText(etBusinessName)) ret = false;
+        if (!Validation.hasText(etBusinessLocation)) ret = false;
+        if (!Validation.isEmailAddress(etBusinessEmail, true)) ret = false;
+        if (!Validation.isPhoneNumber(etBusinessMobile, true)) ret = false;
+        if (!Validation.hasText(category)) ret = false;
+        if (!Validation.hasText(subcategory)) ret = false;
+        if(mSelectedImagesContainer.equals("")){
+            Toast.makeText(getApplicationContext(),"Click Select Photo button",Toast.LENGTH_SHORT).show();
+        }
+
+        return ret;
     }
 }

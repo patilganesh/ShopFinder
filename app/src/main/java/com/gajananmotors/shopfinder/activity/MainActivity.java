@@ -20,6 +20,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,15 +70,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridView gridAdapter;
     private Toolbar toolbar;
-    private static final String MyPREFERENCES = "MyPrefs";
+
     private SharedPreferences sharedpreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+
 
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
@@ -105,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i);
             }
         });
+       /* if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            fab.setVisibility(Gone);
+        }*/
         Call<CategoryList> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryList>() {
             @Override
@@ -121,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     setadapter(categoryNames, categoryImages, categoryId);
                 }
             }
+
             @Override
             public void onFailure(Call<CategoryList> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
@@ -143,7 +150,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
             Picasso.with(MainActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .fit()
                     .into(user_profile);
+
         }
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
@@ -178,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -243,8 +253,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(MainActivity.this, MapsActivity.class));
 
         } else if (id == R.id.nav_addpost) {
-
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            } else {
+                startActivity(new Intent(MainActivity.this, AddPostActivity.class));
+            }
 
         } else if (id == R.id.nav_allposts) {
 
@@ -257,6 +270,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
             startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
+        } else if (id == R.id.nav_logout) {
+            sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.apply();
+            Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
+            startActivity(new Intent(this, MainActivity.class));
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
