@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -48,9 +47,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
-
 /*import com.arlib.floatingsearchview.FloatingSearchView;*/
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
     private ArrayList<ShopsList> shops_list = new ArrayList<>();
@@ -78,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
+       /* SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.clear();
+        editor.apply();*/
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
@@ -116,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         categoryNames.add(model.getName());
                         categoryImages.add(model.getImage());
                         categoryId.add(model.getCategory_id());
-
                     }
                     setadapter(categoryNames, categoryImages, categoryId);
                 }
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+        /*if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             navigationView.removeHeaderView(navigationView.getHeaderView(0));
             View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Picasso.with(MainActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .into(user_profile);
-        }
+        }*/
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
         // below code is for feature refernce,please dont delete this code.
@@ -163,12 +161,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
     }
-
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
         gridAdapter = new CustomAdapterForVerticalGridView(this, arrayList_name, arrayList_image, arrayList_id);
         recycler_view_vertical.setAdapter(gridAdapter);
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -214,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -224,9 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
         }*/
         return super.onOptionsItemSelected(item);
-
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

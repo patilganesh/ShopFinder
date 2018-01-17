@@ -21,8 +21,6 @@ public class UserRegister {
     private String mob_no;
     @SerializedName("date_of_birth")
     private String date_of_birth;
-    @SerializedName("image")
-    private MultipartBody.Part image;
     @SerializedName("image1")
     private String image1;
     @SerializedName("password")
@@ -96,14 +94,6 @@ public class UserRegister {
 
     public void setDate_of_birth(String date_of_birth) {
         this.date_of_birth = date_of_birth;
-    }
-
-    public MultipartBody.Part getImage() {
-        return image;
-    }
-
-    public void setImage(MultipartBody.Part image) {
-        this.image = image;
     }
 
     public String getPassword() {

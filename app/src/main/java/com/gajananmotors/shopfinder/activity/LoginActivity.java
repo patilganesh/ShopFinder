@@ -70,8 +70,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private ProgressBar progressBar;
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
-
-
     String  Device_Token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +80,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        Device_Token=sharedpreferences.getString(Constant.DEVICE_TOKEN,"");
-
+        Device_Token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "0000000");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -107,10 +104,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void afterTextChanged(Editable s) {
                 Validation.isPhoneNumber(etUserName, true);
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
@@ -140,58 +135,59 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         full_name = profile.getName();
                         profile_image = profile.getProfilePictureUri(50, 50).toString();
                         Bundle b = new Bundle();
-                        b.putString("owner_name",profile.getName());
-                        b.putString("owner_profile", profile_image);
-                        Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
-                        in.putExtras(b);
-                        startActivity(in);
+                        if (b != null) {
+                            b.putString("owner_name", profile.getName());
+                            b.putString("owner_profile", profile_image);
+                            Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
+                            in.putExtras(b);
+                            startActivity(in);
+                        }
                     }
                 }
             }
-
             @Override
             public void onCancel() {
             }
-
             @Override
             public void onError(FacebookException exception) {
             }
         });
     }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection Failed : " + connectionResult);
     }
-
     private boolean checkValidation() {
         boolean ret = true;
         if (!Validation.isPhoneNumber(etUserName, true)) ret = false;
         if (!Validation.hasText(etPassword)) ret = false;
         return ret;
     }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnLogin:
-                if (checkValidation()) {
+                if (etUserName.getText().toString().equals("") || etPassword.getText().toString().equals("")) {
+                    Toast.makeText(this, "Username or Password cant be blank! ", Toast.LENGTH_SHORT).show();
+                } else {
                     ConnectionDetector detector = new ConnectionDetector(this);
                     if (detector.isConnectingToInternet())
                         loginService();//calling Api for Authentication
-                    else
+                    else {
                         Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case R.id.btnRegister:
+                //  Toast.makeText(this, "Clicked....", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                finish();
                 break;
             case R.id.btnSignIn:
                 signIn();
                 break;
         }
     }
-
     public void loginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -217,26 +213,30 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String dob = user.getDate_of_birth();
                     String image = user.getImage();
                     int owner_id = user.getOwner_id();
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-//      setting values to sharedpreferences keys.
-                    editor.putInt(Constant.OWNER_ID, owner_id);
-                    editor.putString(Constant.OWNER_NAME, name);
-                    editor.putString(Constant.OWNWER_EMAIL, email);
-                    editor.putString(Constant.DATE_OF_BIRTH, dob);
-                    editor.putString(Constant.MOBILE, mobile);
-                    editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/"+image);
-                    editor.apply();
-                    Toast.makeText(LoginActivity.this, "Name:" + name
-                                    + "\nEmail:" + email + "\nMobile:" + mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/"+image
-                            , Toast.LENGTH_LONG).show();
-                    if (user.getResult() == 1)
+                    if (user.getResult() == 1) {
+                        Toast.makeText(LoginActivity.this, "Name:" + name
+                                        + "\nEmail:" + email + "\nMobile:" + mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + image
+                                , Toast.LENGTH_LONG).show();
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        // setting values to sharedpreferences keys.
+                        editor.putInt(Constant.OWNER_ID, owner_id);
+                        editor.putString(Constant.OWNER_NAME, name);
+                        editor.putString(Constant.OWNWER_EMAIL, email);
+                        editor.putString(Constant.DATE_OF_BIRTH, dob);
+                        editor.putString(Constant.MOBILE, mobile);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
+                        editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
-
-                    else
+                        finish();
+                        progressBar.setVisibility(View.GONE);
+                    } else {
                         Toast.makeText(LoginActivity.this, "Fail to Login:", Toast.LENGTH_LONG).show();
+                        etUserName.setText("");
+                        etPassword.setText("");
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
             }
-
             @Override
             public void onFailure(Call<LoginUser> call, Throwable t) {
                 Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
@@ -279,7 +279,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }*/
-
     public void RequestData() {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -304,15 +303,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         parameters.putString("fields", "id,name,link,email,picture");
         request.setParameters(parameters);
         request.executeAsync();
-
-
     }
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -353,7 +348,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Log.e("google result", tvDetails);
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
-
                 Bundle b = new Bundle();
                 b.putString("owner_name", acct.getDisplayName());
                 b.putString("owner_email", acct.getEmail());
