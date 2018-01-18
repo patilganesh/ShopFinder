@@ -56,7 +56,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private CircleImageView imgProfile;
     private Uri mImageCaptureUri;
     private int mYear, mMonth, mDay;
-    Button btnCalendar;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
     private static final int REQUEST_PERMISSION_SETTING = 101;
     private boolean sentToSettings = false;
@@ -64,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
-    private Button btnEdit,btn_delete;
+    private Button btnEdit, btn_delete;
     ImageView edtProfile;
    /* private String name,email,dob,mobile,image;
     private int owner_id;
@@ -82,10 +81,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
         etDate = findViewById(R.id.etDate);
-        edtProfile=findViewById(R.id.fab_iv_edit);
+        edtProfile = findViewById(R.id.fab_iv_edit);
         btnEdit = findViewById(R.id.btnEdit);
         btn_delete = findViewById(R.id.btn_delete);
         btnEdit.setOnClickListener(this);
+        etDate.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         Button btnEdit = findViewById(R.id.btnEdit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -110,39 +110,73 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnEdit:
-                RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
-                deleteLayout.setVisibility(View.GONE);
-                com.hbb20.CountryCodePicker ccp_setting=findViewById(R.id.ccp_setting);
-                ccp_setting.setVisibility(View.VISIBLE);
-                edtProfile.setVisibility(View.VISIBLE);
-                btnEdit.setText("UPDATE");
+                if (btnEdit.getText().toString().equals("Edit")) {
+                    RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
+                    deleteLayout.setVisibility(View.GONE);
+                    etName.setFocusable(true);
+                    etName.setEnabled(true);
+                    etName.setFocusableInTouchMode(true);
+                    etName.setClickable(true);
+                    etMobile.setEnabled(true);
+                    etMobile.setFocusable(true);
+                    etMobile.setFocusableInTouchMode(true);
+                    etMobile.setClickable(true);
+                    etEmail.setEnabled(true);
+                    etEmail.setFocusable(true);
+                    etEmail.setFocusableInTouchMode(true);
+                    etEmail.setClickable(true);
+                    com.hbb20.CountryCodePicker ccp_setting = findViewById(R.id.ccp_setting);
+                    ccp_setting.setVisibility(View.VISIBLE);
+                    edtProfile.setVisibility(View.VISIBLE);
+                    btnEdit.setText("Update");
+                } else if (btnEdit.getText().toString().equals("Update")) {
 
-                //updateUser();
+
+
+                    etName.setFocusable(false);
+                    etName.setEnabled(false);
+                    etName.setFocusableInTouchMode(false);
+                    etName.setClickable(false);
+                    etMobile.setEnabled(false);
+                    etMobile.setFocusable(false);
+                    etMobile.setFocusableInTouchMode(false);
+                    etMobile.setClickable(false);
+                    etEmail.setEnabled(false);
+                    etEmail.setFocusable(false);
+                    etEmail.setFocusableInTouchMode(false);
+                    etEmail.setClickable(false);
+
+                    updateUser();
+                }
                 break;
 
             case R.id.imgProfile:
-                selectImageOption();
+                if (btnEdit.getText().toString().equals("Update")) {
+                    selectImageOption();
+                }
                 break;
 
             case R.id.etDate:
                 // Process to get Current Date
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
+                if (btnEdit.getText().toString().equals("Update")) {
+                    final Calendar c = Calendar.getInstance();
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                // Launch Date Picker Dialog
-                DatePickerDialog dpd = new DatePickerDialog(this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                // Display Selected date in EditText
-                                etDate.setText(dayOfMonth + "/"
-                                        + (monthOfYear + 1) + "/" + year);
-                            }
-                        }, mYear, mMonth, mDay);
-                dpd.show();
+                    // Launch Date Picker Dialog
+                    DatePickerDialog dpd = new DatePickerDialog(this,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year,
+                                                      int monthOfYear, int dayOfMonth) {
+                                    // Display Selected date in EditText
+                                    etDate.setText(dayOfMonth + "/"
+                                            + (monthOfYear + 1) + "/" + year);
+                                }
+                            }, mYear, mMonth, mDay);
+                    dpd.show();
+                }
                 break;
         }
     }
@@ -158,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         updateRegister = new UserRegister();
         if (outPutFile != null) {
             try {
-              
+
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
                 fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
                 //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
@@ -189,7 +223,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         int owner_id = user.getOwner_id();
                         int result = user.getResult();
 
-                        if (result == 1&&  name!= null) {
+                        if (result == 1 && name != null) {
 
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.putInt(Constant.OWNER_ID, owner_id);
@@ -199,11 +233,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             editor.putString(Constant.MOBILE, mobile);
                             editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
                             editor.apply();
-                            startActivity(new Intent(ProfileActivity.this,MainActivity.class));
-                           // updateserProfile();
-                            Toast.makeText(ProfileActivity.this, "" + msg + result, Toast.LENGTH_LONG).show();
+                            RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
+                            deleteLayout.setVisibility(View.VISIBLE);
+                            com.hbb20.CountryCodePicker ccp_setting = findViewById(R.id.ccp_setting);
+                            ccp_setting.setVisibility(View.GONE);
+                            edtProfile.setVisibility(View.GONE);
+                            btnEdit.setText("Edit");
+                            startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                            // updateserProfile();
+                            Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
 
-                        }else{                            Toast.makeText(ProfileActivity.this, "Error" , Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
                         }
                     }
                 }

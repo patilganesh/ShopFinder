@@ -74,6 +74,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Name"
+                            android:clickable="false"
+                            android:editable="false"
+                            android:focusable="false"
                             android:inputType="textCapSentences"
                             android:singleLine="true" />
                     </android.support.design.widget.TextInputLayout>
@@ -102,6 +105,9 @@
                                 android:layout_height="wrap_content"
                                 android:hint="Phone Number"
                                 android:inputType="number"
+                                android:clickable="false"
+                                android:editable="false"
+                                android:focusable="false"
                                 android:maxLength="10"
                                 android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
@@ -139,7 +145,13 @@
                                 android:id="@+id/etDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Date of Birth" />
+                                android:editable="false"
+                                android:focusable="true"
+                                android:focusableInTouchMode="false"
+                                android:hint="@string/dateofbirth"
+                                android:imeOptions="actionNext"
+                                android:textColorHint="@color/colorBlack"
+                                android:textSize="15sp" />
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
