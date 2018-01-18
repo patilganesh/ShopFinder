@@ -139,11 +139,23 @@
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <Button
+                            android:id="@+id/btn_Edit_setting"
+                            style="@style/Base.Widget.AppCompat.Button.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Edit" />
 
                     <LinearLayout
+                        android:layout_below="@id/btn_Edit_setting"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:visibility="gone"
                         android:weightSum="2">
 
                         <RelativeLayout
@@ -187,6 +199,7 @@
 
                         </RelativeLayout>
                     </LinearLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
 
