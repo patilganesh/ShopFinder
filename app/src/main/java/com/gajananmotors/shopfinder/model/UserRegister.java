@@ -1,15 +1,6 @@
 package com.gajananmotors.shopfinder.model;
-
 import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
-
-import okhttp3.MultipartBody;
-
-/**
- * Created by Ashwin on 11/18/2017.
- */
-/*Creating POJO class for User or ShopOwner */
 public class UserRegister {
     @SerializedName("owner_id")
     private int owner_id;
@@ -21,8 +12,6 @@ public class UserRegister {
     private String mob_no;
     @SerializedName("date_of_birth")
     private String date_of_birth;
-    @SerializedName("image")
-    private MultipartBody.Part image;
     @SerializedName("image1")
     private String image1;
     @SerializedName("password")
@@ -96,14 +85,6 @@ public class UserRegister {
 
     public void setDate_of_birth(String date_of_birth) {
         this.date_of_birth = date_of_birth;
-    }
-
-    public MultipartBody.Part getImage() {
-        return image;
-    }
-
-    public void setImage(MultipartBody.Part image) {
-        this.image = image;
     }
 
     public String getPassword() {

@@ -90,25 +90,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         Button btnSubmit = findViewById(R.id.btnSubmit);
 
-
-        Intent in = getIntent();
-        Bundle b = in.getExtras();
-        if(b.getString("owner_email").isEmpty()) {
-            String name = b.getString("owner_name");
-            String profile = b.getString("owner_profile");
-            etName.setText(name);
-            Picasso.with(RegisterActivity.this)
-                    .load(profile)
-                    .into(imgProfile);
-        }else{String name = b.getString("owner_name");
-            String email = b.getString("owner_email");
-            String profile = b.getString("owner_profile");
-            etName.setText(name);
-            etEmail.setText(email);
-            Picasso.with(RegisterActivity.this)
-                    .load(profile)
-                    .into(imgProfile);}
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+       StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile.setOnClickListener(this);
@@ -347,7 +329,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void validation() {
-        etName.addTextChangedListener(new TextWatcher() {
+       /* etName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isName(etName, true);
             }
@@ -390,7 +372,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-        });
+        });*/
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.hasText(etPassword);

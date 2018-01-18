@@ -7,8 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +30,6 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.LoginUser;
-import com.gajananmotors.shopfinder.model.UserRegister;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -71,8 +68,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
 
+    String Device_Token;
 
-    String  Device_Token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,15 +79,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        Device_Token=sharedpreferences.getString(Constant.DEVICE_TOKEN,"");
+        Device_Token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
         btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setOnClickListener(this);
@@ -103,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
         login.setReadPermissions("public_profile email");
-        etUserName.addTextChangedListener(new TextWatcher() {
+/*        etUserName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.isPhoneNumber(etUserName, true);
             }
@@ -124,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-        });
+        });*/
         login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -140,7 +139,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         full_name = profile.getName();
                         profile_image = profile.getProfilePictureUri(50, 50).toString();
                         Bundle b = new Bundle();
-                        b.putString("owner_name",profile.getName());
+                        b.putString("owner_name", profile.getName());
                         b.putString("owner_profile", profile_image);
                         Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                         in.putExtras(b);
@@ -218,16 +217,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String image = user.getImage();
                     int owner_id = user.getOwner_id();
                     SharedPreferences.Editor editor = sharedpreferences.edit();
-//      setting values to sharedpreferences keys.
+                    //      setting values to sharedpreferences keys.
                     editor.putInt(Constant.OWNER_ID, owner_id);
                     editor.putString(Constant.OWNER_NAME, name);
                     editor.putString(Constant.OWNWER_EMAIL, email);
                     editor.putString(Constant.DATE_OF_BIRTH, dob);
                     editor.putString(Constant.MOBILE, mobile);
-                    editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/"+image);
+                    editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
                     editor.apply();
                     Toast.makeText(LoginActivity.this, "Name:" + name
-                                    + "\nEmail:" + email + "\nMobile:" + mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/"+image
+                                    + "\nEmail:" + email + "\nMobile:" + mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + image
                             , Toast.LENGTH_LONG).show();
                     if (user.getResult() == 1)
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
@@ -290,7 +289,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     if (json != null) {
                         String text = "<b>Name:</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
-
 
 
                     }

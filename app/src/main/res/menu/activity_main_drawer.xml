@@ -24,7 +24,7 @@
         <item
             android:id="@+id/nav_allposts"
             android:icon="@drawable/ic_menu_manage"
-            android:title="View Posts" />
+            android:title="View &amp; Edit Posts" />
     </group>
 
     <item android:title="Communicate">
@@ -32,8 +32,7 @@
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share"
-                app:showAsAction="always" />
+                android:title="Share" />
 
         </menu>
     </item>

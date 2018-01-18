@@ -3,9 +3,11 @@ package com.gajananmotors.shopfinder.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 import com.gajananmotors.shopfinder.R;
@@ -63,15 +65,17 @@ public class SubCategoryActivity extends AppCompatActivity {
         call.enqueue(new Callback<SubCategoryList>() {
             @Override
             public void onResponse(Call<SubCategoryList> call, Response<SubCategoryList> response) {
-                SubCategoryList list = response.body();
-                sub_category_list = list.getSubcategory();
-                for (SubCategoryModel model : sub_category_list) {
-                    subCategoryNames.add(model.getName());
-                    subCategoryImages.add(model.getImage());
-                    subCatId.add(model.getSub_category_id());
+                if(response.isSuccessful()) {
+                    SubCategoryList list = response.body();
+                    sub_category_list = list.getSubcategory();
+                    for (SubCategoryModel model : sub_category_list) {
+                        subCategoryNames.add(model.getName());
+                        subCategoryImages.add(model.getImage());
+                        subCatId.add(model.getSub_category_id());
 
+                    }
+                    setAdapetr();
                 }
-                setAdapetr();
             }
 
             @Override
@@ -79,7 +83,8 @@ public class SubCategoryActivity extends AppCompatActivity {
             }
         });
         // mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
+      //  mLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
+        mLayoutManager = new GridLayoutManager(this, 2);
         recycler_view = findViewById(R.id.recycler_view_subcategory);
         recycler_view.setLayoutManager(mLayoutManager);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategory);
@@ -104,13 +109,10 @@ public class SubCategoryActivity extends AppCompatActivity {
     }
 
     public void setAdapetr() {
+        Log.d("CustomAdapter","set Adapter method called");
         customAdapterForSubCategory = new CustomAdapterForSubCategory(this, subCategoryNames, subCategoryImages, subCatId);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategory);
         recycler_view.setAdapter(alphaAdapter);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }

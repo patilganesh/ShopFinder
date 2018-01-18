@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdap
 
     public CustomAdapterForSubCategory(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, ArrayList<Integer> subCatId) {
         context = subCategoryActivity;
+        Log.d("CustomAdapter","called");
         this.subCategoryNames = subCategoryNames;
         this.subCategoryImages = subCategoryImages;
         this.subCatId = subCatId;
