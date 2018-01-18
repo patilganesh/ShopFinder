@@ -26,6 +26,7 @@
                 <RelativeLayout
                     android:layout_width="90dp"
                     android:layout_height="90dp">
+
                     <com.gajananmotors.shopfinder.helper.CircleImageView
                         android:id="@+id/imgProfile"
                         android:layout_width="90dp"
@@ -36,13 +37,14 @@
                         app:civ_border_width="3dp" />
 
 
-                <ImageView
-                    android:id="@+id/fab_iv_edit_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="60dp"
-                    android:src="@drawable/edit" />
+                    <ImageView
+                        android:id="@+id/fab_iv_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="60dp"
+                        android:visibility="gone"
+                        android:src="@drawable/edit" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -71,7 +73,7 @@
                             android:id="@+id/etName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Full Name"
+                            android:hint="Name"
                             android:inputType="textCapSentences"
                             android:singleLine="true" />
                     </android.support.design.widget.TextInputLayout>
@@ -86,7 +88,8 @@
                         <com.hbb20.CountryCodePicker
                             android:id="@+id/ccp_setting"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"/>
 
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
@@ -131,6 +134,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
+
                             <EditText
                                 android:id="@+id/etDate"
                                 android:layout_width="match_parent"
@@ -139,67 +143,48 @@
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <Button
-                            android:id="@+id/btn_Edit_setting"
-                            style="@style/Base.Widget.AppCompat.Button.Colored"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Edit" />
+
 
                     <LinearLayout
-                        android:layout_below="@id/btn_Edit_setting"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:visibility="gone"
-                        android:weightSum="2">
-
-                        <RelativeLayout
+                            android:id="@+id/btnlayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                           android:orientation="horizontal"
 
-                            <ProgressBar
-                                android:id="@+id/pb_delete_setting"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_centerInParent="true" />
+                            android:weightSum="2">
 
-                            <Button
-                                android:id="@+id/btn_delete_setting"
-                                style="@style/Base.Widget.AppCompat.Button.Colored"
+                            <RelativeLayout
+                                android:id="@+id/btn_deleteLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Delete" />
+                                android:layout_weight="1">
 
-                        </RelativeLayout>
+                                <Button
+                                    android:id="@+id/btn_delete"
+                                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Delete" />
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                            </RelativeLayout>
 
-                            <ProgressBar
-                                android:id="@+id/pb_save_setting"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_centerInParent="true" />
-
-                            <Button
-                                android:id="@+id/btnUpdate"
-                                style="@style/Base.Widget.AppCompat.Button.Colored"
+                            <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Update" />
+                                android:layout_weight="1">
 
-                        </RelativeLayout>
-                    </LinearLayout>
-                    </RelativeLayout>
+
+                                <Button
+                                    android:id="@+id/btnEdit"
+                                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Edit" />
+
+                            </RelativeLayout>
+                        </LinearLayout>
+
 
                 </LinearLayout>
 

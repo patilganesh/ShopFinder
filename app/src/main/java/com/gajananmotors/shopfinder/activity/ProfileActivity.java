@@ -20,6 +20,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
@@ -55,14 +57,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Uri mImageCaptureUri;
     private int mYear, mMonth, mDay;
     Button btnCalendar;
-
-
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
     private static final int REQUEST_PERMISSION_SETTING = 101;
     private boolean sentToSettings = false;
     private SharedPreferences permissionStatus;
+
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
+    private Button btnEdit,btn_delete;
+    ImageView edtProfile;
    /* private String name,email,dob,mobile,image;
     private int owner_id;
 */
@@ -79,7 +82,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
         etDate = findViewById(R.id.etDate);
-        Button btnUpdate = findViewById(R.id.btnUpdate);
+        edtProfile=findViewById(R.id.fab_iv_edit);
+        btnEdit = findViewById(R.id.btnEdit);
+        btn_delete = findViewById(R.id.btn_delete);
+        btnEdit.setOnClickListener(this);
+        btn_delete.setOnClickListener(this);
+        Button btnEdit = findViewById(R.id.btnEdit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
@@ -94,20 +102,28 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .fit()
                     .into(imgProfile);
         }
-        btnUpdate.setOnClickListener(this);
+        btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnUpdate:
-                updateUser();
+            case R.id.btnEdit:
+                RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
+                deleteLayout.setVisibility(View.GONE);
+                com.hbb20.CountryCodePicker ccp_setting=findViewById(R.id.ccp_setting);
+                ccp_setting.setVisibility(View.VISIBLE);
+                edtProfile.setVisibility(View.VISIBLE);
+                btnEdit.setText("UPDATE");
+
+                //updateUser();
                 break;
+
             case R.id.imgProfile:
                 selectImageOption();
-
                 break;
+
             case R.id.etDate:
                 // Process to get Current Date
                 final Calendar c = Calendar.getInstance();
