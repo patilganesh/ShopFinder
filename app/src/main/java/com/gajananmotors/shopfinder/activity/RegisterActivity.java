@@ -79,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
-        Intent in = getIntent();
+       /* Intent in = getIntent();
         Bundle b = in.getExtras();
         if (b != null) {
             if (b.getString("owner_email").isEmpty()) {
@@ -99,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         .load(profile)
                         .into(imgProfile);
             }
-        }
+        }*/
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");

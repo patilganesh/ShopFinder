@@ -30,6 +30,17 @@ public interface RestInterface {
             @Part("device_token") String device_token
     );
 
+    @Multipart
+    @POST("index.php/mobile_api/update_owner")
+    Call<UserRegister> updateRegister(
+            @Part("owner_name") String owner_name,
+            @Part("owner_email") String owner_email,
+            @Part("mob_no") String mob_no,
+            @Part("date_of_birth") String date_of_birth,
+            @Part MultipartBody.Part image,
+            @Part("owner_id") int owner_id
+    );
+
     /* Call<UserRegister> userRegister(
              @Part("owner_name") String owner_name,
              @Part("owner_email") String owner_email,

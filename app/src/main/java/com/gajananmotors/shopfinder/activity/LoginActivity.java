@@ -138,12 +138,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         l_name = profile.getLastName();
                         full_name = profile.getName();
                         profile_image = profile.getProfilePictureUri(50, 50).toString();
-                        Bundle b = new Bundle();
+                       /* Bundle b = new Bundle();
                         b.putString("owner_name",profile.getName());
                         b.putString("owner_profile", profile_image);
                         Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                         in.putExtras(b);
-                        startActivity(in);
+                        startActivity(in);*/
                     }
                 }
             }
@@ -352,14 +352,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Log.e("google result", tvDetails);
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
-
+/*
                 Bundle b = new Bundle();
                 b.putString("owner_name", acct.getDisplayName());
                 b.putString("owner_email", acct.getEmail());
                 b.putString("owner_profile", acct.getPhotoUrl().toString());
                 Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                 in.putExtras(b);
-                startActivity(in);
+                startActivity(in);*/
             }
         }
     }

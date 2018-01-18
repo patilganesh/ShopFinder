@@ -2,8 +2,10 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,7 @@ import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.Category;
 import com.gajananmotors.shopfinder.model.CategoryList;
 import com.gajananmotors.shopfinder.model.SubCategoryList;
@@ -76,12 +80,18 @@ public class AddPostActivity extends AppCompatActivity {
     private boolean flag = false;
     private Retrofit retrofit;
     private RestInterface restInterface;
+    private SharedPreferences sharedpreferences;
+    private int Owner_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //allCategory = new AllCategory();
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+        Owner_id=sharedpreferences.getInt(Constant.OWNER_ID,0);
+        Toast.makeText(getApplicationContext(),""+Owner_id,Toast.LENGTH_LONG);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
          /*StringCallback stringCallback = new StringCallback() {
