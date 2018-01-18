@@ -12,7 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -22,16 +24,27 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
+import com.gajananmotors.shopfinder.apiinterface.RestInterface;
+import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOption;
-import com.squareup.picasso.Callback;
+import com.gajananmotors.shopfinder.model.UserRegister;
+
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -50,7 +63,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private SharedPreferences permissionStatus;
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
-
+   /* private String name,email,dob,mobile,image;
+    private int owner_id;
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +73,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-    //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+        //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
@@ -69,22 +84,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile = findViewById(R.id.imgProfile);
-        if(!sharedpreferences.getString(Constant.OWNER_NAME,"").isEmpty()) {
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             etName.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             etEmail.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
             etMobile.setText(sharedpreferences.getString(Constant.MOBILE, ""));
             etDate.setText(sharedpreferences.getString(Constant.DATE_OF_BIRTH, ""));
             Picasso.with(ProfileActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .fit()
                     .into(imgProfile);
         }
         btnUpdate.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnUpdate:
+                updateUser();
                 break;
             case R.id.imgProfile:
                 selectImageOption();
@@ -113,6 +131,85 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    private void updateUser() {
+
+
+        File shop_cover_photo = null;
+        byte[] imgbyte = null;
+        Retrofit retrofit;
+        UserRegister updateRegister;
+        MultipartBody.Part fileToUpload = null;
+        updateRegister = new UserRegister();
+        if (outPutFile != null) {
+            try {
+              
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
+                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
+                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
+            } catch (Exception e) {
+                Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+        updateRegister.setOwner_name(etName.getText().toString());
+        updateRegister.setMob_no(etMobile.getText().toString());
+        updateRegister.setOwner_email(etEmail.getText().toString());
+        updateRegister.setDate_of_birth(etDate.getText().toString());
+        updateRegister.setOwner_id(sharedpreferences.getInt(Constant.OWNER_ID, 0));
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<UserRegister> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
+        try {
+            user.enqueue(new Callback<UserRegister>() {
+                @Override
+                public void onResponse(Call<UserRegister> call, Response<UserRegister> response) {
+                    if (response.isSuccessful()) {
+                        UserRegister user = response.body();
+                        String msg = user.getMsg();
+                        String name = user.getOwner_name();
+                        String email = user.getOwner_email();
+                        String mobile = user.getMob_no();
+                        String dob = user.getDate_of_birth();
+                        String image = user.getImage1();
+                        int owner_id = user.getOwner_id();
+                        int result = user.getResult();
+
+                        if (result == 1&&  name!= null) {
+
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                            editor.putInt(Constant.OWNER_ID, owner_id);
+                            editor.putString(Constant.OWNER_NAME, name);
+                            editor.putString(Constant.OWNWER_EMAIL, email);
+                            editor.putString(Constant.DATE_OF_BIRTH, dob);
+                            editor.putString(Constant.MOBILE, mobile);
+                            editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
+                            editor.apply();
+                            startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                           // updateserProfile();
+                            Toast.makeText(ProfileActivity.this, "" + msg + result, Toast.LENGTH_LONG).show();
+
+                        }else{                            Toast.makeText(ProfileActivity.this, "Error" , Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserRegister> call, Throwable t) {
+                    Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
+                    Log.e("failure", "onFailure: " + t.toString());
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(this, "Error Message:" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    private void updateserProfile() {
+
+
+    }
+
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ProfileActivity.this);
@@ -132,7 +229,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
-                    // galleryIntent();
+
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -156,11 +253,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else if (requestCode == CROPING_CODE) {
             try {
                 if (outPutFile.exists()) {
-                    Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new Callback() {
+                    Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
 
                         }
+
                         @Override
                         public void onError() {
 
