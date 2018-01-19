@@ -1,15 +1,6 @@
 package com.gajananmotors.shopfinder.model;
-
 import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
-
-import okhttp3.MultipartBody;
-
-/**
- * Created by Ashwin on 11/18/2017.
- */
-/*Creating POJO class for User or ShopOwner */
 public class UserRegister {
     @SerializedName("owner_id")
     private int owner_id;

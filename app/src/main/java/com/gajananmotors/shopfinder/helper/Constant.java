@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 public class Constant{
 
 
-    private static final String MyPREFERENCES = "MyPrefs";
+    public static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     public static final String OWNER_NAME = "owner_name";
     public static final String  ADDRESS= "address";

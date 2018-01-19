@@ -31,6 +31,8 @@ public interface RestInterface {
             @Part("password") String password,
             @Part("device_token") String device_token
     );
+
+
     @FormUrlEncoded
     @POST("index.php/mobile_api/login_user")
     Call<LoginUser> loginUsersList(
@@ -38,6 +40,8 @@ public interface RestInterface {
             @Field("password") String password,
             @Field("device_token") String device_token
     );
+
+
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryList> getCategoryList();
     @FormUrlEncoded
@@ -45,6 +49,22 @@ public interface RestInterface {
     Call<SubCategoryList> getSubCategoryList(
             @Field("category_id") int category_id
     );
+
+
+    @Multipart
+    @POST("index.php/mobile_api/update_owner")
+    Call<UserRegister> updateRegister(
+            @Part("owner_name") String owner_name,
+            @Part("owner_email") String owner_email,
+            @Part("mob_no") String mob_no,
+            @Part("date_of_birth") String date_of_birth,
+            @Part MultipartBody.Part image,
+            @Part("owner_id") int owner_id
+    );
+
+
+
+
 
     @Multipart
     @POST("index.php/mobile_api/create_shop")

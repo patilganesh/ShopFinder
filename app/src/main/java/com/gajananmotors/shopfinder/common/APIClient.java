@@ -41,6 +41,7 @@ public class APIClient {
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addConverterFactory(ScalarsConverterFactory.create())
                     .build();
         }
         return retrofit;

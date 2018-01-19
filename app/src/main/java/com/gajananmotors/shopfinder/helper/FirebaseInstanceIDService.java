@@ -11,14 +11,14 @@ import static com.facebook.GraphRequest.TAG;
 
 public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
     private SharedPreferences sharedpreferences;
-    private static final String MyPREFERENCES = "MyPrefs";
+
 
     @Override
         public void onTokenRefresh() {
             // Get updated InstanceID token.
             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
             Log.e(TAG, "Refreshed token: " + refreshedToken);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
 //      setting values to sharedpreferences keys.

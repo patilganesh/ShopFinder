@@ -37,7 +37,9 @@ import com.gajananmotors.shopfinder.common.AllCategory;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.*;
+import com.gajananmotors.shopfinder.model.Category;
+import com.gajananmotors.shopfinder.model.CategoryList;
+import com.gajananmotors.shopfinder.model.SubCategoryList;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
 import com.gajananmotors.shopfinder.utility.Validation;
@@ -73,7 +75,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ArrayList<Category> category_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
-    private AllCategory allCategory;
+    //private AllCategory allCategory;
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
@@ -113,7 +115,6 @@ public class AddPostActivity extends AppCompatActivity {
         Call<CategoryList> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryList>() {
             ArrayList<Category> categoryArrayList = new ArrayList<>();
-
             @Override
             public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
                 if (response.isSuccessful()) {
@@ -122,7 +123,6 @@ public class AddPostActivity extends AppCompatActivity {
                     getCategoryData();
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryList> call, Throwable t) {
 
@@ -164,9 +164,11 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 str_cat_spinner = category.getText().toString();
@@ -187,7 +189,6 @@ public class AddPostActivity extends AppCompatActivity {
                             getSubCategoryData();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<SubCategoryList> call, Throwable t) {
                     }
@@ -236,7 +237,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
-
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -252,10 +252,9 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
-        strBusinessLocation = etBusinessLocation.getText().toString();
+        strBusinessLocation = etBusinessLocation.getText().toString().trim();
         strBusinessMobile = etBusinessMobile.getText().toString().trim();
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
@@ -266,7 +265,6 @@ public class AddPostActivity extends AppCompatActivity {
         if (checkValidation())
             confirmdetails();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -295,26 +293,28 @@ public class AddPostActivity extends AppCompatActivity {
             if (requestCode == INTENT_REQUEST_GET_IMAGES) {
 
                 image_uris = data.getParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
+
                 if (image_uris != null) {
                     HorizontalScrollView hview = findViewById(R.id.hori_scroll_view);
                     TextView tvHeading = findViewById(R.id.tvHeading);
                     hview.setVisibility(View.VISIBLE);
                     tvHeading.setVisibility(View.VISIBLE);
+
                     showMedia();
                 }
             }
         }
     }
-
     private void showMedia() {
         int index = 1;
         mSelectedImagesContainer.removeAllViews();
+
         if (image_uris.size() >= 1) {
             mSelectedImagesContainer.setVisibility(View.VISIBLE);
+
         }
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-
         for (final Uri uri : image_uris) {
             if (index <= 7) {
                 Log.i("path", "\nImages Path: " + uri.getPath().toString());
@@ -389,6 +389,7 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+
             }
         });
         tvConfirm.setOnClickListener(new View.OnClickListener() {
@@ -476,7 +477,7 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             }, 4000);
         }
-    }
+
 
     private boolean checkValidation() {
         boolean ret = true;

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#FF5252</color>
+ <!--   <color name="colorPrimary">#FF5252</color>
     <color name="colorPrimaryDark">#EF5350</color>
+    <color name="colorAccent">#FF5252</color>-->
+
+    <color name="colorPrimary">#3F51B5 </color>
+    <color name="colorPrimaryDark">#3F51B5</color>
     <color name="colorAccent">#FF5252</color>
     <color name="ButtonTextColor">#ffffff</color>
     <color name="textColorBlack">#000000</color>

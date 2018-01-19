@@ -1,10 +1,7 @@
 package com.gajananmotors.shopfinder.adapter;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,12 +49,14 @@ public class CustomAdapterForVerticalGridView extends RecyclerView.Adapter<Custo
         this.categoryId = categoryId;
         this.context = mainActivity;
     }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.vertical_grid_layout, parent, false);
         return new MyViewHolder(itemView);
     }
+
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         // holder.text.setText(name[position]);
@@ -74,20 +73,17 @@ public class CustomAdapterForVerticalGridView extends RecyclerView.Adapter<Custo
         holder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Intent intent = new Intent(context, SubCategoryActivity.class);
-                    intent.putExtra("CategoryId", categoryId.get(position).intValue());
-                    context.startActivity( intent,
-                            ActivityOptions.makeSceneTransitionAnimation((Activity)context).toBundle());
-                }
+
                 Intent intent = new Intent(context, SubCategoryActivity.class);
                 intent.putExtra("CategoryId", categoryId.get(position).intValue());
                 context.startActivity(intent);
+
 
                 //  context.startActivity(new Intent(context, SubCategoryActivity.class));
             }
         });
     }
+
     @Override
     public int getItemCount() {
         return namesList.size();
