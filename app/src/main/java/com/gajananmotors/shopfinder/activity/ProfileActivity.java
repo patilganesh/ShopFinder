@@ -171,8 +171,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                 public void onDateSet(DatePicker view, int year,
                                                       int monthOfYear, int dayOfMonth) {
                                     // Display Selected date in EditText
-                                    etDate.setText(dayOfMonth + "/"
-                                            + (monthOfYear + 1) + "/" + year);
+                                    etDate.setText(year + "/"
+                                            + (monthOfYear + 1) + "/" + dayOfMonth);
                                 }
                             }, mYear, mMonth, mDay);
                     dpd.show();
