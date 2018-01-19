@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Ashwin on 11/29/2017.
  */
 
-public class Category {
+public class CategoryModel {
     @SerializedName("category_id")
     private int category_id;
     @SerializedName("name")

@@ -3,7 +3,6 @@ package com.gajananmotors.shopfinder.adapter;
 /**
  * Created by Gajanan Motars on 12/9/2017.
  */
-
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,9 +32,7 @@ import java.util.ArrayList;
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
-
 public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private ArrayList<Model> dataSet;
     Context mContext;
     int total_types;
@@ -43,7 +40,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String address;
     View confirmDialog;
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
-
         TextView txtType;
         ImageView image;
 
@@ -53,7 +49,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             this.image = itemView.findViewById(R.id.background);
         }
     }
-
     public static class AdvertisementTypeViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtType;
@@ -87,7 +82,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         return null;
     }
-
 
     @Override
     public int getItemViewType(int position) {
@@ -197,8 +191,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
         });
-
-
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
@@ -218,14 +210,10 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
                 return false;
             }
         });
-
-
-
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         alertDialog.show();
     }
-
 
     private void revealShow(View dialogView, boolean b, final Dialog dialog) {
 
@@ -246,7 +234,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 revealAnimator = ViewAnimationUtils.createCircularReveal(view, cx,cy, 0, endRadius);
             }
-
             view.setVisibility(View.VISIBLE);
             revealAnimator.setDuration(700);
             revealAnimator.start();
@@ -271,8 +258,6 @@ public class MultiViewTypeAdapter extends RecyclerView.Adapter<RecyclerView.View
             anim.setDuration(700);
             anim.start();
         }
-
-
     }
 
     @Override

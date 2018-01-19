@@ -1,7 +1,7 @@
 package com.gajananmotors.shopfinder.model;
 import com.google.gson.annotations.SerializedName;
 
-public class UserRegister {
+public class UserRegisterModel {
     @SerializedName("owner_id")
     private int owner_id;
     @SerializedName("owner_name")

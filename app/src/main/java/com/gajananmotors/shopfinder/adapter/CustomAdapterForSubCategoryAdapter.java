@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by asus on 29-Nov-17.
  */
-public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdapterForSubCategory.MyViewHolder> {
+public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<CustomAdapterForSubCategoryAdapter.MyViewHolder> {
 
     private ArrayList<String> subCategoryNames = new ArrayList<>();
     private ArrayList<String> subCategoryImages = new ArrayList<>();
@@ -29,13 +29,13 @@ public class CustomAdapterForSubCategory extends RecyclerView.Adapter<CustomAdap
     private Context context;
     private int[] imageId;
 
-    public CustomAdapterForSubCategory(Activity subCategory, String[] nameList, int[] imglist) {
+    public CustomAdapterForSubCategoryAdapter(Activity subCategory, String[] nameList, int[] imglist) {
         this.name = nameList;
         this.imageId = imglist;
         context = subCategory;
     }
 
-    public CustomAdapterForSubCategory(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, ArrayList<Integer> subCatId) {
+    public CustomAdapterForSubCategoryAdapter(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, ArrayList<Integer> subCatId) {
         context = subCategoryActivity;
         Log.d("CustomAdapter","called");
         this.subCategoryNames = subCategoryNames;

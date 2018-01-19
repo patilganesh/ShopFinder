@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.model.CropingOption;
+import com.gajananmotors.shopfinder.model.CropingOptionModel;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class CropingOptionAdapter extends ArrayAdapter {
         if (convertView == null)
             convertView = mInflater.inflate(R.layout.croping_selector, null);
 
-        CropingOption item = (CropingOption) mOptions.get(position);
+        CropingOptionModel item = (CropingOptionModel) mOptions.get(position);
 
         if (item != null) {
             ((ImageView) convertView.findViewById(R.id.img_icon)).setImageDrawable(item.icon);

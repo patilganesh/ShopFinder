@@ -33,14 +33,15 @@ import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.common.AllCategory;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.Category;
-import com.gajananmotors.shopfinder.model.CategoryList;
-import com.gajananmotors.shopfinder.model.SubCategoryList;
+import com.gajananmotors.shopfinder.model.CategoryModel;
+import com.gajananmotors.shopfinder.model.CategoryListModel;
+import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
+import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -73,7 +74,7 @@ public class AddPostActivity extends AppCompatActivity {
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
-    private ArrayList<Category> category_list = new ArrayList<>();
+    private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
     //private AllCategory allCategory;
     private ViewGroup mSelectedImagesContainer;
@@ -104,27 +105,27 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void StringCallback(String s) {
                 if (TextUtils.equals(s,"1")){
-                    for(int i=0;i<category_list.size();i++)
-                        categoryNames.add(category_list.get(i).getName().toString());
-                    category_list.clear();
+                    for(int i=0;i<category_Model_list.size();i++)
+                        categoryNames.add(category_Model_list.get(i).getName().toString());
+                    category_Model_list.clear();
                     flag=true;
                 }
             }
         };
-        category_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
-        Call<CategoryList> call = restInterface.getCategoryList();
-        call.enqueue(new Callback<CategoryList>() {
-            ArrayList<Category> categoryArrayList = new ArrayList<>();
+        category_Model_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
+        Call<CategoryListModel> call = restInterface.getCategoryList();
+        call.enqueue(new Callback<CategoryListModel>() {
+            ArrayList<CategoryModel> categoryModelArrayList = new ArrayList<>();
             @Override
-            public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
+            public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {
-                    CategoryList categoryList = response.body();
-                    category_list = categoryList.getCategories();
+                    CategoryListModel categoryListModel = response.body();
+                    category_Model_list = categoryListModel.getCategories();
                     getCategoryData();
                 }
             }
             @Override
-            public void onFailure(Call<CategoryList> call, Throwable t) {
+            public void onFailure(Call<CategoryListModel> call, Throwable t) {
 
             }
         });
@@ -154,8 +155,8 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
-        for (int i = 0; i < category_list.size(); i++) {
-            categoryNames.add(category_list.get(i).getName().toString());
+        for (int i = 0; i < category_Model_list.size(); i++) {
+            categoryNames.add(category_Model_list.get(i).getName().toString());
         }
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
@@ -172,25 +173,25 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 str_cat_spinner = category.getText().toString();
-                for (Category cat : category_list) {
+                for (CategoryModel cat : category_Model_list) {
                     if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
                         int_cat_id = cat.getCategory_id();
                     }
                 }
-               /* Toast.makeText(AddPostActivity.this, "Selected Category:"+str_cat_spinner, Toast.LENGTH_SHORT).show();
+               /* Toast.makeText(AddPostActivity.this, "Selected CategoryModel:"+str_cat_spinner, Toast.LENGTH_SHORT).show();
                 Toast.makeText(AddPostActivity.this, "Selected Index:"+int_cat_id, Toast.LENGTH_SHORT).show();*/
-                Call<SubCategoryList> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
-                sub_cat_list.enqueue(new Callback<SubCategoryList>() {
+                Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
+                sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
                     @Override
-                    public void onResponse(Call<SubCategoryList> call, Response<SubCategoryList> response) {
+                    public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
                         if (response.isSuccessful()) {
-                            SubCategoryList list = response.body();
+                            SubCategoryListModel list = response.body();
                             sub_category_list = list.getSubcategory();
                             getSubCategoryData();
                         }
                     }
                     @Override
-                    public void onFailure(Call<SubCategoryList> call, Throwable t) {
+                    public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                     }
                 });
             }
@@ -357,7 +358,6 @@ public class AddPostActivity extends AppCompatActivity {
                 break;
         }
     }
-
     private void confirmdetails() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
@@ -400,7 +400,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
-
     public void createShop() {
         MultipartBody.Part fileToUpload = null;
         if (!getImages.equals("")) {
@@ -411,7 +410,6 @@ public class AddPostActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
-
         }
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -477,7 +475,7 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             }, 4000);
         }
-
+    }
 
     private boolean checkValidation() {
         boolean ret = true;

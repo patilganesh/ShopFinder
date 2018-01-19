@@ -10,22 +10,17 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
@@ -33,18 +28,15 @@ import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.CropingOption;
-import com.gajananmotors.shopfinder.model.UserRegister;
+import com.gajananmotors.shopfinder.model.CropingOptionModel;
+import com.gajananmotors.shopfinder.model.UserRegisterModel;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -53,7 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
@@ -106,9 +98,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         File shop_cover_photo = null;
         byte[] imgbyte = null;
         Retrofit retrofit;
-        UserRegister user_data;
+        UserRegisterModel user_data;
         MultipartBody.Part fileToUpload = null;
-        user_data = new UserRegister();
+        user_data = new UserRegisterModel();
         if (outPutFile != null) {
             try {
               /*  String file_Path = mImageCaptureUri.getPath();
@@ -129,13 +121,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user_data.setDevice_token(Device_Token);
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<UserRegister> user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), fileToUpload, user_data.getPassword(), user_data.getDevice_token());
+        Call<UserRegisterModel> user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), fileToUpload, user_data.getPassword(), user_data.getDevice_token());
         try {
-            user.enqueue(new Callback<UserRegister>() {
+            user.enqueue(new Callback<UserRegisterModel>() {
                 @Override
-                public void onResponse(Call<UserRegister> call, Response<UserRegister> response) {
+                public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
                     if (response.isSuccessful()) {
-                        UserRegister user = response.body();
+                        UserRegisterModel user = response.body();
                         String msg = user.getMsg();
                         String name = user.getOwner_name();
                         String email = user.getOwner_email();
@@ -145,7 +137,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         int owner_id = user.getOwner_id();
                         int result = user.getResult();
                         SharedPreferences.Editor editor = sharedpreferences.edit();
-
                         if (result == 1) {
                             AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
                             alert.setMessage("Successfully Registered\nOwner Id:" + owner_id + "\nMesg:" + msg + "\nImage:" + image + "\nName:" + name + "\nEmail:" + email + "\nResult:" + result); //display response in Alert dialog.
@@ -176,7 +167,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
 
                 @Override
-                public void onFailure(Call<UserRegister> call, Throwable t) {
+                public void onFailure(Call<UserRegisterModel> call, Throwable t) {
                     Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
                     Log.e("failure", "onFailure: " + t.toString());
                 }
@@ -278,7 +269,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
     private void CropingIMG() {
-        final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
+        final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setType("image/*");
         List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
@@ -304,7 +295,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 startActivityForResult(i, CROPING_CODE);
             } else {
                 for (ResolveInfo res : list) {
-                    final CropingOption co = new CropingOption();
+                    final CropingOptionModel co = new CropingOptionModel();
                     co.title = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
                     co.icon = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
                     co.appIntent = new Intent(intent);
@@ -424,7 +415,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (!Validation.isPhoneNumber(etContactNumber, true)) ret = false;
         if (!Validation.hasText(etPassword)) ret = false;
         if (!Validation.hasText(etConfirmPassword)) ret = false;
-
         return ret;
     }
 /*

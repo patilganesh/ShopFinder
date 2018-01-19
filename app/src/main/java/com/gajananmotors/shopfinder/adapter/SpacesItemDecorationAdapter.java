@@ -9,7 +9,7 @@ import android.view.View;
  */
 
 
-public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+public class SpacesItemDecorationAdapter extends RecyclerView.ItemDecoration {
     public static final int TYPE_VERTICAL = 0;
     public static final int TYPE_HORIZONTAL = 1;
     private int space;
@@ -17,7 +17,7 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     private int mode;
 
 
-    public SpacesItemDecoration(int space, int mode) {
+    public SpacesItemDecorationAdapter(int space, int mode) {
         if (mode != TYPE_HORIZONTAL && mode != TYPE_VERTICAL) {
             new RuntimeException("mode have to  TYPE_VERTICAL or TYPE_VERTICAL");
             return;

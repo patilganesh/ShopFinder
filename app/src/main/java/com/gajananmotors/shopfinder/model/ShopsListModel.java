@@ -3,7 +3,7 @@ package com.gajananmotors.shopfinder.model;
 /**
  * Created by Ashwin on 12/30/2017.
  */
-public class ShopsList {
+public class ShopsListModel {
     private String name;
     private String distance;
     private String address;
@@ -13,7 +13,7 @@ public class ShopsList {
     private String type;
     private String mobileNo;
 
-    public ShopsList(String name, String distance, String address, String timing, String web_url, String type, String mobileNo)
+    public ShopsListModel(String name, String distance, String address, String timing, String web_url, String type, String mobileNo)
     {
         this.setName(name);
         this.setDistance(distance);

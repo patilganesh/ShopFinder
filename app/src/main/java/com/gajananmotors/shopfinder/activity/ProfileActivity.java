@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,8 +29,8 @@ import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.CropingOption;
-import com.gajananmotors.shopfinder.model.UserRegister;
+import com.gajananmotors.shopfinder.model.CropingOptionModel;
+import com.gajananmotors.shopfinder.model.UserRegisterModel;
 
 import com.squareup.picasso.Picasso;
 
@@ -184,9 +183,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         File shop_cover_photo = null;
         byte[] imgbyte = null;
         Retrofit retrofit;
-        UserRegister updateRegister;
+        UserRegisterModel updateRegister;
         MultipartBody.Part fileToUpload = null;
-        updateRegister = new UserRegister();
+        updateRegister = new UserRegisterModel();
         if (outPutFile != null) {
             try {
 
@@ -204,13 +203,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         updateRegister.setOwner_id(sharedpreferences.getInt(Constant.OWNER_ID, 0));
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<UserRegister> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
+        Call<UserRegisterModel> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
         try {
-            user.enqueue(new Callback<UserRegister>() {
+            user.enqueue(new Callback<UserRegisterModel>() {
                 @Override
-                public void onResponse(Call<UserRegister> call, Response<UserRegister> response) {
+                public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
                     if (response.isSuccessful()) {
-                        UserRegister user = response.body();
+                        UserRegisterModel user = response.body();
                         String msg = user.getMsg();
                         String name = user.getOwner_name();
                         String email = user.getOwner_email();
@@ -247,7 +246,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }
 
                 @Override
-                public void onFailure(Call<UserRegister> call, Throwable t) {
+                public void onFailure(Call<UserRegisterModel> call, Throwable t) {
                     Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
                     Log.e("failure", "onFailure: " + t.toString());
                 }
@@ -328,7 +327,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void CropingIMG() {
-        final ArrayList<CropingOption> cropOptions = new ArrayList<CropingOption>();
+        final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setType("image/*");
         List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
@@ -355,7 +354,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 startActivityForResult(i, CROPING_CODE);
             } else {
                 for (ResolveInfo res : list) {
-                    final CropingOption co = new CropingOption();
+                    final CropingOptionModel co = new CropingOptionModel();
                     co.title = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
                     co.icon = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
                     co.appIntent = new Intent(intent);

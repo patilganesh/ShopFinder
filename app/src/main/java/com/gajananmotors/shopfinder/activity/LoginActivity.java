@@ -7,8 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,8 +29,7 @@ import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.LoginUser;
-import com.gajananmotors.shopfinder.model.UserRegister;
+import com.gajananmotors.shopfinder.model.LoginUserModel;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -194,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void loginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<LoginUser> loginUser = restInterface.loginUsersList(etUserName.getText().toString(), etPassword.getText().toString(), "device_token");
+        Call<LoginUserModel> loginUser = restInterface.loginUsersList(etUserName.getText().toString(), etPassword.getText().toString(), "device_token");
         progressBar.setVisibility(View.VISIBLE);
         //progressBar.setLeft(20);
         // btnLogin.setVisibility(View.GONE);
@@ -204,11 +201,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             progressBar.setMin(0);
         }
         progressBar.setMax(100);
-        loginUser.enqueue(new Callback<LoginUser>() {
+        loginUser.enqueue(new Callback<LoginUserModel>() {
             @Override
-            public void onResponse(Call<LoginUser> call, Response<LoginUser> response) {
+            public void onResponse(Call<LoginUserModel> call, Response<LoginUserModel> response) {
                 if (response.isSuccessful()) {
-                    LoginUser user = response.body();
+                    LoginUserModel user = response.body();
                     String msg = user.getMsg();
                     owner_name = user.getOwner_name();
                     owner_email = user.getOwner_email();
@@ -242,7 +239,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
             @Override
-            public void onFailure(Call<LoginUser> call, Throwable t) {
+            public void onFailure(Call<LoginUserModel> call, Throwable t) {
                 Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
             }
         });

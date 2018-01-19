@@ -8,19 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
-
 /**
  * Created by asus on 18-Nov-17.
  */
-
-public class CustomAdapterForNearByLoc extends RecyclerView.Adapter<CustomAdapterForNearByLoc.MyViewHolder> {
-
-
+public class CustomAdapterForNearByLocAdapter extends RecyclerView.Adapter<CustomAdapterForNearByLocAdapter.MyViewHolder> {
     Activity context1;
     String[] name;
     String[] address;
-
-
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView shop_name;
         public TextView shop_address;
@@ -29,12 +23,10 @@ public class CustomAdapterForNearByLoc extends RecyclerView.Adapter<CustomAdapte
             super(rowView);
             shop_name = rowView.findViewById(R.id.list_shopname);
             shop_address = rowView.findViewById(R.id.list_address);
-
         }
     }
 
-
-    public CustomAdapterForNearByLoc(Activity context, String[] source, String[] destination) {
+    public CustomAdapterForNearByLocAdapter(Activity context, String[] source, String[] destination) {
 
         this.name = source;
         this.address = destination;
@@ -42,24 +34,19 @@ public class CustomAdapterForNearByLoc extends RecyclerView.Adapter<CustomAdapte
     }
 
     @Override
-    public CustomAdapterForNearByLoc.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CustomAdapterForNearByLocAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_map_activity_data, parent, false);
 
-        return new CustomAdapterForNearByLoc.MyViewHolder(itemView);
+        return new CustomAdapterForNearByLocAdapter.MyViewHolder(itemView);
     }
-
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.shop_name.setText(name[position]);
         holder.shop_address.setText(address[position]);
-
     }
-
     @Override
     public int getItemCount() {
         return name.length;
     }
-
-
 }

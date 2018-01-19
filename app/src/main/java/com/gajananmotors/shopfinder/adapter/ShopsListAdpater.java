@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.ViewPostActivity;
 import com.gajananmotors.shopfinder.holder.ShopsListHolder;
-import com.gajananmotors.shopfinder.model.ShopsList;
+import com.gajananmotors.shopfinder.model.ShopsListModel;
 
 import java.util.ArrayList;
 
@@ -24,17 +24,16 @@ import java.util.ArrayList;
 
 public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     Activity activity;
-    ArrayList<ShopsList> list = new ArrayList<>();
+    ArrayList<ShopsListModel> list = new ArrayList<>();
     private LinearLayout viewPostLayout;
 
-    public ShopsListAdpater(Activity activity,LinearLayout viewPostLayout, ArrayList<ShopsList> shops_list) {
+    public ShopsListAdpater(Activity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
         this.list = shops_list;
         this.activity = activity;
         this.viewPostLayout = viewPostLayout;
     }
 
-
-    public ShopsListAdpater(ArrayList<ShopsList> shops_list) {
+    public ShopsListAdpater(ArrayList<ShopsListModel> shops_list) {
         this.list = shops_list;
     }
 
@@ -77,7 +76,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         return list.size();
     }
 
-    public void setFilter(ArrayList<ShopsList> newList) {
+    public void setFilter(ArrayList<ShopsListModel> newList) {
         list = new ArrayList<>();
         list.addAll(newList);
         notifyDataSetChanged();

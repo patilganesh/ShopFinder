@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by Ashwin on 1/5/2018.
  */
-public class SubCategoryList {
+public class SubCategoryListModel {
     @SerializedName("sub_categories")
     private ArrayList<SubCategoryModel> subcategory = new ArrayList<>();
 

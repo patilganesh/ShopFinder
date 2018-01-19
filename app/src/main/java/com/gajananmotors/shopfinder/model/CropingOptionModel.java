@@ -7,7 +7,7 @@ package com.gajananmotors.shopfinder.model;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
-public class CropingOption {
+public class CropingOptionModel {
     public CharSequence title;
     public Drawable icon;
     public Intent appIntent;

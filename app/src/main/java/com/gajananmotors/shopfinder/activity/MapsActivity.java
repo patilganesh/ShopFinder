@@ -22,12 +22,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.adapter.CustomAdapterForNearByLoc;
+import com.gajananmotors.shopfinder.adapter.CustomAdapterForNearByLocAdapter;
 import com.gajananmotors.shopfinder.utility.DataParser;
 import com.gajananmotors.shopfinder.utility.DownloadUrl;
 import com.gajananmotors.shopfinder.utility.GeofenceTrasitionService;
@@ -82,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationRequest mLocationRequest;
     RecyclerView recycleView;
     LinearLayoutManager mLayoutManager;
-    private CustomAdapterForNearByLoc adapter;
+    private CustomAdapterForNearByLocAdapter adapter;
     private TextView textView;
     Marker marker;
     boolean gps_enabled = false;
@@ -520,7 +519,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ShowNearbyPlaces(nearbyPlacesList);
             runOnUiThread(new Runnable() {
                 public void run() {
-                    adapter = new CustomAdapterForNearByLoc(MapsActivity.this, sourcelist.toArray(new String[0]), dest.toArray(new String[0]));
+                    adapter = new CustomAdapterForNearByLocAdapter(MapsActivity.this, sourcelist.toArray(new String[0]), dest.toArray(new String[0]));
                     recycleView.setLayoutManager(mLayoutManager);
                     recycleView.setItemAnimator(new DefaultItemAnimator());
                     recycleView.setAdapter(adapter);
