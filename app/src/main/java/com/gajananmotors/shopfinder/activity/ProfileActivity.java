@@ -35,23 +35,19 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText etName, etEmail, etMobile, etDate;
+    private EditText etName, etEmail, etMobile, etDate;
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private File outPutFile = null;
     private CircleImageView imgProfile;
     private Uri mImageCaptureUri;
     private int mYear, mMonth, mDay;
-    Button btnCalendar;
-
-
+    private Button btnCalendar;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 100;
     private static final int REQUEST_PERMISSION_SETTING = 101;
     private boolean sentToSettings = false;
     private SharedPreferences permissionStatus;
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

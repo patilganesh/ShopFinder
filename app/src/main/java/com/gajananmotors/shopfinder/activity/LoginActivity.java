@@ -53,24 +53,27 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.gajananmotors.shopfinder.helper.Constant.MyPREFERENCES;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private CallbackManager callbackManager;
     private LoginButton login;
     private String facebook_id, f_name, m_name, l_name, gender, profile_image, full_name, email_id;
     private EditText etUserName, etPassword;
     private com.hbb20.CountryCodePicker ccp;
-    private String countryCodeAndroid;
+    private String countryCodeAndroid = "";
     private static final int RC_SIGN_IN = 1;
     private int success = 0, otp = 0, responseCode = 0;
     private static final String TAG = LoginActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
-    private String tvDetails;
+    private String tvDetails = "", owner_name = "", owner_email = "", ownner_mobile = "", owner_dob = "", owner_image = "";
     private SignInButton btnSignIn;
     private Button btnLogin, btnRegister;
     private ProgressBar progressBar;
-    private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     String  Device_Token;
+    int owner_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         Device_Token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "0000000");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -134,14 +137,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         l_name = profile.getLastName();
                         full_name = profile.getName();
                         profile_image = profile.getProfilePictureUri(50, 50).toString();
-                        Bundle b = new Bundle();
+                        /*Bundle b = new Bundle();
                         if (b != null) {
                             b.putString("owner_name", profile.getName());
                             b.putString("owner_profile", profile_image);
                             Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                             in.putExtras(b);
                             startActivity(in);
-                        }
+                        }*/
                     }
                 }
             }
@@ -207,24 +210,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (response.isSuccessful()) {
                     LoginUser user = response.body();
                     String msg = user.getMsg();
-                    String name = user.getOwner_name();
-                    String email = user.getOwner_email();
-                    String mobile = user.getMob_no();
-                    String dob = user.getDate_of_birth();
-                    String image = user.getImage();
-                    int owner_id = user.getOwner_id();
+                    owner_name = user.getOwner_name();
+                    owner_email = user.getOwner_email();
+                    ownner_mobile = user.getMob_no();
+                    owner_dob = user.getDate_of_birth();
+                    owner_image = user.getImage();
+                    owner_id = user.getOwner_id();
                     if (user.getResult() == 1) {
-                        Toast.makeText(LoginActivity.this, "Name:" + name
-                                        + "\nEmail:" + email + "\nMobile:" + mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + image
+                        Toast.makeText(LoginActivity.this, "Owner Id:" + user.getOwner_id() + "Name:" + owner_name
+                                        + "\nEmail:" + owner_email + "\nMobile:" + ownner_mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + owner_image
                                 , Toast.LENGTH_LONG).show();
+
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         // setting values to sharedpreferences keys.
                         editor.putInt(Constant.OWNER_ID, owner_id);
-                        editor.putString(Constant.OWNER_NAME, name);
-                        editor.putString(Constant.OWNWER_EMAIL, email);
-                        editor.putString(Constant.DATE_OF_BIRTH, dob);
-                        editor.putString(Constant.MOBILE, mobile);
-                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
+                        editor.putString(Constant.OWNER_NAME, owner_name);
+                        editor.putString(Constant.OWNWER_EMAIL, owner_email);
+                        editor.putString(Constant.DATE_OF_BIRTH, owner_dob);
+                        editor.putString(Constant.MOBILE, ownner_mobile);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + owner_image);
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();
@@ -242,8 +246,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
             }
         });
+
     }
-   /* public void saveData() {
+
+    /* public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
@@ -348,13 +354,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Log.e("google result", tvDetails);
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
-                Bundle b = new Bundle();
+               /* Bundle b = new Bundle();
                 b.putString("owner_name", acct.getDisplayName());
                 b.putString("owner_email", acct.getEmail());
                 b.putString("owner_profile", acct.getPhotoUrl().toString());
                 Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                 in.putExtras(b);
-                startActivity(in);
+                startActivity(in);*/
             }
         }
     }

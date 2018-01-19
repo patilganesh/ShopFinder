@@ -9,12 +9,13 @@ import java.util.ArrayList;
  */
 public class SubCategoryList {
     @SerializedName("sub_categories")
-    private ArrayList<SubCategory> subcategory = new ArrayList<>();
+    private ArrayList<SubCategoryModel> subcategory = new ArrayList<>();
 
-    public ArrayList<SubCategory> getSubcategory() {
+    public ArrayList<SubCategoryModel> getSubcategory() {
         return subcategory;
     }
-    public void setSubcategory(ArrayList<SubCategory> subcategory) {
+
+    public void setSubcategory(ArrayList<SubCategoryModel> subcategory) {
         this.subcategory = subcategory;
     }
 }

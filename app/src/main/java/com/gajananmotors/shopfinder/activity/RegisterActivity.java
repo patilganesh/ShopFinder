@@ -53,16 +53,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private File outPutFile;
     private EditText etName, etEmail, etContactNumber, etPassword, etConfirmPassword, etDate;
     private int mYear, mMonth, mDay;
-    com.hbb20.CountryCodePicker ccp;
+    private com.hbb20.CountryCodePicker ccp;
     private int success = 0, otp = 0, responseCode = 0;
-    private String countryCodeAndroid;
+    private String countryCodeAndroid = "";
     private String pwd, confirmpwd;
     private CircleImageView imgProfile;
     private Bitmap bitmap;
     private Button btnSubmit;
-    private String Device_Token;
+    private String Device_Token = "";
     private SharedPreferences sharedpreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,27 +78,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
-        Intent in = getIntent();
-        Bundle b = in.getExtras();
-        if (b != null) {
-            if (b.getString("owner_email").isEmpty()) {
-                String name = b.getString("owner_name");
-                String profile = b.getString("owner_profile");
-                etName.setText(name);
-                Picasso.with(RegisterActivity.this)
-                        .load(profile)
-                        .into(imgProfile);
-            } else {
-                String name = b.getString("owner_name");
-                String email = b.getString("owner_email");
-                String profile = b.getString("owner_profile");
-                etName.setText(name);
-                etEmail.setText(email);
-                Picasso.with(RegisterActivity.this)
-                        .load(profile)
-                        .into(imgProfile);
-            }
-        }
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
@@ -179,7 +157,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             editor.putString(Constant.DATE_OF_BIRTH, dob);
                             editor.putString(Constant.MOBILE, mobile);
                             editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
-                            editor.apply();
+                            editor.commit();
                             Intent intent = new Intent();
                             intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
                             startActivity(intent);

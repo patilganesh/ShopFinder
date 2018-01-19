@@ -1,8 +1,10 @@
 package com.gajananmotors.shopfinder.apiinterface;
 
 import com.gajananmotors.shopfinder.model.CategoryList;
+import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.LoginUser;
 import com.gajananmotors.shopfinder.model.SubCategoryList;
+import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.model.UserRegister;
 
 import okhttp3.MultipartBody;
@@ -29,18 +31,6 @@ public interface RestInterface {
             @Part("password") String password,
             @Part("device_token") String device_token
     );
-
-    /* Call<UserRegister> userRegister(
-             @Part("owner_name") String owner_name,
-             @Part("owner_email") String owner_email,
-             @Part("mob_no") String mob_no,
-             @Part("date_of_birth") String date_of_birth,
-             @Part("image1") String image1,
-             @Part("password") String password,
-             @Part("device_token") String device_token,
-             @Part("msg") String msg,
-             @Part("result") int result
-     );*/
     @FormUrlEncoded
     @POST("index.php/mobile_api/login_user")
     Call<LoginUser> loginUsersList(
@@ -48,17 +38,6 @@ public interface RestInterface {
             @Field("password") String password,
             @Field("device_token") String device_token
     );
-
-    /* Call<LoginUser> loginUsersList(
-             @Field("mob_no") String mob_no,
-             @Field("password") String password,
-             @Field("device_token") String device_token,
-             @Field("msg") String msg,
-             @Field("owner_name") String owner_name,
-             @Field("owner_email") String owner_email,
-             @Field("otp") String otp,
-             @Field("image") String image
-     );*/
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryList> getCategoryList();
     @FormUrlEncoded
@@ -66,15 +45,39 @@ public interface RestInterface {
     Call<SubCategoryList> getSubCategoryList(
             @Field("category_id") int category_id
     );
-    Call<SubCategoryList> getSubCategoryList(
-            @Field("category_id") int category_id,
-            @Field("sub_category_id") int sub_category_id,
-            @Field("name") String name,
-            @Field("image") String image,
-            @Field("status") String status
+
+    @Multipart
+    @POST("index.php/mobile_api/create_shop")
+    Call<CreateShopModel> createShop(
+            @Part("category_id") int category_id,
+            @Part("sub_category_id") int sub_category_id,
+            @Part("category_search") String category_search,
+            @Part("owner_id") int owner_id,
+            @Part("shop_name") String shop_name,
+            @Part("shop_timing") String shop_timing,
+            @Part("address") String address,
+            @Part("shop_details") String shop_details,
+            @Part("shop_lat") String shop_lat,
+            @Part("shop_long") String shop_long,
+            @Part("area") String area,
+            @Part("city") String city,
+            @Part("state") String state,
+            @Part("country") String country,
+            @Part("pincode") String pincode,
+            @Part("place_search") String place_search,
+            @Part("website") String website,
+            @Part MultipartBody.Part shop_pic,
+            @Part("shop_mob_no") String shop_mob_no
     );
-   /*
-    @POST("service_url")
-    Call<AddPost>postRegister(@Body AddPost post);*/
+
+    @Multipart
+    @POST("index.php/mobile_api/upload_shop_images")
+    Call<UploadShopImagesModel> uploadShopImages(
+            @Part("shop_id") int shop_id,
+            @Part MultipartBody.Part image,
+            @Part("shop_mob_no") String shop_mob_no,
+            @Part("action") String action,
+            @Part("count") int count
+    );
 }
 //index.php?r=customerRegister/createOwner"

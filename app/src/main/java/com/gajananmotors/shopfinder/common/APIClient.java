@@ -19,9 +19,12 @@ public class APIClient {
 
     private APIClient() {
     }
-
     public static String getImagePath() {
         return "http://www.findashop.in/images/";
+    }
+
+    public static String getShopOwnerProfilePhoto() {
+        return "http://www.findashop.in/images/owner_profile/";
     }
 
     public static Retrofit getClient() {

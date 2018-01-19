@@ -63,15 +63,17 @@ public class SubCategoryActivity extends AppCompatActivity {
         call.enqueue(new Callback<SubCategoryList>() {
             @Override
             public void onResponse(Call<SubCategoryList> call, Response<SubCategoryList> response) {
-                SubCategoryList list = response.body();
-                sub_category_list = list.getSubcategory();
-                for (SubCategoryModel model : sub_category_list) {
-                    subCategoryNames.add(model.getName());
-                    subCategoryImages.add(model.getImage());
-                    subCatId.add(model.getSub_category_id());
+                if (response.isSuccessful()) {
+                    SubCategoryList list = response.body();
+                    sub_category_list = list.getSubcategory();
+                    for (SubCategoryModel model : sub_category_list) {
+                        subCategoryNames.add(model.getName());
+                        subCategoryImages.add(model.getImage());
+                        subCatId.add(model.getSub_category_id());
 
+                    }
+                    setAdapetr();
                 }
-                setAdapetr();
             }
 
             @Override
