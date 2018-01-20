@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -476,19 +478,105 @@ public class AddPostActivity extends AppCompatActivity {
             }, 4000);
         }
     }
-
+/*
     private boolean checkValidation() {
         boolean ret = true;
-        if (!Validation.hasText(etBusinessName)) ret = false;
-        if (!Validation.hasText(etBusinessLocation)) ret = false;
-        if (!Validation.isEmailAddress(etBusinessEmail, true)) ret = false;
-        if (!Validation.isPhoneNumber(etBusinessMobile, true)) ret = false;
-        if (!Validation.hasText(category)) ret = false;
-        if (!Validation.hasText(subcategory)) ret = false;
+        if (!Validation.hasText(etBusinessName,"Business Name")) ret = false;
+        if (!Validation.hasText(etBusinessLocation,"Business Location")) ret = false;
+        if (!Validation.isEmailAddress(etBusinessEmail, true,"Email")) ret = false;
+        if (!Validation.isPhoneNumber(etBusinessMobile, true,"Mobile Number")) ret = false;
+        if (!Validation.hasText(category,"Category")) ret = false;
+        if (!Validation.hasText(subcategory,"Subcategory")) ret = false;
         if (mSelectedImagesContainer.equals("")) {
             Toast.makeText(getApplicationContext(), "Click Select Photo button", Toast.LENGTH_SHORT).show();
         }
 
         return ret;
+    }*/
+
+
+    private boolean checkValidation() {
+        boolean ret=true;
+
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        LinearLayout linear_layout=findViewById(R.id.linear_layout);
+
+        String name = etBusinessName.getText().toString();
+        String email = etBusinessEmail.getText().toString();
+        String location = etBusinessLocation.getText().toString();
+        String mob = etBusinessMobile.getText().toString();
+        String categoryType = category.getText().toString();
+        String subcategoryType = subcategory.getText().toString();
+
+        if(name.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Shop Name", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(email.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (!email.matches(emailPattern)){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(location.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Shop Address", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(mob.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Mobile Number", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(mob.length()<=9){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Mobile Number", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(categoryType.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please select Category ", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(subcategoryType.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please select Subcategory", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+
+        if (mSelectedImagesContainer.equals("")) {
+            Toast.makeText(getApplicationContext(), "Click Select Photo button", Toast.LENGTH_SHORT).show();
+        }
+        return ret;
     }
+
 }
