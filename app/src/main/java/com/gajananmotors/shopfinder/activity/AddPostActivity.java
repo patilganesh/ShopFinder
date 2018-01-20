@@ -511,7 +511,7 @@ public class AddPostActivity extends AppCompatActivity {
         if(name.matches("")){
 
             Snackbar snackbar = Snackbar
-                    .make(linear_layout, "Please Enter Name", Snackbar.LENGTH_LONG);
+                    .make(linear_layout, "Please Enter Shop Name", Snackbar.LENGTH_LONG);
 
             snackbar.show();
             return false;
@@ -535,7 +535,7 @@ public class AddPostActivity extends AppCompatActivity {
         if(location.matches("")){
 
             Snackbar snackbar = Snackbar
-                    .make(linear_layout, "Please Enter Location", Snackbar.LENGTH_LONG);
+                    .make(linear_layout, "Please Enter Shop Address", Snackbar.LENGTH_LONG);
 
             snackbar.show();
             return false;
