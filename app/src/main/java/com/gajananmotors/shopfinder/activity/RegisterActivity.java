@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -34,6 +36,7 @@ import com.gajananmotors.shopfinder.utility.Validation;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -61,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Button btnSubmit;
     private String Device_Token = "";
     private SharedPreferences sharedpreferences;
+    private Call<UserRegisterModel> user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +84,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btnSubmit = findViewById(R.id.btnSubmit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         imgProfile.setOnClickListener(this);
+        // outPutFile = null;
+        outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         etDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         validation();
@@ -93,6 +98,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     /*Calling Api and register shop owner's Data*/
     private void registerUser() {
         File shop_cover_photo = null;
@@ -101,18 +107,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         UserRegisterModel user_data;
         MultipartBody.Part fileToUpload = null;
         user_data = new UserRegisterModel();
-        if (outPutFile != null) {
-            try {
-              /*  String file_Path = mImageCaptureUri.getPath();
-                // String filepath = mImageCaptureUri.getPath();
-                shop_cover_photo = new File(file_Path);*/
-                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
-                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
-                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
-            } catch (Exception e) {
-                Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
         user_data.setOwner_name(etName.getText().toString());
         user_data.setMob_no(etContactNumber.getText().toString());
         user_data.setOwner_email(etEmail.getText().toString());
@@ -121,61 +115,70 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user_data.setDevice_token(Device_Token);
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<UserRegisterModel> user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), fileToUpload, user_data.getPassword(), user_data.getDevice_token());
-        try {
-            user.enqueue(new Callback<UserRegisterModel>() {
-                @Override
-                public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
-                    if (response.isSuccessful()) {
-                        UserRegisterModel user = response.body();
-                        String msg = user.getMsg();
-                        String name = user.getOwner_name();
-                        String email = user.getOwner_email();
-                        String mobile = user.getMob_no();
-                        String dob = user.getDate_of_birth();
-                        String image = user.getImage1();
-                        int owner_id = user.getOwner_id();
-                        int result = user.getResult();
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        if (result == 1) {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
-                            alert.setMessage("Successfully Registered\nOwner Id:" + owner_id + "\nMesg:" + msg + "\nImage:" + image + "\nName:" + name + "\nEmail:" + email + "\nResult:" + result); //display response in Alert dialog.
-                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
-                            alert.show();
-                            //  Toast.makeText(RegisterActivity.this, "msg:" + msg + "\nImage:" + image + "\nMobile No:" + mobile, Toast.LENGTH_LONG).show();
-                            //Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
-                             /*  setting values to sharedpreferences keys.*/
-                            editor.putInt(Constant.OWNER_ID, owner_id);
-                            editor.putString(Constant.OWNER_NAME, name);
-                            editor.putString(Constant.OWNWER_EMAIL, email);
-                            editor.putString(Constant.DATE_OF_BIRTH, dob);
-                            editor.putString(Constant.MOBILE, mobile);
-                            editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
-                            editor.commit();
-                            Intent intent = new Intent();
-                            intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
-                            startActivity(intent);
-                            finish();
-                        } else
-                            Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserRegisterModel> call, Throwable t) {
-                    Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
-                    Log.e("failure", "onFailure: " + t.toString());
-                }
-            });
-        } catch (Exception e) {
-            Toast.makeText(this, "Error Message:" + e.getMessage(), Toast.LENGTH_LONG).show();
+        if (outPutFile != null) {
+            try {
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
+                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
+                user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), fileToUpload, user_data.getPassword(), user_data.getDevice_token());
+                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
+            } catch (Exception e) {
+                Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else if (outPutFile == null) {
+            user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
         }
+        user.enqueue(new Callback<UserRegisterModel>() {
+            @Override
+            public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
+                if (response.isSuccessful()) {
+                    UserRegisterModel user = response.body();
+                    String msg = user.getMsg();
+                    String name = user.getOwner_name();
+                    String email = user.getOwner_email();
+                    String mobile = user.getMob_no();
+                    String dob = user.getDate_of_birth();
+                    String image = user.getImage1();
+
+                    int owner_id = user.getOwner_id();
+                    int result = user.getResult();
+
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    if (result == 1) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
+                        alert.setMessage("Successfully Registered\nOwner Id:" + owner_id + "\nMesg:" + msg + "\nImage:" + image + "\nName:" + name + "\nEmail:" + email + "\nResult:" + result); //display response in Alert dialog.
+                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        alert.show();
+                        //  Toast.makeText(RegisterActivity.this, "msg:" + msg + "\nImage:" + image + "\nMobile No:" + mobile, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+                             /*  setting values to sharedpreferences keys.*/
+                        editor.putInt(Constant.OWNER_ID, owner_id);
+                        editor.putString(Constant.OWNER_NAME, name);
+                        editor.putString(Constant.OWNWER_EMAIL, email);
+                        editor.putString(Constant.DATE_OF_BIRTH, dob);
+                        editor.putString(Constant.MOBILE, mobile);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
+                        editor.apply();
+                        Intent intent = new Intent();
+                        intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
+                        startActivity(intent);
+                        finish();
+                    } else
+                        Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserRegisterModel> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
+                Log.e("failure", "onFailure: " + t.toString());
+            }
+        });
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -205,10 +208,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.imgProfile:
+                //    outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
                 selectImageOption();
                 break;
         }
     }
+
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
@@ -234,6 +239,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
         builder.show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -241,14 +247,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             mImageCaptureUri = data.getData();
             System.out.println("Gallery Image URI : " + mImageCaptureUri);
             CropingIMG();
-
         } else if (requestCode == CAMERA_CODE && resultCode == Activity.RESULT_OK) {
-
             System.out.println("Camera Image URI : " + mImageCaptureUri);
             CropingIMG();
         } else if (requestCode == CROPING_CODE) {
             try {
                 if (outPutFile.exists()) {
+
                     Picasso.with(RegisterActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -259,7 +264,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         public void onError() {
                         }
                     });
-
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while save image", Toast.LENGTH_SHORT).show();
                 }
@@ -268,6 +272,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
     private void CropingIMG() {
         final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -289,9 +294,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             if (size == 1) {
                 Intent i = new Intent(intent);
                 ResolveInfo res = list.get(0);
-
                 i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-
                 startActivityForResult(i, CROPING_CODE);
             } else {
                 for (ResolveInfo res : list) {
@@ -314,7 +317,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-
                         if (mImageCaptureUri != null) {
                             getContentResolver().delete(mImageCaptureUri, null, null);
                             mImageCaptureUri = null;
@@ -326,6 +328,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
     private void validation() {
        /* etName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -406,6 +409,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     private boolean checkValidation() {
 
         boolean ret = true;

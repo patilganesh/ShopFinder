@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
       /*  gridAdapter=new CustomAdapterForVerticalGridViewAdapter(this,nameList,imglist);
         recycler_view_vertical.setAdapter(gridAdapter);*/
+        String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, PERMISSIONS)) {
@@ -131,7 +133,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+        String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
+        if (name != null) {
             navigationView.removeHeaderView(navigationView.getHeaderView(0));
             View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
@@ -139,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
+            // String img1 = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Picasso.with(MainActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
@@ -211,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -221,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }*/
         return super.onOptionsItemSelected(item);
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -255,10 +261,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
             startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
         } else if (id == R.id.nav_logout) {
+
             sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.clear();
+            //sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
+
+            sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
+            sharedpreferences.edit().remove(Constant.OWNER_NAME).commit();
+            sharedpreferences.edit().remove(Constant.OWNWER_EMAIL).commit();
             editor.apply();
+            String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
             startActivity(new Intent(this, MainActivity.class));
         }
@@ -266,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -274,7 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
     @Override
     public void onClick(View v) {
         /*switch (v.getId()) {

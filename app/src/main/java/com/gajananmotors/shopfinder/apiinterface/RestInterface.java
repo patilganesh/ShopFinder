@@ -32,16 +32,17 @@ public interface RestInterface {
             @Part("device_token") String device_token
     );
 
+    @FormUrlEncoded
     @POST("index.php/mobile_api/create_shop_owner")
     Call<UserRegisterModel> userRegisterforEmptyImage(
-            @Part("owner_name") String owner_name,
-            @Part("owner_email") String owner_email,
-            @Part("mob_no") String mob_no,
-            @Part("date_of_birth") String date_of_birth,
-            @Part("image") String image,
-            @Part("password") String password,
-            @Part("device_token") String device_token
+            @Field("owner_name") String owner_name,
+            @Field("owner_email") String owner_email,
+            @Field("mob_no") String mob_no,
+            @Field("date_of_birth") String date_of_birth,
+            @Field("password") String password,
+            @Field("device_token") String device_token
     );
+
     @FormUrlEncoded
     @POST("index.php/mobile_api/login_user")
     Call<LoginUserModel> loginUsersList(
@@ -49,8 +50,10 @@ public interface RestInterface {
             @Field("password") String password,
             @Field("device_token") String device_token
     );
+
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryListModel> getCategoryList();
+
     @FormUrlEncoded
     @POST("index.php/mobile_api/get_sub_categories")
     Call<SubCategoryListModel> getSubCategoryList(
@@ -68,9 +71,6 @@ public interface RestInterface {
             @Part MultipartBody.Part image,
             @Part("owner_id") int owner_id
     );
-
-
-
 
 
     @Multipart
@@ -119,6 +119,7 @@ public interface RestInterface {
             @Part("shop_pic") String shop_pic,
             @Part("shop_mob_no") String shop_mob_no
     );
+
     @Multipart
     @POST("index.php/mobile_api/upload_shop_images")
     Call<UploadShopImagesModel> uploadShopImages(
