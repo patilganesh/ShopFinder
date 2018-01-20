@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String Device_Token = "";
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
-
+    private boolean flag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +86,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         StrictMode.setVmPolicy(builder.build());
         imgProfile.setOnClickListener(this);
         // outPutFile = null;
+
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         etDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
@@ -115,6 +116,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user_data.setDevice_token(Device_Token);
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
+        if (!flag) {
+            Toast.makeText(this, "Flag:" + flag, Toast.LENGTH_SHORT).show();
+            outPutFile = null;
+        }
         if (outPutFile != null) {
             try {
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
@@ -202,13 +207,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 dpd.show();
                 break;
             case R.id.btnSubmit:
-                if (checkValidation()) {
+              /*  if (checkValidation()) {*/
                     //Toast.makeText(this, "Registration.....", Toast.LENGTH_SHORT).show();
                     registerUser();//calling register method for web services
-                }
+                // }
                 break;
             case R.id.imgProfile:
-                //    outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
                 selectImageOption();
                 break;
         }
@@ -253,7 +257,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         } else if (requestCode == CROPING_CODE) {
             try {
                 if (outPutFile.exists()) {
-
+                    flag = true;
                     Picasso.with(RegisterActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -376,7 +380,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });*/
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                Validation.hasText(etPassword);
+                Validation.hasText(etPassword, "");
                 pwd = etPassword.getText().toString();
 
                 if (pwd.length() < 6) {
@@ -393,7 +397,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
         etConfirmPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                Validation.hasText(etConfirmPassword);
+                Validation.hasText(etConfirmPassword, "");
                 confirmpwd = etConfirmPassword.getText().toString();
 
                 if (!pwd.equals(confirmpwd)) {
@@ -410,7 +414,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private boolean checkValidation() {
+   /* private boolean checkValidation() {
 
         boolean ret = true;
         if (!Validation.hasText(etName)) ret = false;
@@ -420,7 +424,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (!Validation.hasText(etPassword)) ret = false;
         if (!Validation.hasText(etConfirmPassword)) ret = false;
         return ret;
-    }
+    }*/
 /*
     public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);

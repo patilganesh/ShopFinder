@@ -63,7 +63,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     private Button btnEdit, btn_delete;
-    ImageView edtProfile;
+    private ImageView edtProfile;
+    private boolean flag = false;
    /* private String name,email,dob,mobile,image;
     private int owner_id;
 */
@@ -178,24 +179,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void updateUser() {
-
-
         File shop_cover_photo = null;
         byte[] imgbyte = null;
         Retrofit retrofit;
         UserRegisterModel updateRegister;
         MultipartBody.Part fileToUpload = null;
         updateRegister = new UserRegisterModel();
-        if (outPutFile != null) {
-            try {
 
-                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
-                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
-                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
-            } catch (Exception e) {
-                Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
         updateRegister.setOwner_name(etName.getText().toString());
         updateRegister.setMob_no(etMobile.getText().toString());
         updateRegister.setOwner_email(etEmail.getText().toString());
@@ -203,6 +193,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         updateRegister.setOwner_id(sharedpreferences.getInt(Constant.OWNER_ID, 0));
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
+        if (!flag) {
+            Toast.makeText(this, "Flag:" + flag, Toast.LENGTH_SHORT).show();
+            outPutFile = null;
+        }
+        if (outPutFile != null) {
+            try {
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
+                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
+                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
+            } catch (Exception e) {
+                Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
         Call<UserRegisterModel> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
         try {
             user.enqueue(new Callback<UserRegisterModel>() {
@@ -220,7 +223,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         int result = user.getResult();
 
                         if (result == 1 && name != null) {
-
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.putInt(Constant.OWNER_ID, owner_id);
                             editor.putString(Constant.OWNER_NAME, name);
@@ -306,6 +308,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else if (requestCode == CROPING_CODE) {
             try {
                 if (outPutFile.exists()) {
+                    flag = true;
                     Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
