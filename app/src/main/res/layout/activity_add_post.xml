@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/linear_layout">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

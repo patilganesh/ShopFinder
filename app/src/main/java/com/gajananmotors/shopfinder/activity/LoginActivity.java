@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -76,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
@@ -157,26 +160,55 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection Failed : " + connectionResult);
     }
-    private boolean checkValidation() {
+   /* private boolean checkValidation() {
         boolean ret = true;
-        if (!Validation.isPhoneNumber(etUserName, true)) ret = false;
-        if (!Validation.hasText(etPassword)) ret = false;
+        if (!Validation.isPhoneNumber(etUserName, true,"Mobile Number")) ret = false;
+        if (!Validation.hasText(etPassword,"Password")) ret = false;
+        return ret;
+    }*/
+
+
+
+    private boolean checkValidation() {
+        boolean ret=true;
+        LinearLayout linear_layout=findViewById(R.id.linear_layout);
+        String username = etUserName.getText().toString();
+        String password = etPassword.getText().toString();
+        if(username.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Username", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(password.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Password", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
         return ret;
     }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnLogin:
-                if (etUserName.getText().toString().equals("") || etPassword.getText().toString().equals("")) {
+            /*    if (etUserName.getText().toString().equals("") || etPassword.getText().toString().equals("")) {
                     Toast.makeText(this, "Username or Password cant be blank! ", Toast.LENGTH_SHORT).show();
-                } else {
-                    ConnectionDetector detector = new ConnectionDetector(this);
-                    if (detector.isConnectingToInternet())
-                        loginService();//calling Api for Authentication
-                    else {
-                        Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
-                    }
+                } else {*/
+            if(checkValidation()){
+                ConnectionDetector detector = new ConnectionDetector(this);
+                if (detector.isConnectingToInternet())
+                    loginService();//calling Api for Authentication
+                else {
+                    Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
                 }
+            }
+
+
                 break;
             case R.id.btnRegister:
                 //  Toast.makeText(this, "Clicked....", Toast.LENGTH_LONG).show();
@@ -188,6 +220,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 break;
         }
     }
+
+
+
     public void loginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
@@ -78,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
@@ -373,7 +376,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });*/
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                Validation.hasText(etPassword);
+                Validation.hasText(etPassword,"Password");
                 pwd = etPassword.getText().toString();
 
                 if (pwd.length() < 6) {
@@ -390,7 +393,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
         etConfirmPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                Validation.hasText(etConfirmPassword);
+                Validation.hasText(etConfirmPassword,"Confirm Password");
                 confirmpwd = etConfirmPassword.getText().toString();
 
                 if (!pwd.equals(confirmpwd)) {
@@ -406,15 +409,95 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-    private boolean checkValidation() {
+    /*private boolean checkValidation() {
 
         boolean ret = true;
-        if (!Validation.hasText(etName)) ret = false;
-        if (!Validation.isEmailAddress(etEmail, true)) ret = false;
-        if (!Validation.hasText(etDate)) ret = false;
-        if (!Validation.isPhoneNumber(etContactNumber, true)) ret = false;
-        if (!Validation.hasText(etPassword)) ret = false;
-        if (!Validation.hasText(etConfirmPassword)) ret = false;
+        if (!Validation.hasText(etName,"Name")) ret = false;
+        if (!Validation.isEmailAddress(etEmail, true,"Email")) ret = false;
+        if (!Validation.hasText(etDate,"Date of Birth")) ret = false;
+        if (!Validation.isPhoneNumber(etContactNumber, true,"Mobile Number")) ret = false;
+        if (!Validation.hasText(etPassword,"Password")) ret = false;
+        if (!Validation.hasText(etConfirmPassword,"Confirm Password")) ret = false;
+        return ret;
+    }*/
+
+
+    private boolean checkValidation() {
+        boolean ret=true;
+
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        LinearLayout linear_layout=findViewById(R.id.linear_layout);
+        String name = etName.getText().toString();
+        String email = etEmail.getText().toString();
+        String date = etDate.getText().toString();
+        String mob = etContactNumber.getText().toString();
+        String password = etPassword.getText().toString();
+        String cpassword = etConfirmPassword.getText().toString();
+
+        if(name.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Name", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(email.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (!email.matches(emailPattern)){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(date.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Date of Birth", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(mob.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Mobile Number", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(mob.length()<=9){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Mobile Number", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(password.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Password", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if(cpassword.matches("")){
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Confirm Password", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
         return ret;
     }
 /*
