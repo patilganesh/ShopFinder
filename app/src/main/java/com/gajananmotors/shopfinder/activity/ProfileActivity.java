@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
+import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
 
 import com.squareup.picasso.Picasso;
@@ -65,6 +69,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button btnEdit, btn_delete;
     private ImageView edtProfile;
     private boolean flag = false;
+    private CoordinatorLayout coordinatorLayout_setting;
    /* private String name,email,dob,mobile,image;
     private int owner_id;
 */
@@ -80,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
+        coordinatorLayout_setting=findViewById(R.id.coordinatorLayout_setting);
         etDate = findViewById(R.id.etDate);
         edtProfile = findViewById(R.id.fab_iv_edit);
         btnEdit = findViewById(R.id.btnEdit);
@@ -175,7 +181,40 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     dpd.show();
                 }
                 break;
+            case R.id.btn_delete:
+                deleteOwnerService();
+                break;
         }
+    }
+
+    private void deleteOwnerService() {
+        Retrofit retrofit;
+        DeleteUserModel deleteOwner;
+        deleteOwner=new DeleteUserModel();
+
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<DeleteUserModel> deleteUser= restInterface.deleteOwnerList( sharedpreferences.getInt(Constant.OWNER_ID, 0));
+        deleteUser.enqueue(new Callback<DeleteUserModel>() {
+            @Override
+            public void onResponse(Call<DeleteUserModel> call, Response<DeleteUserModel> response) {
+                if (response.isSuccessful()){
+                 String msg=  response.body().getMsg();
+                    Snackbar.make(coordinatorLayout_setting,""+msg,Snackbar.LENGTH_SHORT).show();
+                    sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.clear();
+                    editor.apply();
+                    startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteUserModel> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void updateUser() {

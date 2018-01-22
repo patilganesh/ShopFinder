@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
-    private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,9 +103,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i);
             }
         });
-        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-            fab.setVisibility(View.GONE);
-        }
+
+
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             @Override
@@ -132,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+            fab.setVisibility(View.GONE);
+
+        }
         navigationView.setNavigationItemSelectedListener(this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
         if (name != null) {
@@ -142,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
-            // String img1 = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Picasso.with(MainActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
@@ -231,11 +236,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view listview_map_activity_data clicks here.
+
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
 
-            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+
         } else if (id == R.id.nav_aboutus) {
 
         } else if (id == R.id.nav_nearby) {
@@ -264,11 +271,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            //sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
-
-            sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
-            sharedpreferences.edit().remove(Constant.OWNER_NAME).commit();
-            sharedpreferences.edit().remove(Constant.OWNWER_EMAIL).commit();
+            editor.clear();
             editor.apply();
             String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
