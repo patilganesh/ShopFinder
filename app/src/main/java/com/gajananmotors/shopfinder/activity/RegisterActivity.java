@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -14,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,8 +22,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -143,10 +143,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     String mobile = user.getMob_no();
                     String dob = user.getDate_of_birth();
                     String image = user.getImage1();
-
                     int owner_id = user.getOwner_id();
                     int result = user.getResult();
-
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     if (result == 1) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
@@ -209,6 +207,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnSubmit:
               /*  if (checkValidation()) {*/
                     //Toast.makeText(this, "Registration.....", Toast.LENGTH_SHORT).show();
+                if (checkValidation())
                     registerUser();//calling register method for web services
                 // }
                 break;
@@ -334,50 +333,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void validation() {
-       /* etName.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                Validation.isName(etName, true);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-        etEmail.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                Validation.isEmailAddress(etEmail, true);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-        etDate.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                Validation.hasText(etDate);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-        etContactNumber.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                Validation.isPhoneNumber(etContactNumber, true);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });*/
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 Validation.hasText(etPassword, "");
@@ -413,18 +368,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
-   /* private boolean checkValidation() {
-
-        boolean ret = true;
-        if (!Validation.hasText(etName)) ret = false;
-        if (!Validation.isEmailAddress(etEmail, true)) ret = false;
-        if (!Validation.hasText(etDate)) ret = false;
-        if (!Validation.isPhoneNumber(etContactNumber, true)) ret = false;
-        if (!Validation.hasText(etPassword)) ret = false;
-        if (!Validation.hasText(etConfirmPassword)) ret = false;
-        return ret;
-    }*/
 /*
     public void saveData() {
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -465,5 +408,83 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 */
+private boolean checkValidation() {
+    boolean ret = true;
+
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+    String name = etName.getText().toString();
+    String email = etEmail.getText().toString();
+    String date = etDate.getText().toString();
+    String mob = etContactNumber.getText().toString();
+    String password = etPassword.getText().toString();
+    String cpassword = etConfirmPassword.getText().toString();
+
+    if (name.matches("")) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Please Enter Name", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (email.matches("")) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (!email.matches(emailPattern)) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (date.matches("")) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Please Enter Date of Birth", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (mob.matches("")) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Please Enter Mobile Number", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (mob.length() <= 9) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Invalid Mobile Number", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (password.matches("")) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Please Enter Password", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    if (cpassword.matches("")) {
+
+        Snackbar snackbar = Snackbar
+                .make(linear_layout, "Please Enter Confirm Password", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+        return false;
+    }
+    return ret;
+}
 
 }

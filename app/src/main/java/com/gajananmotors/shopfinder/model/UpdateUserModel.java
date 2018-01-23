@@ -3,9 +3,10 @@ package com.gajananmotors.shopfinder.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Ashwin on 1/11/2018.
+ * Created by Ashwin on 1/22/2018.
  */
-public class LoginUserModel {
+
+public class UpdateUserModel {
     @SerializedName("owner_id")
     private int owner_id;
     @SerializedName("owner_name")
@@ -16,28 +17,14 @@ public class LoginUserModel {
     private String mob_no;
     @SerializedName("date_of_birth")
     private String date_of_birth;
-    @SerializedName("image")
-    private String image;
-    @SerializedName("password")
-    private String password;
-    @SerializedName("otp")
-    private String otp;
-    @SerializedName("device_token")
-    private String device_token;
+    @SerializedName("status")
+    private int status;
+    @SerializedName("image1")
+    private String image1;
     @SerializedName("result")
     private int result;
     @SerializedName("msg")
     private String msg;
-    @SerializedName("status")
-    private int status;
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     public int getOwner_id() {
         return owner_id;
@@ -79,36 +66,20 @@ public class LoginUserModel {
         this.date_of_birth = date_of_birth;
     }
 
-    public String getImage() {
-        return image;
+    public int getStatus() {
+        return status;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
-    public String getPassword() {
-        return password;
+    public String getImage1() {
+        return image1;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
-    }
-
-    public String getDevice_token() {
-        return device_token;
-    }
-
-    public void setDevice_token(String device_token) {
-        this.device_token = device_token;
+    public void setImage1(String image1) {
+        this.image1 = image1;
     }
 
     public int getResult() {

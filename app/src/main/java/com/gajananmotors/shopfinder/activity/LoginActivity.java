@@ -70,8 +70,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private Button btnLogin, btnRegister;
     private ProgressBar progressBar;
     private SharedPreferences sharedpreferences;
-    String  Device_Token;
-    int owner_id;
+    private String Device_Token;
+    private int owner_id, status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +208,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
 
-
                 break;
             case R.id.btnRegister:
                 //  Toast.makeText(this, "Clicked....", Toast.LENGTH_LONG).show();
@@ -220,9 +219,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 break;
         }
     }
-
-
-
     public void loginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -248,7 +244,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     owner_dob = user.getDate_of_birth();
                     owner_image = user.getImage();
                     owner_id = user.getOwner_id();
-                    if (user.getResult() == 1) {
+                    status = user.getStatus();
+                    if (user.getResult() == 1 && status == 1) {
                         Toast.makeText(LoginActivity.this, "Owner Id:" + user.getOwner_id() + "Name:" + owner_name
                                         + "\nEmail:" + owner_email + "\nMobile:" + ownner_mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + owner_image
                                 , Toast.LENGTH_LONG).show();

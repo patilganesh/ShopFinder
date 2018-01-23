@@ -266,9 +266,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = sharedpreferences.edit();
             //sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
 
-            sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
+           /* sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
             sharedpreferences.edit().remove(Constant.OWNER_NAME).commit();
-            sharedpreferences.edit().remove(Constant.OWNWER_EMAIL).commit();
+            sharedpreferences.edit().remove(Constant.OWNWER_EMAIL).commit();*/
+            editor.clear();
             editor.apply();
             String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
