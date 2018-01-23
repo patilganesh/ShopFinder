@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
@@ -29,6 +32,7 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
+import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
 import com.squareup.picasso.Picasso;
@@ -63,12 +67,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button btnEdit, btn_delete;
     private ImageView edtProfile;
     private boolean flag = false;
+    private CoordinatorLayout coordinatorLayout_setting;
     private Call<UpdateUserModel> user;
     private UpdateUserModel update;
    /* private String name,email,dob,mobile,image;
     private int owner_id;
 */
-   @Override
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
@@ -79,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
+        coordinatorLayout_setting=findViewById(R.id.coordinatorLayout_setting);
         etDate = findViewById(R.id.etDate);
         edtProfile = findViewById(R.id.fab_iv_edit);
         btnEdit = findViewById(R.id.btnEdit);
@@ -177,8 +184,42 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     dpd.show();
                 }
                 break;
+            case R.id.btn_delete:
+                deleteOwnerService();
+                break;
         }
     }
+
+    private void deleteOwnerService() {
+        Retrofit retrofit;
+        DeleteUserModel deleteOwner;
+        deleteOwner=new DeleteUserModel();
+
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<DeleteUserModel> deleteUser= restInterface.deleteOwnerList( sharedpreferences.getInt(Constant.OWNER_ID, 0));
+        deleteUser.enqueue(new Callback<DeleteUserModel>() {
+            @Override
+            public void onResponse(Call<DeleteUserModel> call, Response<DeleteUserModel> response) {
+                if (response.isSuccessful()){
+                 String msg=  response.body().getMsg();
+                    Snackbar.make(coordinatorLayout_setting,""+msg,Snackbar.LENGTH_SHORT).show();
+                    sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.clear();
+                    editor.apply();
+                    startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteUserModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
     private void updateUser() {
         File shop_cover_photo = null;
         byte[] imgbyte = null;
@@ -209,11 +250,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
             //  user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
         }
-       /*user.enqueue(new Callback<UpdateUserModel>() {
+        //Call<UserRegisterModel> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
+       /* try {
+            user.enqueue(new Callback<UserRegisterModel>() {
                 @Override
-                public void onResponse(Call<UpdateUserModel> call, Response<UpdateUserModel> response) {
+                public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
                     if (response.isSuccessful()) {
-                        updateUserModel user = response.body();
+                        UserRegisterModel user = response.body();
                         String msg = user.getMsg();
                         String name = user.getOwner_name();
                         String email = user.getOwner_email();
@@ -242,9 +285,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
 
                         } else {
-                            Toast.makeText(ProfileActivity.this, "Error!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
                         }
-
                     }
                 }
                 @Override
@@ -309,12 +351,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Capture Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    //    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
-                    outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
-                    mImageCaptureUri = Uri.fromFile(outPutFile);
+                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
+                    mImageCaptureUri = Uri.fromFile(f);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
                     //cameraIntent();
+
+
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
@@ -326,6 +369,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         });
         builder.show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -342,7 +386,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             try {
                 if (outPutFile.exists()) {
                     flag = true;
-                    Toast.makeText(this, "File Path:" + outPutFile.getPath(), Toast.LENGTH_SHORT).show();
                     Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -353,6 +396,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                         }
                     });
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Error while save image", Toast.LENGTH_SHORT).show();
                 }
@@ -361,6 +405,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
+
     private void CropingIMG() {
         final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -379,6 +424,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             intent.putExtra("aspectY", 1);
             intent.putExtra("scale", true);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outPutFile));
+
             if (size == 1) {
                 Intent i = new Intent(intent);
                 ResolveInfo res = list.get(0);

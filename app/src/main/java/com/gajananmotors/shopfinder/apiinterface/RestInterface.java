@@ -2,6 +2,8 @@ package com.gajananmotors.shopfinder.apiinterface;
 
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.DeleteShopModel;
+import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
@@ -49,6 +51,20 @@ public interface RestInterface {
             @Field("password") String password,
             @Field("device_token") String device_token
     );
+
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/delete_owner")
+    Call<DeleteUserModel> deleteOwnerList(
+            @Field("owner_id") int owner_id
+
+    );
+ /*   @FormUrlEncoded
+    @POST("index.php/mobile_api/delete_shop")
+    Call<DeleteShopModel> deleteShop(
+            @Field("shop_id") int shop_id
+
+    );*/
+
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryListModel> getCategoryList();
     @FormUrlEncoded
@@ -65,6 +81,7 @@ public interface RestInterface {
             @Part("mob_no") String mob_no,
             @Part("date_of_birth") String date_of_birth,
             @Part MultipartBody.Part image
+
     );
 
     @FormUrlEncoded

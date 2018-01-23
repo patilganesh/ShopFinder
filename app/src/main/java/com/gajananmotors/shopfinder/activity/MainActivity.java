@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
-    private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+            fab.setVisibility(View.GONE);
+
+        }
         navigationView.setNavigationItemSelectedListener(this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
         if (name != null) {
@@ -264,11 +270,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            //sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
-
-           /* sharedpreferences.edit().remove(Constant.OWNER_PROFILE).commit();
-            sharedpreferences.edit().remove(Constant.OWNER_NAME).commit();
-            sharedpreferences.edit().remove(Constant.OWNWER_EMAIL).commit();*/
             editor.clear();
             editor.apply();
             String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
