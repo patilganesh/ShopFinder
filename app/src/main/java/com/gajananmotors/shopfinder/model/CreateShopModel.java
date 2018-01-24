@@ -16,6 +16,10 @@ public class CreateShopModel {
     private int category_id;
     @SerializedName("sub_category_id")
     private int sub_category_id;
+    @SerializedName("category_name")
+    private String category_name;
+    @SerializedName("sub_category_name")
+    private String sub_category_name;
     @SerializedName("shop_name")
     private String shop_name;
     @SerializedName("shop_timing")
@@ -40,7 +44,7 @@ public class CreateShopModel {
     private String area;
     @SerializedName("website")
     private String website;
-    @SerializedName("shop_pic")
+    @SerializedName("cover_pic")
     private String shop_pic;
     @SerializedName("shop_mob_no")
     private String shop_mob_no;
@@ -48,6 +52,22 @@ public class CreateShopModel {
     private int result;
     @SerializedName("msg")
     private String msg;
+
+    public String getCategory_name() {
+        return category_name;
+    }
+
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
+    }
+
+    public String getSub_category_name() {
+        return sub_category_name;
+    }
+
+    public void setSub_category_name(String sub_category_name) {
+        this.sub_category_name = sub_category_name;
+    }
 
     public int getShop_id() {
         return shop_id;

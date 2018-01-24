@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -68,12 +69,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
     private SharedPreferences sharedpreferences;
+    private CoordinatorLayout coordinate_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        coordinate_layout = findViewById(R.id.coordinate_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
@@ -122,7 +125,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar
+                        .make(coordinate_layout, "Fail to load categories,check your internet connection!", Snackbar.LENGTH_LONG);
+
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -131,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
-
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);

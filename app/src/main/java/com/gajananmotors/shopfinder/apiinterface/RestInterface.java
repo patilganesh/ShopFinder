@@ -55,16 +55,13 @@ public interface RestInterface {
     @FormUrlEncoded
     @POST("index.php/mobile_api/delete_owner")
     Call<DeleteUserModel> deleteOwnerList(
-            @Field("owner_id") int owner_id
-
-    );
+            @Field("owner_id") int owner_id);
  /*   @FormUrlEncoded
     @POST("index.php/mobile_api/delete_shop")
     Call<DeleteShopModel> deleteShop(
             @Field("shop_id") int shop_id
 
     );*/
-
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryListModel> getCategoryList();
     @FormUrlEncoded
@@ -83,7 +80,6 @@ public interface RestInterface {
             @Part MultipartBody.Part image
 
     );
-
     @FormUrlEncoded
     @POST("index.php/mobile_api/update_owner")
     Call<UpdateUserModel> updateRegisterforEmptyImage(
@@ -98,6 +94,8 @@ public interface RestInterface {
     Call<CreateShopModel> createShop(
             @Part("category_id") int category_id,
             @Part("sub_category_id") int sub_category_id,
+            @Part("category_name") String category_name,
+            @Part("sub_category_name") String sub_category_name,
             @Part("category_search") String category_search,
             @Part("owner_id") int owner_id,
             @Part("shop_name") String shop_name,
@@ -117,27 +115,29 @@ public interface RestInterface {
             @Part("shop_mob_no") String shop_mob_no
     );
 
+    @FormUrlEncoded
     @POST("index.php/mobile_api/create_shop")
     Call<CreateShopModel> createShopforEmptyImage(
-            @Part("category_id") int category_id,
-            @Part("sub_category_id") int sub_category_id,
-            @Part("category_search") String category_search,
-            @Part("owner_id") int owner_id,
-            @Part("shop_name") String shop_name,
-            @Part("shop_timing") String shop_timing,
-            @Part("address") String address,
-            @Part("shop_details") String shop_details,
-            @Part("shop_lat") String shop_lat,
-            @Part("shop_long") String shop_long,
-            @Part("area") String area,
-            @Part("city") String city,
-            @Part("state") String state,
-            @Part("country") String country,
-            @Part("pincode") String pincode,
-            @Part("place_search") String place_search,
-            @Part("website") String website,
-            @Part("shop_pic") String shop_pic,
-            @Part("shop_mob_no") String shop_mob_no
+            @Field("category_id") int category_id,
+            @Field("sub_category_id") int sub_category_id,
+            @Field("category_name") String category_name,
+            @Field("sub_category_name") String sub_category_name,
+            @Field("category_search") String category_search,
+            @Field("owner_id") int owner_id,
+            @Field("shop_name") String shop_name,
+            @Field("shop_timing") String shop_timing,
+            @Field("address") String address,
+            @Field("shop_details") String shop_details,
+            @Field("shop_lat") String shop_lat,
+            @Field("shop_long") String shop_long,
+            @Field("area") String area,
+            @Field("city") String city,
+            @Field("state") String state,
+            @Field("country") String country,
+            @Field("pincode") String pincode,
+            @Field("place_search") String place_search,
+            @Field("website") String website,
+            @Field("shop_mob_no") String shop_mob_no
     );
     @Multipart
     @POST("index.php/mobile_api/upload_shop_images")
