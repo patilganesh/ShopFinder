@@ -6,20 +6,29 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,24 +37,26 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
+import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
-import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -94,6 +105,11 @@ public class AddPostActivity extends AppCompatActivity {
     private SharedPreferences sharedpreferences;
     private int count = 0;
     private CreateShopModel shop;
+    private PopupWindow pw;
+    private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
+    public static boolean[] checkSelected;
+    ArrayList<String> shopServicesList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +119,9 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
-         /*StringCallback stringCallback = new StringCallback() {
+
+
+        /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
                 if (TextUtils.equals(s,"1")){
@@ -118,6 +136,7 @@ public class AddPostActivity extends AppCompatActivity {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             ArrayList<CategoryModel> categoryModelArrayList = new ArrayList<>();
+
             @Override
             public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {
@@ -126,6 +145,7 @@ public class AddPostActivity extends AppCompatActivity {
                     getCategoryData();
                 }
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
 
@@ -138,6 +158,8 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessEmail = findViewById(R.id.etBusinessEmail);
         etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
         etBusinessServices = findViewById(R.id.etBusinessServices);
+        etBusinessServices.setInputType(InputType.TYPE_NULL);
+
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         etBusinessHour = findViewById(R.id.etBusinessHour);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
@@ -149,12 +171,21 @@ public class AddPostActivity extends AppCompatActivity {
                 getImages(new Config());
             }
         });
+        initialize();
+        etBusinessServices.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                initiatePopUp(shopServicesList, etBusinessServices);
+            }
+        });
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
     }
+
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
@@ -192,6 +223,7 @@ public class AddPostActivity extends AppCompatActivity {
                             getSubCategoryData();
                         }
                     }
+
                     @Override
                     public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                     }
@@ -201,12 +233,49 @@ public class AddPostActivity extends AppCompatActivity {
         // subcategory.setAdapter(categoryAdapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setIconifiedByDefault(true);
+       /* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() > 0) {
+                    recycler_view_vertical.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+                newText = newText.toLowerCase();
+                search_text = newText;
+                ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
+                for (ShopsListModel s : shops_list) {
+                    if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))
+                        suggest_list.add(s);
+                    else if (s.getName().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getType().toLowerCase().endsWith(newText) || s.getDistance().toLowerCase().endsWith(newText) || s.getTiming().toLowerCase().endsWith(newText) || s.getMobileNo().toLowerCase().endsWith(newText))
+                        suggest_list.add(s);
+                    else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
+                        suggest_list.add(s);
+                }
+                adapter.setFilter(suggest_list);
+                return true;
+            }
+        });*/
+        //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
+        return true;
+    }
+
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
         for (int i = 0; i < sub_category_list.size(); i++) {
             SubCategoryNames.add(sub_category_list.get(i).getName().toString());
         }
-        ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, SubCategoryNames);
         subcategory.setAdapter(subCategoryAdapter);
         subcategory.addTextChangedListener(new TextWatcher() {
@@ -240,6 +309,7 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
+
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -255,6 +325,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
+
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
         strBusinessLocation = etBusinessLocation.getText().toString().trim();
@@ -268,6 +339,7 @@ public class AddPostActivity extends AppCompatActivity {
         if (checkValidation())
             confirmdetails();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -308,6 +380,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
+
     private void showMedia() {
         int index = 1;
         mSelectedImagesContainer.removeAllViews();
@@ -360,6 +433,7 @@ public class AddPostActivity extends AppCompatActivity {
                 break;
         }
     }
+
     private void confirmdetails() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
@@ -402,6 +476,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
+
     public void createShop() {
         MultipartBody.Part fileToUpload = null;
         if (!getImages.equals("")) {
@@ -496,10 +571,10 @@ public class AddPostActivity extends AppCompatActivity {
 
 
     private boolean checkValidation() {
-        boolean ret=true;
+        boolean ret = true;
 
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        LinearLayout linear_layout=findViewById(R.id.linear_layout);
+        LinearLayout linear_layout = findViewById(R.id.linear_layout);
 
         String name = etBusinessName.getText().toString();
         String email = etBusinessEmail.getText().toString();
@@ -508,7 +583,7 @@ public class AddPostActivity extends AppCompatActivity {
         String categoryType = category.getText().toString();
         String subcategoryType = subcategory.getText().toString();
 
-        if(name.matches("")){
+        if (name.matches("")) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Please Enter Shop Name", Snackbar.LENGTH_LONG);
@@ -516,7 +591,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if(email.matches("")){
+        if (email.matches("")) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_LONG);
@@ -524,7 +599,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if (!email.matches(emailPattern)){
+        if (!email.matches(emailPattern)) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
@@ -532,7 +607,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if(location.matches("")){
+        if (location.matches("")) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Please Enter Shop Address", Snackbar.LENGTH_LONG);
@@ -540,7 +615,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if(mob.matches("")){
+        if (mob.matches("")) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Please Enter Mobile Number", Snackbar.LENGTH_LONG);
@@ -548,7 +623,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if(mob.length()<=9){
+        if (mob.length() <= 9) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Invalid Mobile Number", Snackbar.LENGTH_LONG);
@@ -556,7 +631,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if(categoryType.matches("")){
+        if (categoryType.matches("")) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Please select Category ", Snackbar.LENGTH_LONG);
@@ -564,7 +639,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if(subcategoryType.matches("")){
+        if (subcategoryType.matches("")) {
 
             Snackbar snackbar = Snackbar
                     .make(linear_layout, "Please select Subcategory", Snackbar.LENGTH_LONG);
@@ -577,6 +652,98 @@ public class AddPostActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Click Select Photo button", Toast.LENGTH_SHORT).show();
         }
         return ret;
+    }
+
+    private void initialize() {
+        //data source for drop-down list
+        shopServicesList = new ArrayList<String>();
+        shopServicesList.add("Punjabi");
+        shopServicesList.add("Pure Vegetarian");
+        shopServicesList.add("Chinese");
+        shopServicesList.add("Parking Available");
+        shopServicesList.add("Home Delivery");
+        checkSelected = new boolean[shopServicesList.size()];
+        //initialize all values of list to 'unselected' initially
+        for (int i = 0; i < checkSelected.length; i++) {
+            checkSelected[i] = false;
+        }
+
+	/*SelectBox is the TextView where the selected values will be displayed in the form of "Item 1 & 'n' more".
+         * When this selectBox is clicked it will display all the selected values
+    	 * and when clicked again it will display in shortened representation as before.
+    	 * */
+
+
+
+        etBusinessServices.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if (!expanded) {
+                    //display all selected values
+                    String selected = "";
+                    int flag = 0;
+                    for (int i = 0; i < shopServicesList.size(); i++) {
+                        if (checkSelected[i] == true) {
+                            selected += shopServicesList.get(i);
+                            selected += ", ";
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 1)
+                        etBusinessServices.setText(selected);
+                    expanded = true;
+                } else {
+                    //display shortened representation of selected values
+                    etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
+                    expanded = false;
+                }
+            }
+        });
+    }
+
+    /*
+     * Function to set up the pop-up window which acts as drop-down list
+     * */
+    private void initiatePopUp(ArrayList<String> items, TextView tv) {
+        LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.poupup_shop_services_menu, (ViewGroup) findViewById(R.id.PopUpView));
+
+        LinearLayout layout1 = (LinearLayout) findViewById(R.id.linear_layout);
+        pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+
+        pw.setBackgroundDrawable(new BitmapDrawable());
+        pw.setTouchable(true);
+
+        pw.setOutsideTouchable(false);
+        pw.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        pw.setTouchInterceptor(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    pw.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        pw.setContentView(layout);
+
+        // pw.showAsDropDown(layout1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            pw.showAsDropDown(etBusinessServices, Gravity.CENTER,0,0);
+        }
+
+        final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
+        DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
+        list.setAdapter(adapter);
+
     }
 
 }
