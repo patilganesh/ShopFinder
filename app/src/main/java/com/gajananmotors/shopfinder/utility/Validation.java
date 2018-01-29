@@ -17,7 +17,7 @@ public class Validation {
     private static final String NAME_REGEX = "[a-zA-Z]+\\.?";
 
     // Error Messages
-    private static final String REQUIRED_MSG = " Required";
+    private static final String REQUIRED_MSG = "Required";
     private static final String EMAIL_MSG = "Invalid Email";
     private static final String PHONE_MSG = "Invalid Mobile Number";
     private static final String NAME_MSG = "Invalid Name";

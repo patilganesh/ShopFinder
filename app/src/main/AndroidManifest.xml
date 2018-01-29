@@ -108,7 +108,7 @@
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
 
         <activity
-            android:name=".activity.SubCategory"
+            android:name=".activity.SubCategoryActivity"
             android:parentActivityName=".activity.MainActivity" />
 
         <meta-data
@@ -117,7 +117,7 @@
 
         <activity
             android:name=".activity.ItemDetailsActivity"
-            android:parentActivityName=".activity.SubCategory" />
+            android:parentActivityName=".activity.SubCategoryActivity" />
         <activity android:name=".tedpicker.ImagePickerActivity" />
 
         <meta-data
@@ -129,7 +129,7 @@
             android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.ViewPostActivity"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".activity.ItemDetailsActivity" />
 
 
     </application>

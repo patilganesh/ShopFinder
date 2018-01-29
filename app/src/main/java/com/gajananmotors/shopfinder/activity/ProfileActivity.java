@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,9 +22,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -30,10 +32,10 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
+import com.gajananmotors.shopfinder.model.DeleteUserModel;
+import com.gajananmotors.shopfinder.model.UpdateUserModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
-
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,7 +65,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     private Button btnEdit, btn_delete;
-    ImageView edtProfile;
+    private ImageView edtProfile;
+    private boolean flag = false;
+    private CoordinatorLayout coordinatorLayout_setting;
+    private Call<UpdateUserModel> user;
+    private UpdateUserModel update;
    /* private String name,email,dob,mobile,image;
     private int owner_id;
 */
@@ -79,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
+        coordinatorLayout_setting=findViewById(R.id.coordinatorLayout_setting);
         etDate = findViewById(R.id.etDate);
         edtProfile = findViewById(R.id.fab_iv_edit);
         btnEdit = findViewById(R.id.btnEdit);
@@ -101,6 +108,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .fit()
                     .into(imgProfile);
         }
+
+       String name = etName.getText().toString();
+       String mobile = etMobile.getText().toString();
+       String email = etEmail.getText().toString();
+       String dob = etDate.getText().toString();
+       int id = sharedpreferences.getInt(Constant.OWNER_ID, 0);
         btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
@@ -128,9 +141,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     edtProfile.setVisibility(View.VISIBLE);
                     btnEdit.setText("Update");
                 } else if (btnEdit.getText().toString().equals("Update")) {
-
-
-
                     etName.setFocusable(false);
                     etName.setEnabled(false);
                     etName.setFocusableInTouchMode(false);
@@ -174,37 +184,74 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     dpd.show();
                 }
                 break;
+            case R.id.btn_delete:
+                deleteOwnerService();
+                break;
         }
     }
 
+    private void deleteOwnerService() {
+        Retrofit retrofit;
+        DeleteUserModel deleteOwner;
+        deleteOwner=new DeleteUserModel();
+
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<DeleteUserModel> deleteUser= restInterface.deleteOwnerList( sharedpreferences.getInt(Constant.OWNER_ID, 0));
+        deleteUser.enqueue(new Callback<DeleteUserModel>() {
+            @Override
+            public void onResponse(Call<DeleteUserModel> call, Response<DeleteUserModel> response) {
+                if (response.isSuccessful()){
+                 String msg=  response.body().getMsg();
+                    Snackbar.make(coordinatorLayout_setting,""+msg,Snackbar.LENGTH_SHORT).show();
+                    sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.clear();
+                    editor.apply();
+                    startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteUserModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
     private void updateUser() {
-
-
         File shop_cover_photo = null;
         byte[] imgbyte = null;
         Retrofit retrofit;
-        UserRegisterModel updateRegister;
+        //   UserRegisterModel updateRegister=new UserRegisterModel();;
+        UpdateUserModel updateUserModel = new UpdateUserModel();
         MultipartBody.Part fileToUpload = null;
-        updateRegister = new UserRegisterModel();
+        updateUserModel.setOwner_name(etName.getText().toString());
+        updateUserModel.setMob_no(etMobile.getText().toString());
+        updateUserModel.setOwner_email(etEmail.getText().toString());
+        updateUserModel.setDate_of_birth(etDate.getText().toString());
+        updateUserModel.setOwner_id(sharedpreferences.getInt(Constant.OWNER_ID, 0));
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        if (!flag) {
+            outPutFile = null;
+        }
         if (outPutFile != null) {
             try {
-
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
                 fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
+                user = restInterface.updateRegister(updateUserModel.getOwner_id(), updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), fileToUpload);
                 //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
             } catch (Exception e) {
                 Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
+        } else {
+            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            //  user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
         }
-        updateRegister.setOwner_name(etName.getText().toString());
-        updateRegister.setMob_no(etMobile.getText().toString());
-        updateRegister.setOwner_email(etEmail.getText().toString());
-        updateRegister.setDate_of_birth(etDate.getText().toString());
-        updateRegister.setOwner_id(sharedpreferences.getInt(Constant.OWNER_ID, 0));
-        retrofit = APIClient.getClient();
-        RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<UserRegisterModel> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
-        try {
+        //Call<UserRegisterModel> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
+       /* try {
             user.enqueue(new Callback<UserRegisterModel>() {
                 @Override
                 public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
@@ -218,9 +265,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         String image = user.getImage1();
                         int owner_id = user.getOwner_id();
                         int result = user.getResult();
-
                         if (result == 1 && name != null) {
-
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.putInt(Constant.OWNER_ID, owner_id);
                             editor.putString(Constant.OWNER_NAME, name);
@@ -244,23 +289,57 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }
-
                 @Override
                 public void onFailure(Call<UserRegisterModel> call, Throwable t) {
                     Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
                     Log.e("failure", "onFailure: " + t.toString());
                 }
-            });
-        } catch (Exception e) {
-            Toast.makeText(this, "Error Message:" + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+            });*/
+        user.enqueue(new Callback<UpdateUserModel>() {
+            @Override
+            public void onResponse(Call<UpdateUserModel> call, Response<UpdateUserModel> response) {
+                if (response.isSuccessful()) {
+                    UpdateUserModel user = response.body();
+                    String msg = user.getMsg();
+                    String name = user.getOwner_name();
+                    String email = user.getOwner_email();
+                    String mobile = user.getMob_no();
+                    String dob = user.getDate_of_birth();
+                    String image = user.getImage1();
+                    int owner_id = user.getOwner_id();
+                    int result = user.getResult();
+                    if (result == 1 && name != null) {
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putInt(Constant.OWNER_ID, owner_id);
+                        editor.putString(Constant.OWNER_NAME, name);
+                        editor.putString(Constant.OWNWER_EMAIL, email);
+                        editor.putString(Constant.DATE_OF_BIRTH, dob);
+                        editor.putString(Constant.MOBILE, mobile);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
+                        editor.apply();
+                        RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
+                        deleteLayout.setVisibility(View.VISIBLE);
+                        com.hbb20.CountryCodePicker ccp_setting = findViewById(R.id.ccp_setting);
+                        ccp_setting.setVisibility(View.GONE);
+                        edtProfile.setVisibility(View.GONE);
+                        btnEdit.setText("Edit");
+                        startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                        // updateserProfile();
+                        Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
 
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "Error!", Toast.LENGTH_LONG).show();
+                    }
 
-    }
+                }
+            }
 
-    private void updateserProfile() {
-
-
+            @Override
+            public void onFailure(Call<UpdateUserModel> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
+                Log.e("failure", "onFailure: " + t.toString());
+            }
+        });
     }
 
     private void selectImageOption() {
@@ -306,6 +385,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else if (requestCode == CROPING_CODE) {
             try {
                 if (outPutFile.exists()) {
+                    flag = true;
                     Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -348,9 +428,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             if (size == 1) {
                 Intent i = new Intent(intent);
                 ResolveInfo res = list.get(0);
-
                 i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-
                 startActivityForResult(i, CROPING_CODE);
             } else {
                 for (ResolveInfo res : list) {
@@ -361,7 +439,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
                     cropOptions.add(co);
                 }
-
                 CropingOptionAdapter adapter = new CropingOptionAdapter(getApplicationContext(), cropOptions);
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
                 builder.setTitle("Choose Croping App");
@@ -371,7 +448,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         startActivityForResult(cropOptions.get(item).appIntent, CROPING_CODE);
                     }
                 });
-
                 builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {

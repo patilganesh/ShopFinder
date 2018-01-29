@@ -1,9 +1,11 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -66,14 +68,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
-    private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
+    private CoordinatorLayout coordinate_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        coordinate_layout = findViewById(R.id.coordinate_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
       /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
         retrofit = APIClient.getClient();
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
       /*  gridAdapter=new CustomAdapterForVerticalGridViewAdapter(this,nameList,imglist);
         recycler_view_vertical.setAdapter(gridAdapter);*/
+        String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, PERMISSIONS)) {
@@ -121,7 +125,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar
+                        .make(coordinate_layout, "Fail to load categories,check your internet connection!", Snackbar.LENGTH_LONG);
+
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -130,8 +137,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+            fab.setVisibility(View.GONE);
+
+        }
+        navigationView.setNavigationItemSelectedListener(this);
+        String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
+        if (name != null) {
             navigationView.removeHeaderView(navigationView.getHeaderView(0));
             View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
@@ -139,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
+            // String img1 = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Picasso.with(MainActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
@@ -211,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -221,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }*/
         return super.onOptionsItemSelected(item);
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -255,10 +272,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
             startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
         } else if (id == R.id.nav_logout) {
+
             sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.clear();
             editor.apply();
+            String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
             startActivity(new Intent(this, MainActivity.class));
         }
@@ -266,7 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -274,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
     @Override
     public void onClick(View v) {
         /*switch (v.getId()) {
