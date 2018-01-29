@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
+            android:id="@+id/viewPostLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/viewPostLayout"
             android:orientation="vertical">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -23,7 +24,8 @@
                     android:id="@+id/shopCoverphoto"
                     android:layout_width="match_parent"
                     android:layout_height="248dp"
-                    android:src="@drawable/background_splashscreen" />
+                    android:src="@drawable/background_splashscreen"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -37,6 +39,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textStyle="bold"
                         android:text="Gajanan Motors"
                         android:textColor="@color/colorWhite"
                         android:textSize="20dp" />
@@ -52,48 +55,30 @@
                         android:text="Vinayak Residency near NH 4 office no-303, Pune-411035"
                         android:textColor="@color/colorWhite"
                         android:textSize="15dp" />
+                    <TextView
+                        android:id="@+id/tvMobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:text="9822856211"
+                        android:textColor="@android:color/holo_green_dark"
+                        android:textSize="17dp"/>
                 </LinearLayout>
+
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     app:cardElevation="2dp"
                     app:cardUseCompatPadding="true">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:weightSum="4">
-
-                        <LinearLayout
-                            android:id="@+id/shopDirectionLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginTop="5dp"
-                                android:padding="5dp"
-                                android:src="@drawable/gmap" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginLeft="7dp"
-                                android:layout_marginRight="3dp"
-                                android:padding="5dp"
-                                android:text="DIRECTION"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
+                        android:weightSum="6">
 
                         <LinearLayout
                             android:id="@+id/shopGallaryLayout"
@@ -110,7 +95,7 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_marginTop="5dp"
                                 android:padding="5dp"
-                                android:src="@drawable/gallery" />
+                                android:src="@mipmap/gallary" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -126,11 +111,104 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/shopEditLayout"
+                            android:id="@+id/shopDirectionLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="5dp"
+                                android:padding="5dp"
+                                android:src="@mipmap/location" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="3dp"
+                                android:padding="5dp"
+                                android:text="DIRECTION"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:id="@+id/shopCallLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="5dp"
+                                android:padding="5dp"
+                                android:src="@mipmap/call" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="3dp"
+                                android:padding="5dp"
+                                android:text="CALL"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/shopMsgLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="5dp"
+                                android:padding="5dp"
+                                android:src="@mipmap/message" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="3dp"
+                                android:padding="5dp"
+                                android:text="MESSAGE"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/shopEditLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                     >
 
                             <ImageView
                                 android:layout_width="50dp"
@@ -170,7 +248,8 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_marginTop="5dp"
                                 android:padding="5dp"
-                                android:src="@drawable/ic_menu_share" />
+                                android:src="@mipmap/share" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -185,16 +264,19 @@
                         </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
+
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     app:cardElevation="2dp"
                     app:cardUseCompatPadding="true">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -230,14 +312,14 @@
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.25"
+                                android:layout_weight="0.50"
                                 android:text="Sub Category" />
 
                             <TextView
                                 android:id="@+id/tvSubcategory"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.75"
+                                android:layout_weight="0.50"
                                 android:gravity="end"
                                 android:text="Dental Hospital"
                                 android:textColor="@color/TextcolorsBlack"
@@ -267,45 +349,7 @@
                                 android:textSize="15dp" />
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="10dp">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.4"
-                                android:text="Mobile Number" />
-
-                            <TextView
-                                android:id="@+id/tvMobile"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="12dp"
-                                android:layout_marginBottom="2dp"
-                                android:layout_weight="0.4"
-                                android:gravity="end"
-                                android:paddingTop="5dp"
-                                android:paddingBottom="5dp"
-                                android:text="9822856211"
-                                android:textColor="@color/TextcolorsBlack"
-                                android:textSize="15dp" />
-
-                            <ImageView
-                                android:layout_width="10dp"
-                                android:layout_height="23dp"
-                                android:layout_marginTop="13dp"
-                                android:layout_weight="0.1"
-                                android:src="@drawable/call_shop" />
-
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="25dp"
-                                android:layout_weight="0.1"
-                                android:layout_marginTop="13dp"
-                                android:src="@drawable/shop_msg" />
-                        </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
             </LinearLayout>
