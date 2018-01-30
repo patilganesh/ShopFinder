@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
+import com.gajananmotors.shopfinder.common.ViewShopList;
 
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
@@ -36,6 +37,18 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopGallaryLayout=findViewById(R.id.shopGallaryLayout);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout=findViewById(R.id.shopEditLayout);
+        ViewShopList viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
+        viewShopList.getShop_id();
+        viewShopList.getStrShop_name();
+        viewShopList.getStrAddress();
+        viewShopList.getStrShop_pic();
+        viewShopList.getStrCategory();
+        viewShopList.getStrSub_category();
+        viewShopList.getLatitude();
+        viewShopList.getLongitude();
+        viewShopList.getStrWeburl();
+        viewShopList.getStrMobile();
+        viewShopList.getArrayList();
         shopEditLayout.setOnClickListener(this);
     }
 

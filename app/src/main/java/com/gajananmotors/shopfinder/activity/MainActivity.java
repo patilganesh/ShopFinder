@@ -211,14 +211,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 newText = newText.toLowerCase();
                 search_text = newText;
                 ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-                for (ShopsListModel s : shops_list) {
+                /*for (ShopsListModel s : shops_list) {
                     if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))
                         suggest_list.add(s);
                     else if (s.getName().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getType().toLowerCase().endsWith(newText) || s.getDistance().toLowerCase().endsWith(newText) || s.getTiming().toLowerCase().endsWith(newText) || s.getMobileNo().toLowerCase().endsWith(newText))
                         suggest_list.add(s);
                     else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
                         suggest_list.add(s);
-                }
+                }*/
                 adapter.setFilter(suggest_list);
                 return true;
             }

@@ -76,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="Call"
+                    android:visibility="gone"
                     android:textSize="12sp" />
             </LinearLayout>
 
