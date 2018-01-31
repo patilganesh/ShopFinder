@@ -97,7 +97,8 @@ private ArrayList<String>allimages=new ArrayList<>();
                 return;
             case R.id.shopGallaryLayout:
               Intent i=new Intent(this,GallaryActivity.class);
-                      i.putExtra("images", allimages );
+                     // i.putExtra("images", allimages );
+                        i.putStringArrayListExtra("images",allimages);
                       i.putExtra("shopCoverphoto", shopCoverpic );
                       i.putExtra("shop_id", shop_id );
               startActivity(i);

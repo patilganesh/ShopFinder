@@ -10,34 +10,54 @@ import android.widget.ImageView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class GallaryActivity extends AppCompatActivity {
-
 
     Gallery simpleGallery;
     CustomGalleryAdapter customGalleryAdapter;
     ImageView selectedImageView;
     // array of images
-    int[] images = {R.drawable.background_splashscreen, R.drawable.advertise, R.drawable.background_splashscreen, R.drawable.advertise};
+    int shop_id;
+ ArrayList<String>images=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
-
+        Intent i = getIntent();
+        String img=i.getExtras().getString("image");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
+        shop_id=i.getIntExtra("shop_id",0);
         selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
-      /*  Intent i = getIntent();
-        simpleGallery= i.getExtras("images","");*/
-        customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(), images);
+        Picasso.with(GallaryActivity.this)
+                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+i.getExtras().getString("shopCoverphoto"))
+                .fit()
+                .placeholder(R.drawable.background_splashscreen)
+                .into(selectedImageView);
+        images=i.getExtras().getStringArrayList("images");
+
+        customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(),images ,shop_id);
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
-        selectedImageView.setImageResource(images[0]);
+        ImageView imageView = new ImageView(GallaryActivity.this);
+        Picasso.with(GallaryActivity.this)
+                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+images.get(0))
+                .fit()
+                .placeholder(R.drawable.background_splashscreen)
+                .into(selectedImageView);
+       // selectedImageView.setImageResource(images.get(0));
         simpleGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                selectedImageView.setImageResource(images[position]);
-
+                ImageView imageView = new ImageView(GallaryActivity.this);
+                Picasso.with(GallaryActivity.this)
+                        .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+images.get(position))
+                        .fit()
+                        .placeholder(R.drawable.background_splashscreen)
+                        .into(selectedImageView);
+              //  selectedImageView.setImageResource(images.get(position));
             }
         });
 
