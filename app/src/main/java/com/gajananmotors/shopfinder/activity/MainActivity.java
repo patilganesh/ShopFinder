@@ -105,9 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i);
             }
         });
-        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-            fab.setVisibility(View.GONE);
-        }
+
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             @Override
@@ -155,8 +153,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
             // String img1 = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
             Picasso.with(MainActivity.this)
-                    .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(user_profile);
         }
       /* nearby = findViewById(R.id.nearby);
