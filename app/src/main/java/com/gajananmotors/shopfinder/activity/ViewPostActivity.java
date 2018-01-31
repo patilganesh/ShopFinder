@@ -9,13 +9,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
 import com.gajananmotors.shopfinder.common.ViewShopList;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
@@ -25,9 +28,12 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
 
     private LinearLayout viewPostLayout, shopDirectionLayout, shopShareLayout, shopEditLayout, shopGallaryLayout, shopCallLayout, shopMsgLayout;
     private TextView mob;
-    private String mob_number;
-
-
+    private String shopCoverpic;
+private ImageView shopCoverphoto;
+private ArrayList<String>allimages=new ArrayList<>();
+    private TextView tvShopName,tvAddress,tvMobile,tvCategory,tvSubcategory,tvWebsite;
+    ViewShopList viewShopList;
+    int shop_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,28 +43,38 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
         shopGallaryLayout = findViewById(R.id.shopGallaryLayout);
+        shopCoverphoto = findViewById(R.id.shopCoverphoto);
+        tvShopName = findViewById(R.id.tvShopName);
+        tvAddress = findViewById(R.id.tvAddress);
+        tvMobile = findViewById(R.id.tvMobile);
+        tvCategory = findViewById(R.id.tvCategory);
+        tvSubcategory = findViewById(R.id.tvSubcategory);
+        tvWebsite = findViewById(R.id.tvWebsite);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout=findViewById(R.id.shopEditLayout);
-        ViewShopList viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
+     viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
         viewShopList.getShop_id();
-        viewShopList.getStrShop_name();
-        viewShopList.getStrAddress();
-        viewShopList.getStrShop_pic();
-        viewShopList.getStrCategory();
-        viewShopList.getStrSub_category();
-        viewShopList.getLatitude();
-        viewShopList.getLongitude();
-        viewShopList.getStrWeburl();
-        viewShopList.getStrMobile();
-        viewShopList.getArrayList();
+     tvShopName.setText(viewShopList.getStrShop_name());
+     tvAddress.setText(viewShopList.getStrAddress());
+     tvCategory.setText(viewShopList.getStrCategory());
+     tvWebsite.setText(viewShopList.getStrWeburl());
+     tvSubcategory.setText(viewShopList.getStrSub_category());
+     tvMobile.setText(viewShopList.getStrMobile());
+        shopCoverpic=viewShopList.getStrShop_pic();
+        Picasso.with(ViewPostActivity.this)
+                .load("http://findashop.in/images/shop_profile/"+viewShopList.getShop_id()+"/"+viewShopList.getStrShop_pic())
+                .fit()
+                .placeholder(R.drawable.background_splashscreen)
+                .into(shopCoverphoto);
+        allimages=viewShopList.getArrayList();
+        shop_id=viewShopList.getShop_id();
         shopEditLayout = findViewById(R.id.shopEditLayout);
         shopEditLayout.setOnClickListener(this);
         shopCallLayout = findViewById(R.id.shopCallLayout);
         shopCallLayout.setOnClickListener(this);
         shopMsgLayout = findViewById(R.id.shopMsgLayout);
         shopMsgLayout.setOnClickListener(this);
-        mob = findViewById(R.id.tvMobile);
-        mob_number = mob.getText().toString();
+
     }
 
 
@@ -80,7 +96,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 //startActivity(new Intent(this, MapsActivity.class));
                 return;
             case R.id.shopGallaryLayout:
-                startActivity(new Intent(this, GallaryActivity.class));
+              Intent i=new Intent(this,GallaryActivity.class);
+                      i.putExtra("images", allimages );
+                      i.putExtra("shopCoverphoto", shopCoverpic );
+                      i.putExtra("shop_id", shop_id );
+              startActivity(i);
+
+
                 return;
             case R.id.shopCallLayout:
 
@@ -96,11 +118,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 }
 
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + mob_number));
+                callIntent.setData(Uri.parse("tel:" + tvMobile));
                 startActivity(callIntent);
                 return;
             case R.id.shopMsgLayout:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", mob_number, null)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", tvMobile.toString(), null)));
                 return;
             case R.id.shopEditLayout:
                 startActivity(new Intent(this, AddPostActivity.class));

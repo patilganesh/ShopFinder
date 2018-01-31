@@ -491,7 +491,7 @@ public class AddPostActivity extends AppCompatActivity {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<CreateShopModel> shopModelCall = restInterface.createShop(
-                int_cat_id, int_subcat_id, strCategorySearch, owner_id, strBusinessName,
+                int_cat_id, int_subcat_id,str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
                 strBusinessHour, strBusinessLocation, strBusinessServices,
                 String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
                 strPlaceSearch, strBusinessWebUrl, fileToUpload, strBusinessMobile);

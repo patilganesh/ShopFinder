@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,8 +23,11 @@ public class GallaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
+
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
         selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
+      /*  Intent i = getIntent();
+        simpleGallery= i.getExtras("images","");*/
         customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(), images);
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
