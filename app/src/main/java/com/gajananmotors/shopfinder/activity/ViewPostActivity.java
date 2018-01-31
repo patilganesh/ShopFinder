@@ -29,16 +29,17 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private LinearLayout viewPostLayout, shopDirectionLayout, shopShareLayout, shopEditLayout, shopGallaryLayout, shopCallLayout, shopMsgLayout;
     private TextView mob;
     private String shopCoverpic;
-private ImageView shopCoverphoto;
-private ArrayList<String>allimages=new ArrayList<>();
-    private TextView tvShopName,tvAddress,tvMobile,tvCategory,tvSubcategory,tvWebsite;
+    private ImageView shopCoverphoto;
+    private ArrayList<String> allimages = new ArrayList<>();
+    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite;
     ViewShopList viewShopList;
     int shop_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -51,23 +52,23 @@ private ArrayList<String>allimages=new ArrayList<>();
         tvSubcategory = findViewById(R.id.tvSubcategory);
         tvWebsite = findViewById(R.id.tvWebsite);
         shopGallaryLayout.setOnClickListener(this);
-        shopEditLayout=findViewById(R.id.shopEditLayout);
-     viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
+        shopEditLayout = findViewById(R.id.shopEditLayout);
+        viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
         viewShopList.getShop_id();
-     tvShopName.setText(viewShopList.getStrShop_name());
-     tvAddress.setText(viewShopList.getStrAddress());
-     tvCategory.setText(viewShopList.getStrCategory());
-     tvWebsite.setText(viewShopList.getStrWeburl());
-     tvSubcategory.setText(viewShopList.getStrSub_category());
-     tvMobile.setText(viewShopList.getStrMobile());
-        shopCoverpic=viewShopList.getStrShop_pic();
+        tvShopName.setText(viewShopList.getStrShop_name());
+        tvAddress.setText(viewShopList.getStrAddress());
+        tvCategory.setText(viewShopList.getStrCategory());
+        tvWebsite.setText(viewShopList.getStrWeburl());
+        tvSubcategory.setText(viewShopList.getStrSub_category());
+        tvMobile.setText(viewShopList.getStrMobile());
+        shopCoverpic = viewShopList.getStrShop_pic();
         Picasso.with(ViewPostActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+viewShopList.getShop_id()+"/"+viewShopList.getStrShop_pic())
+                .load("http://findashop.in/images/shop_profile/" + viewShopList.getShop_id() + "/" + viewShopList.getStrShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(shopCoverphoto);
-        allimages=viewShopList.getArrayList();
-        shop_id=viewShopList.getShop_id();
+        allimages = viewShopList.getArrayList();
+        shop_id = viewShopList.getShop_id();
         shopEditLayout = findViewById(R.id.shopEditLayout);
         shopEditLayout.setOnClickListener(this);
         shopCallLayout = findViewById(R.id.shopCallLayout);
@@ -82,13 +83,14 @@ private ArrayList<String>allimages=new ArrayList<>();
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.shopDirectionLayout:
+                viewShopList.getLatitude();
                 if (!isNetworkAvailable(this)) {
                     displayPromptForEnablingData(this);
                 } else {
-                    String address = getAddress(18.50284, 73.9255587, this);
+                    String address = getAddress(viewShopList.getLatitude(), viewShopList.getLongitude(), this);
                     // Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
                     Log.d("MultiViewType", "address" + address);
-                    Uri gmmIntentUri = Uri.parse("geo:18.50284,73.92555?q=" + address);
+                    Uri gmmIntentUri = Uri.parse("geo:" + viewShopList.getLatitude() + "," + viewShopList.getLatitude() + "?q=" + address);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     startActivity(mapIntent);
@@ -96,12 +98,12 @@ private ArrayList<String>allimages=new ArrayList<>();
                 //startActivity(new Intent(this, MapsActivity.class));
                 return;
             case R.id.shopGallaryLayout:
-              Intent i=new Intent(this,GallaryActivity.class);
-                     // i.putExtra("images", allimages );
-                        i.putStringArrayListExtra("images",allimages);
-                      i.putExtra("shopCoverphoto", shopCoverpic );
-                      i.putExtra("shop_id", shop_id );
-              startActivity(i);
+                Intent i = new Intent(this, GallaryActivity.class);
+                // i.putExtra("images", allimages );
+                i.putStringArrayListExtra("images", allimages);
+                i.putExtra("shopCoverphoto", shopCoverpic);
+                i.putExtra("shop_id", shop_id);
+                startActivity(i);
 
 
                 return;
@@ -119,11 +121,11 @@ private ArrayList<String>allimages=new ArrayList<>();
                 }
 
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + tvMobile));
+                callIntent.setData(Uri.parse("tel:" + tvMobile.getText().toString()));
                 startActivity(callIntent);
                 return;
             case R.id.shopMsgLayout:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", tvMobile.toString(), null)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", tvMobile.getText().toString(), null)));
                 return;
             case R.id.shopEditLayout:
                 startActivity(new Intent(this, AddPostActivity.class));
