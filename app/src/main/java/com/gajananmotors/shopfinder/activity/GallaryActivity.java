@@ -2,6 +2,8 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,6 +62,11 @@ public class GallaryActivity extends AppCompatActivity {
               //  selectedImageView.setImageResource(images.get(position));
             }
         });
+
+    }
+    @Override
+    public void onBackPressed() {
+        images.clear();
 
     }
 }
