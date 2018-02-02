@@ -141,7 +141,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", tvMobile.getText().toString(), null)));
                 return;
             case R.id.shopEditLayout:
-                startActivity(new Intent(this, AddPostActivity.class));
+                startActivity(new Intent(this, EditPostActivity.class));
                 return;
             case R.id.shopShareLayout:
                 Toast.makeText(this, "Share Post", Toast.LENGTH_SHORT).show();
