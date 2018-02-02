@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,7 @@ public class ItemDetailsActivity extends AppCompatActivity{
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
+    private int int_cat_id,int_sub_cat_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +51,21 @@ public class ItemDetailsActivity extends AppCompatActivity{
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         recyclerView = findViewById(R.id.recyclerView);
         viewPostLayout = findViewById(R.id.viewLayout);
-        sharedPreferences=getSharedPreferences(Constant.MyPREFERENCES,MODE_PRIVATE);
+        Intent intent = getIntent();
+        int_cat_id = intent.getIntExtra("CategoryId", 0);
+        int_sub_cat_id = intent.getIntExtra("Sub_CategoryId", 0);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
-        Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID,0));
+        Call<ShopsArrayListModel> call = restInterface.getShoplistbyCategory(int_cat_id,int_sub_cat_id);
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
-                    shops_list = list.getShopList();
-                    setAdapter();
+
+                        shops_list = list.getShopList();
+                        setAdapter();
+
                 }
             }
 

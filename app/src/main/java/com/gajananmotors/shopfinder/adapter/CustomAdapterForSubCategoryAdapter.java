@@ -24,7 +24,8 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
 
     private ArrayList<String> subCategoryNames = new ArrayList<>();
     private ArrayList<String> subCategoryImages = new ArrayList<>();
-    private ArrayList<Integer> subCatId = new ArrayList<>();
+    private ArrayList<Integer> subCatIds = new ArrayList<>();
+    private int CatId,subCatId;
     private String[] name;
     private Context context;
     private int[] imageId;
@@ -35,12 +36,14 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
         context = subCategory;
     }
 
-    public CustomAdapterForSubCategoryAdapter(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, ArrayList<Integer> subCatId) {
+    public CustomAdapterForSubCategoryAdapter(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, int int_cat_id, ArrayList<Integer> subCatId) {
         context = subCategoryActivity;
         Log.d("CustomAdapter","called");
         this.subCategoryNames = subCategoryNames;
         this.subCategoryImages = subCategoryImages;
-        this.subCatId = subCatId;
+        this.CatId = int_cat_id;
+        this.subCatIds = subCatId;
+
 
     }
 
@@ -65,7 +68,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         // holder.text.setText(name[position]);
         holder.text.setText(subCategoryNames.get(position).toString());
         /*holder.images.setImageResource(imageId[position]);
@@ -78,13 +81,21 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
         holder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, ItemDetailsActivity.class));
+                subCatId=subCatIds.get(position);
+                Intent intent = new Intent(context, ItemDetailsActivity.class);
+                intent.putExtra("CategoryId",CatId );
+                intent.putExtra("Sub_CategoryId",subCatId);
+                context.startActivity(intent);
             }
         });
         holder.text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, ItemDetailsActivity.class));
+                subCatId=subCatIds.get(position);
+                Intent intent = new Intent(context, ItemDetailsActivity.class);
+                intent.putExtra("CategoryId",CatId);
+                intent.putExtra("Sub_CategoryId",subCatId);
+                context.startActivity(intent);
             }
         });
 

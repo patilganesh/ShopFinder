@@ -50,6 +50,7 @@ public class GallaryActivity extends AppCompatActivity {
                 .placeholder(R.drawable.background_splashscreen)
                 .into(selectedImageView);
        // selectedImageView.setImageResource(images.get(0));
+
         simpleGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

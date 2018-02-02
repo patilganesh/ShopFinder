@@ -71,6 +71,12 @@ public interface RestInterface {
     Call<ShopsArrayListModel> getShoplist(
             @Field("owner_id") int owner_id
     );
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/get_shop_by_category")
+    Call<ShopsArrayListModel> getShoplistbyCategory(
+            @Field("category_id") int category_id,
+            @Field("sub_category_id") int sub_category_id
+    );
     @Multipart
     @POST("index.php/mobile_api/update_owner")
     Call<UpdateUserModel> updateRegister(
