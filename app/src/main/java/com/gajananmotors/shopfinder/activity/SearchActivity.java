@@ -36,7 +36,7 @@ public class SearchActivity extends AppCompatActivity {
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);
-        String query = MainActivity.search_text;
-        Toast.makeText(this, "New Text:" + query, Toast.LENGTH_LONG).show();
+        //    String query = MainActivity.search_text;
+        //   Toast.makeText(this, "New Text:" + query, Toast.LENGTH_LONG).show();
     }
 }

@@ -60,7 +60,6 @@ public class CustomAdapterForVerticalGridViewAdapter extends RecyclerView.Adapte
         // holder.text.setText(name[position]);
         holder.text.setText(namesList.get(position));
         // holder.text.setText(namesList.get(position));
-
         /*String imagePath= APIClient.getImagePath()+imageList.get(position);
         Glide.with(context)
                 .load(imagePath)

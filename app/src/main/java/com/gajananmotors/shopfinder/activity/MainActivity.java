@@ -1,7 +1,8 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,46 +17,48 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
+import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.gajananmotors.shopfinder.activity.SubCategoryActivity.imglist;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
-/*import com.arlib.floatingsearchview.FloatingSearchView;*/
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
-    public static String search_text;
-    public android.support.v7.widget.SearchView searchView;
+    private static String search_text;
+    private android.support.v7.widget.SearchView searchView;
     private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
@@ -69,16 +72,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
     private SharedPreferences sharedpreferences;
-    private CoordinatorLayout coordinate_layout;
+    private ProgressBar category_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        coordinate_layout = findViewById(R.id.coordinate_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-      /*  searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);*/
+        category_progressbar = findViewById(R.id.category_progressbar);
+        //searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);
+        //   searchView=findViewById(R.id.action_search);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
@@ -87,8 +92,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recycler_view_vertical.setNestedScrollingEnabled(false);
         recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
-      /*  gridAdapter=new CustomAdapterForVerticalGridViewAdapter(this,nameList,imglist);
-        recycler_view_vertical.setAdapter(gridAdapter);*/
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -108,30 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             fab.setVisibility(View.GONE);
         }
-        Call<CategoryListModel> call = restInterface.getCategoryList();
-        call.enqueue(new Callback<CategoryListModel>() {
-            @Override
-            public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
-                if (response.isSuccessful()) {
-                    CategoryListModel categoryListModel = response.body();
-                    category_Model_list = categoryListModel.getCategories();
-                    for (CategoryModel model : category_Model_list) {
-                        categoryNames.add(model.getName());
-                        categoryImages.add(model.getImage());
-                        categoryId.add(model.getCategory_id());
-                    }
-                    setadapter(categoryNames, categoryImages, categoryId);
-                }
-            }
-            @Override
-            public void onFailure(Call<CategoryListModel> call, Throwable t) {
-                // Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
-                Snackbar snackbar = Snackbar
-                        .make(coordinate_layout, "Fail to load categories,check your internet connection!", Snackbar.LENGTH_LONG);
 
-            }
-        });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        checkConnection();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -141,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
             fab.setVisibility(View.GONE);
-
         }
         navigationView.setNavigationItemSelectedListener(this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
@@ -153,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
-            // String img1 = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
+
             Picasso.with(MainActivity.this)
                     .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
@@ -161,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
-        // below code is for feature refernce,please dont delete this code.
-        /*recyclerView = findViewById(R.id.rcv);
+        // searchbar,below code is for feature refernce,please dont delete this code.
+     /*   recyclerView = findViewById(R.id.rcv);
         shops_list.add(new ShopsListModel("Gajana Motors Pvt.Ltd.", "500.00 m", "Vinayak Residencey,near DMart,Baner", "Opens 24 Hours", "http:/www.informedevice.com", "Hotel", "9856237845"));
         shops_list.add(new ShopsListModel("Aloha Technology Pvt.Ltd.", "400.00 m", "2nd & 3rd Floor, Kumar Crystals, New D P Road, Opposite Converses, Aundh, Baner, Pune", "Opens 9Am-10PM", "http:/www.aloha.com", "IT", "7812345645"));
         shops_list.add(new ShopsListModel("Xoriant Technology", "200.00 m", "501-502, 5th Floor, Amar Paradigm, Baner Road, Near D-Mart, Baner, Pune", "Opens 9.30Am-6PM", "http:/www.xoriant.com", "IT", "8185868231"));
@@ -176,6 +156,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
+    }
+
+    public void getCategory() {
+        Call<CategoryListModel> call = restInterface.getCategoryList();
+        category_progressbar.setVisibility(View.VISIBLE);
+        //progressBar.setLeft(20);
+        // btnLogin.setVisibility(View.GONE);
+        category_progressbar.setIndeterminate(true);
+        category_progressbar.setProgress(500);
+        call.enqueue(new Callback<CategoryListModel>() {
+
+            @Override
+            public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
+                if (response.isSuccessful()) {
+                    category_progressbar.setVisibility(View.GONE);
+                    CategoryListModel categoryListModel = response.body();
+                    category_Model_list = categoryListModel.getCategories();
+                    for (CategoryModel model : category_Model_list) {
+                        categoryNames.add(model.getName());
+                        categoryImages.add(model.getImage());
+                        categoryId.add(model.getCategory_id());
+                    }
+                    setadapter(categoryNames, categoryImages, categoryId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryListModel> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void checkConnection() {
+        final ConnectionDetector detector = new ConnectionDetector(this);
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                MainActivity.this);
+        if (!detector.isConnectingToInternet()) {
+            // Toast.makeText(this, "Fail to load categories,check your internet connection!", Toast.LENGTH_LONG).show();
+
+            alertDialog.setMessage("Network not available!");
+            alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
+            alertDialog.setCancelable(false);
+            alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    if (detector.isConnectingToInternet()) {
+                        dialog.dismiss();
+                        getCategory();
+                    } else {
+                        checkConnection();
+                    }
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    finish();
+                }
+            });
+            alertDialog.show();
+        } else {
+            getCategory();
+        }
     }
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
@@ -201,12 +245,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() > 0) {
+               /* if (newText.length() > 0) {
                     recycler_view_vertical.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
+                  //  recyclerView.setVisibility(View.VISIBLE);
                 }
                 newText = newText.toLowerCase();
                 search_text = newText;
@@ -219,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
                         suggest_list.add(s);
                 }
-                adapter.setFilter(suggest_list);
+                adapter.setFilter(suggest_list);*/
                 return true;
             }
         });

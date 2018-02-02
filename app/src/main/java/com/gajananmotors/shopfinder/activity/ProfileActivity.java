@@ -315,7 +315,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         editor.putString(Constant.OWNWER_EMAIL, email);
                         editor.putString(Constant.DATE_OF_BIRTH, dob);
                         editor.putString(Constant.MOBILE, mobile);
-                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
+                        editor.putString(Constant.OWNER_PROFILE, image);
                         editor.apply();
                         RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
                         deleteLayout.setVisibility(View.VISIBLE);
@@ -330,10 +330,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         Toast.makeText(ProfileActivity.this, "Error!", Toast.LENGTH_LONG).show();
                     }
-
                 }
             }
-
             @Override
             public void onFailure(Call<UpdateUserModel> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
@@ -341,7 +339,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
-
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ProfileActivity.this);
