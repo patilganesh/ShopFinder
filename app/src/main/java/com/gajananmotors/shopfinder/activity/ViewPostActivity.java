@@ -1,7 +1,9 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.common.ViewShopList;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,12 +37,16 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite;
     ViewShopList viewShopList;
     int shop_id;
+    private SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+
+
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -62,11 +69,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         tvSubcategory.setText(viewShopList.getStrSub_category());
         tvMobile.setText(viewShopList.getStrMobile());
         shopCoverpic = viewShopList.getStrShop_pic();
-        Picasso.with(ViewPostActivity.this)
-                .load("http://findashop.in/images/shop_profile/" + viewShopList.getShop_id() + "/" + viewShopList.getStrShop_pic())
-                .fit()
-                .placeholder(R.drawable.background_splashscreen)
-                .into(shopCoverphoto);
         allimages = viewShopList.getArrayList();
         shop_id = viewShopList.getShop_id();
         shopEditLayout = findViewById(R.id.shopEditLayout);
@@ -75,6 +77,17 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopCallLayout.setOnClickListener(this);
         shopMsgLayout = findViewById(R.id.shopMsgLayout);
         shopMsgLayout.setOnClickListener(this);
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            shopEditLayout.setVisibility(View.VISIBLE);
+            shopCallLayout.setVisibility(View.GONE);
+            shopMsgLayout.setVisibility(View.GONE);
+        }
+        Picasso.with(ViewPostActivity.this)
+                .load("http://findashop.in/images/shop_profile/" + viewShopList.getShop_id() + "/" + viewShopList.getStrShop_pic())
+                .fit()
+                .placeholder(R.drawable.background_splashscreen)
+                .into(shopCoverphoto);
+
 
     }
 

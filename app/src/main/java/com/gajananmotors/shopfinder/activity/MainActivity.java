@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
-            // String img1 = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
+
             Picasso.with(MainActivity.this)
                     .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()

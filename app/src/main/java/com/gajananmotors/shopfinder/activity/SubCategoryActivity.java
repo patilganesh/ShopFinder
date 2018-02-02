@@ -73,7 +73,7 @@ public class SubCategoryActivity extends AppCompatActivity {
                         subCatId.add(model.getSub_category_id());
 
                     }
-                    setAdapetr();
+                    setAdapetr(int_cat_id,subCatId);
                 }
             }
 
@@ -106,9 +106,9 @@ public class SubCategoryActivity extends AppCompatActivity {
             }
         });*/
     }
-    public void setAdapetr() {
+    public void setAdapetr(int int_cat_id, ArrayList<Integer> subCatId) {
         Log.d("CustomAdapter", "set Adapter method called");
-        customAdapterForSubCategoryAdapter = new CustomAdapterForSubCategoryAdapter(this, subCategoryNames, subCategoryImages, subCatId);
+        customAdapterForSubCategoryAdapter = new CustomAdapterForSubCategoryAdapter(this, subCategoryNames, subCategoryImages,this.int_cat_id, this.subCatId);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategoryAdapter);
         recycler_view.setAdapter(alphaAdapter);
     }

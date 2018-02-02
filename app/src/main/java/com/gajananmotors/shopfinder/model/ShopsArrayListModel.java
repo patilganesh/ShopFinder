@@ -8,7 +8,6 @@ import java.util.ArrayList;
     public class ShopsArrayListModel {
         @SerializedName("shop_list")
         private ArrayList<ShopsListModel> shopsListModelArrayList = new ArrayList<>();
-
         public ArrayList<ShopsListModel> getShopList() {
             return shopsListModelArrayList;
         }
