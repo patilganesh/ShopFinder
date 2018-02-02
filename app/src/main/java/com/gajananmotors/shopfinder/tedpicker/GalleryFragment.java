@@ -30,6 +30,9 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.tedpicker.view.CustomSquareFrameLayout;
 
 
+/**
+ * Created by Gil on 04/03/2014.
+ */
 public class GalleryFragment extends Fragment {
 
     public static ImageGalleryAdapter mGalleryAdapter;

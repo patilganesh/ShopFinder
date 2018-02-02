@@ -62,17 +62,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private static final int REQUEST_PERMISSION_SETTING = 101;
     private boolean sentToSettings = false;
     private SharedPreferences permissionStatus;
-    private static final String MyPREFERENCES = "MyPrefs";
     private SharedPreferences sharedpreferences;
     private Button btnEdit, btn_delete;
     private ImageView edtProfile;
     private boolean flag = false;
     private CoordinatorLayout coordinatorLayout_setting;
     private Call<UpdateUserModel> user;
-    private UpdateUserModel update;
-   /* private String name,email,dob,mobile,image;
+
+    private String name,email,dob,mobile,image;
     private int owner_id;
-*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,16 +102,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             etMobile.setText(sharedpreferences.getString(Constant.MOBILE, ""));
             etDate.setText(sharedpreferences.getString(Constant.DATE_OF_BIRTH, ""));
             Picasso.with(ProfileActivity.this)
-                    .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(imgProfile);
         }
 
-       String name = etName.getText().toString();
-       String mobile = etMobile.getText().toString();
-       String email = etEmail.getText().toString();
-       String dob = etDate.getText().toString();
-       int id = sharedpreferences.getInt(Constant.OWNER_ID, 0);
+
         btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
@@ -248,53 +243,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         } else {
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
-            //  user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
+              user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
         }
-        //Call<UserRegisterModel> user = restInterface.updateRegister(updateRegister.getOwner_name(), updateRegister.getOwner_email(), updateRegister.getMob_no(), updateRegister.getDate_of_birth(), fileToUpload, updateRegister.getOwner_id());
-       /* try {
-            user.enqueue(new Callback<UserRegisterModel>() {
-                @Override
-                public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
-                    if (response.isSuccessful()) {
-                        UserRegisterModel user = response.body();
-                        String msg = user.getMsg();
-                        String name = user.getOwner_name();
-                        String email = user.getOwner_email();
-                        String mobile = user.getMob_no();
-                        String dob = user.getDate_of_birth();
-                        String image = user.getImage1();
-                        int owner_id = user.getOwner_id();
-                        int result = user.getResult();
-                        if (result == 1 && name != null) {
-                            SharedPreferences.Editor editor = sharedpreferences.edit();
-                            editor.putInt(Constant.OWNER_ID, owner_id);
-                            editor.putString(Constant.OWNER_NAME, name);
-                            editor.putString(Constant.OWNWER_EMAIL, email);
-                            editor.putString(Constant.DATE_OF_BIRTH, dob);
-                            editor.putString(Constant.MOBILE, mobile);
-                            editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
-                            editor.apply();
-                            RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
-                            deleteLayout.setVisibility(View.VISIBLE);
-                            com.hbb20.CountryCodePicker ccp_setting = findViewById(R.id.ccp_setting);
-                            ccp_setting.setVisibility(View.GONE);
-                            edtProfile.setVisibility(View.GONE);
-                            btnEdit.setText("Edit");
-                            startActivity(new Intent(ProfileActivity.this, MainActivity.class));
-                            // updateserProfile();
-                            Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
 
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<UserRegisterModel> call, Throwable t) {
-                    Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
-                    Log.e("failure", "onFailure: " + t.toString());
-                }
-            });*/
         user.enqueue(new Callback<UpdateUserModel>() {
             @Override
             public void onResponse(Call<UpdateUserModel> call, Response<UpdateUserModel> response) {

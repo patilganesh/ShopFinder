@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+     //   coordinate_layout = findViewById(R.id.coordinate_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
         //searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);
@@ -111,6 +111,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             fab.setVisibility(View.GONE);
         }
+        Call<CategoryListModel> call = restInterface.getCategoryList();
+        call.enqueue(new Callback<CategoryListModel>() {
+            @Override
+            public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
+                if (response.isSuccessful()) {
+                    CategoryListModel categoryListModel = response.body();
+                    category_Model_list = categoryListModel.getCategories();
+                    for (CategoryModel model : category_Model_list) {
+                        categoryNames.add(model.getName());
+                        categoryImages.add(model.getImage());
+                        categoryId.add(model.getCategory_id());
+                    }
+                    setadapter(categoryNames, categoryImages, categoryId);
+                }
+            }
+            @Override
+            public void onFailure(Call<CategoryListModel> call, Throwable t) {
+                // Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar
+                        .make(coordinate_layout, "Fail to load categories,check your internet connection!", Snackbar.LENGTH_LONG);
 
         checkConnection();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -135,14 +155,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
 
             Picasso.with(MainActivity.this)
-                    .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(user_profile);
         }
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
-        // searchbar,below code is for feature refernce,please dont delete this code.
-     /*   recyclerView = findViewById(R.id.rcv);
+        // below code is for feature refernce,please dont delete this code.
+        /*recyclerView = findViewById(R.id.rcv);
         shops_list.add(new ShopsListModel("Gajana Motors Pvt.Ltd.", "500.00 m", "Vinayak Residencey,near DMart,Baner", "Opens 24 Hours", "http:/www.informedevice.com", "Hotel", "9856237845"));
         shops_list.add(new ShopsListModel("Aloha Technology Pvt.Ltd.", "400.00 m", "2nd & 3rd Floor, Kumar Crystals, New D P Road, Opposite Converses, Aundh, Baner, Pune", "Opens 9Am-10PM", "http:/www.aloha.com", "IT", "7812345645"));
         shops_list.add(new ShopsListModel("Xoriant Technology", "200.00 m", "501-502, 5th Floor, Amar Paradigm, Baner Road, Near D-Mart, Baner, Pune", "Opens 9.30Am-6PM", "http:/www.xoriant.com", "IT", "8185868231"));
@@ -247,22 +268,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-               /* if (newText.length() > 0) {
+                if (newText.length() > 0) {
                     recycler_view_vertical.setVisibility(View.GONE);
-                  //  recyclerView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
                 newText = newText.toLowerCase();
                 search_text = newText;
                 ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-                for (ShopsListModel s : shops_list) {
+              /*  for (ShopsListModel s : shops_list) {
                     if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))
                         suggest_list.add(s);
                     else if (s.getName().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getType().toLowerCase().endsWith(newText) || s.getDistance().toLowerCase().endsWith(newText) || s.getTiming().toLowerCase().endsWith(newText) || s.getMobileNo().toLowerCase().endsWith(newText))
                         suggest_list.add(s);
                     else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
                         suggest_list.add(s);
-                }
-                adapter.setFilter(suggest_list);*/
+                }*/
+                adapter.setFilter(suggest_list);
                 return true;
             }
         });

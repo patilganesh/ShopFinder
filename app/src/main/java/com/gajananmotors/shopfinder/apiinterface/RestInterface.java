@@ -4,6 +4,7 @@ import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
 import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
+import com.gajananmotors.shopfinder.model.ShopsArrayListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
@@ -65,6 +66,10 @@ public interface RestInterface {
     @POST("index.php/mobile_api/get_sub_categories")
     Call<SubCategoryListModel> getSubCategoryList(
             @Field("category_id") int category_id
+    );  @FormUrlEncoded
+    @POST("index.php/mobile_api/view_shops")
+    Call<ShopsArrayListModel> getShoplist(
+            @Field("owner_id") int owner_id
     );
     @Multipart
     @POST("index.php/mobile_api/update_owner")

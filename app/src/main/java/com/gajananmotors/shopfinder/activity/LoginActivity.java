@@ -220,7 +220,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNWER_EMAIL, owner_email);
                         editor.putString(Constant.DATE_OF_BIRTH, owner_dob);
                         editor.putString(Constant.MOBILE, ownner_mobile);
-                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + owner_image);
+                        editor.putString(Constant.OWNER_PROFILE,owner_image);
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();

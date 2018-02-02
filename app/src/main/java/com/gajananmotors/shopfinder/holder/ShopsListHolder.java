@@ -21,7 +21,7 @@ public class ShopsListHolder extends RecyclerView.ViewHolder {
         distance = itemView.findViewById(R.id.shop_distance);
         type = itemView.findViewById(R.id.shop_type);
         timing = itemView.findViewById(R.id.shop_timing);
-        call = itemView.findViewById(R.id.shop_call);
+        call = itemView.findViewById(R.id.shop_timing);
         weburl = itemView.findViewById(R.id.website);
         image = itemView.findViewById(R.id.shop_image);
     }

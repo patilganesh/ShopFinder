@@ -1,6 +1,5 @@
 package com.gajananmotors.shopfinder.model;
 
-import com.gajananmotors.shopfinder.common.StringCallback;
 import com.google.gson.annotations.SerializedName;
 
 /**
