@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private SharedPreferences sharedpreferences;
     private CoordinatorLayout coordinate_layout;
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +142,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
             fab.setVisibility(View.GONE);
 
+        }else {
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            tvOwner_Name.setText("");
+            tvOwner_Email.setText("");
         }
         navigationView.setNavigationItemSelectedListener(this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
@@ -276,9 +285,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.clear();
             editor.apply();
-            String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
-            Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
+
             startActivity(new Intent(this, MainActivity.class));
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            tvOwner_Name.setText("");
+            tvOwner_Email.setText("");
+
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

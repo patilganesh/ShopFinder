@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private Button btnLogin, btnRegister;
     private ProgressBar progressBar;
     private SharedPreferences sharedpreferences;
-    private String Device_Token;
+    private String device_token="";
     private int owner_id, status;
 
     @Override
@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        Device_Token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "0000000");
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "000000");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
