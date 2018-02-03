@@ -85,7 +85,6 @@ public class SubCategoryActivity extends AppCompatActivity {
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategoryAdapter);
         alphaAdapter.setDuration(2000);
         alphaAdapter.setInterpolator(new OvershootInterpolator());
-
     }
     public void setAdapetr(int int_cat_id, ArrayList<Integer> subCatId) {
         Log.d("CustomAdapter", "set Adapter method called");

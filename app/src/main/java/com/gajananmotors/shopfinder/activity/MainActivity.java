@@ -73,13 +73,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private SharedPreferences sharedpreferences;
     private ProgressBar category_progressbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-     //   coordinate_layout = findViewById(R.id.coordinate_layout);
+        drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
         //searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);
@@ -111,33 +114,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             fab.setVisibility(View.GONE);
         }
-        Call<CategoryListModel> call = restInterface.getCategoryList();
-        call.enqueue(new Callback<CategoryListModel>() {
-            @Override
-            public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
-                if (response.isSuccessful()) {
-                    CategoryListModel categoryListModel = response.body();
-                    category_Model_list = categoryListModel.getCategories();
-                    for (CategoryModel model : category_Model_list) {
-                        categoryNames.add(model.getName());
-                        categoryImages.add(model.getImage());
-                        categoryId.add(model.getCategory_id());
-                    }
-                    setadapter(categoryNames, categoryImages, categoryId);
-                }
-            }
-            @Override
-            public void onFailure(Call<CategoryListModel> call, Throwable t) {
-                // Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
-                Snackbar snackbar = Snackbar
-                        .make(coordinate_layout, "Fail to load categories,check your internet connection!", Snackbar.LENGTH_LONG);
+
 
         checkConnection();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
@@ -182,8 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
-        //progressBar.setLeft(20);
-        // btnLogin.setVisibility(View.GONE);
         category_progressbar.setIndeterminate(true);
         category_progressbar.setProgress(500);
         call.enqueue(new Callback<CategoryListModel>() {
@@ -202,22 +184,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     setadapter(categoryNames, categoryImages, categoryId);
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(this);
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 MainActivity.this);
         if (!detector.isConnectingToInternet()) {
-            // Toast.makeText(this, "Fail to load categories,check your internet connection!", Toast.LENGTH_LONG).show();
-
             alertDialog.setMessage("Network not available!");
             alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
             alertDialog.setCancelable(false);
@@ -290,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -341,9 +318,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.clear();
             editor.apply();
-            String imd = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
-            Log.d("name", sharedpreferences.getString(Constant.OWNER_NAME, ""));
             startActivity(new Intent(this, MainActivity.class));
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            tvOwner_Name.setText("User Name");
+            tvOwner_Email.setText("User Email_id");
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

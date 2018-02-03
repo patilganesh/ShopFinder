@@ -7,24 +7,21 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            app:cardUseCompatPadding="true"
             app:cardCornerRadius="4dp"
-            app:cardElevation="10dp"
-            app:cardUseCompatPadding="true">
-
+            app:cardElevation="10dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -40,46 +37,38 @@
                         android:inputType="text"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:orientation="horizontal">
-
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.9"
                         app:hintTextAppearance="@style/MyAppearance">
-
                         <EditText
                             android:id="@+id/etBusinessLocation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="true"
-                            android:hint="Address"
+                            android:hint="e.g Virbhadra nagar,Baner,Pune,Maharashtra-411015,India"
                             android:textSize="14sp" />
                     </android.support.design.widget.TextInputLayout>
-
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
                         android:layout_weight="0.1"
+                        android:layout_gravity="center_vertical"
                         android:clickable="true"
                         android:onClick="getAddress"
                         android:src="@drawable/google_map" />
                 </LinearLayout>
-
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:id="@+id/txtInputLayoutEtBusiness"
                     app:hintTextAppearance="@style/MyAppearance">
-
-
                     <EditText
                         android:id="@+id/etBusinessServices"
                         android:layout_width="match_parent"
@@ -108,7 +97,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:hintTextAppearance="@style/MyAppearance">
-
                         <EditText
                             android:id="@+id/etBusinessMobile"
                             android:layout_width="match_parent"
@@ -121,12 +109,40 @@
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccpCountryCodeWhatsApp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:ccp_textSize="14sp" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/MyAppearance">
+
+                        <EditText
+                            android:id="@+id/etBusinessWhatsApp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789"
+                            android:maxLength="10"
+                            android:hint="WhatsApp Number(Optional):"
+                            android:inputType="phone"
+                            android:textSize="14sp" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     app:hintTextAppearance="@style/MyAppearance">
-
                     <EditText
                         android:id="@+id/etBusinessEmail"
                         android:layout_width="match_parent"
@@ -134,7 +150,6 @@
                         android:hint="Email:"
                         android:inputType="text"
                         android:textSize="14sp" />
-
                 </android.support.design.widget.TextInputLayout>
 
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
@@ -171,7 +186,6 @@
                         android:inputType="textUri"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
-
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -186,7 +200,6 @@
                         android:inputType="textUri"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
-
                 <Button
                     android:id="@+id/btn_get_images"
                     android:layout_width="wrap_content"
@@ -228,7 +241,6 @@
                         android:orientation="horizontal"
                         android:visibility="visible"></LinearLayout>
                 </HorizontalScrollView>
-
                 <Button
                     android:id="@+id/btnSubmit"
                     android:layout_width="match_parent"
