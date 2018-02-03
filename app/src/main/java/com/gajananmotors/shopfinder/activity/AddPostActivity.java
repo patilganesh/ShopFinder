@@ -53,6 +53,7 @@ import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
@@ -96,7 +97,7 @@ public class AddPostActivity extends AppCompatActivity {
     private String strBusinessWebUrl = "", strBusinessServices = "", strBusinessEmail = "", strPlaceSearch = "";
     private String str_cat_spinner = "", str_subCat_spinner = "", strCategorySearch = "";
     private int int_cat_id, int_subcat_id, owner_id;
-    double latitude, longitude;
+    private double latitude, longitude;
     private boolean flag = false;
     private Retrofit retrofit;
     private RestInterface restInterface;
@@ -106,7 +107,8 @@ public class AddPostActivity extends AppCompatActivity {
     private PopupWindow pw;
     private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
     public static boolean[] checkSelected;
-    ArrayList<String> shopServicesList;
+    private ArrayList<String> shopServicesList;
+    private Call<CreateShopModel> shopModelCall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,7 +132,6 @@ public class AddPostActivity extends AppCompatActivity {
         category_Model_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
-            ArrayList<CategoryModel> categoryModelArrayList = new ArrayList<>();
             @Override
             public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {
@@ -151,7 +152,6 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
         etBusinessServices = findViewById(R.id.etBusinessServices);
         etBusinessServices.setInputType(InputType.TYPE_NULL);
-
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         etBusinessHour = findViewById(R.id.etBusinessHour);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
@@ -201,8 +201,6 @@ public class AddPostActivity extends AppCompatActivity {
                         int_cat_id = cat.getCategory_id();
                     }
                 }
-               /* Toast.makeText(AddPostActivity.this, "Selected CategoryModel:"+str_cat_spinner, Toast.LENGTH_SHORT).show();
-                Toast.makeText(AddPostActivity.this, "Selected Index:"+int_cat_id, Toast.LENGTH_SHORT).show();*/
                 Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
                 sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
                     @Override
@@ -271,13 +269,10 @@ public class AddPostActivity extends AppCompatActivity {
         subcategory.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
               @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+              }
             @Override
             public void afterTextChanged(Editable s) {
                 str_subCat_spinner = subcategory.getText().toString();
@@ -354,13 +349,11 @@ public class AddPostActivity extends AppCompatActivity {
             if (requestCode == INTENT_REQUEST_GET_IMAGES) {
 
                 image_uris = data.getParcelableArrayListExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
-
                 if (image_uris != null) {
                     HorizontalScrollView hview = findViewById(R.id.hori_scroll_view);
                     TextView tvHeading = findViewById(R.id.tvHeading);
                     hview.setVisibility(View.VISIBLE);
                     tvHeading.setVisibility(View.VISIBLE);
-
                     showMedia();
                 }
             }
