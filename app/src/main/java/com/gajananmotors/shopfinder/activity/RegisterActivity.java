@@ -351,7 +351,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+    @Override
+    public void onBackPressed() {
+        finish();
 
+    }
     private void validation() {
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {

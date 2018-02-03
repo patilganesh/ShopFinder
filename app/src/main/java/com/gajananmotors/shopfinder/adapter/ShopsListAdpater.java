@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.activity.UserViewPostActivity;
 import com.gajananmotors.shopfinder.activity.ViewPostActivity;
 import com.gajananmotors.shopfinder.common.ViewShopList;
 import com.gajananmotors.shopfinder.holder.ShopsListHolder;
@@ -101,7 +102,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
 
     private void transition() {
         Log.d("Allpost", "transition");
-        Intent intent = new Intent(activity, ViewPostActivity.class);
+        Intent intent = new Intent(activity, UserViewPostActivity.class);
         intent.putExtra("shop_list",viewShopList);
         Pair<View, String> p1 = Pair.create((View) viewPostLayout, "view");
         ActivityOptionsCompat options = ActivityOptionsCompat.

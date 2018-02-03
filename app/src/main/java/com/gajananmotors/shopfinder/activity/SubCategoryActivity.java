@@ -92,4 +92,5 @@ public class SubCategoryActivity extends AppCompatActivity {
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategoryAdapter);
         recycler_view.setAdapter(alphaAdapter);
     }
+
 }
