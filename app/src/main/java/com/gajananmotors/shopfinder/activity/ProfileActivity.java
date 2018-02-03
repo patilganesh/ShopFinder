@@ -424,4 +424,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
+    @Override
+    public void onBackPressed() {
+        finish();
+
+    }
 }

@@ -78,4 +78,9 @@ public class AllPostsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
     }
+    @Override
+    public void onBackPressed() {
+        finish();
+
+    }
 }

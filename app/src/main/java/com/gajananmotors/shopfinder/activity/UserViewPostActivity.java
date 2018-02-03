@@ -1,33 +1,35 @@
 package com.gajananmotors.shopfinder.activity;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.common.ViewShopList;
-import com.gajananmotors.shopfinder.helper.Constant;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+        import android.Manifest;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.SharedPreferences;
+        import android.content.pm.PackageManager;
+        import android.net.Uri;
+        import android.os.Bundle;
+        import android.support.v4.app.ActivityCompat;
+        import android.support.v7.app.AppCompatActivity;
+        import android.util.Log;
+        import android.view.View;
+        import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
-import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
-import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
+        import com.gajananmotors.shopfinder.R;
+        import com.gajananmotors.shopfinder.common.ViewShopList;
+        import com.gajananmotors.shopfinder.helper.Constant;
+        import com.squareup.picasso.Picasso;
 
-public class ViewPostActivity extends AppCompatActivity implements View.OnClickListener {
+        import java.util.ArrayList;
+
+        import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
+        import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
+        import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
+
+public class UserViewPostActivity extends AppCompatActivity implements View.OnClickListener {
 
     private LinearLayout viewPostLayout, shopDirectionLayout, shopShareLayout, shopEditLayout, shopGallaryLayout, shopCallLayout, shopMsgLayout;
     private TextView mob;
@@ -81,7 +83,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             shopCallLayout.setVisibility(View.GONE);
             shopMsgLayout.setVisibility(View.GONE);
         }
-        Picasso.with(ViewPostActivity.this)
+        Picasso.with(UserViewPostActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + viewShopList.getStrShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
@@ -89,6 +91,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
 
 
     }
+
 
     @Override
     public void onClick(View v) {
@@ -109,7 +112,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 //startActivity(new Intent(this, MapsActivity.class));
                 return;
             case R.id.shopGallaryLayout:
-                Intent i = new Intent(this, GallaryActivity.class);
+                Intent i = new Intent(this, UserGallaryActivity.class);
                 // i.putExtra("images", allimages );
                 i.putStringArrayListExtra("images", allimages);
                 i.putExtra("shopCoverphoto", shopCoverpic);

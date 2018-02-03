@@ -102,11 +102,13 @@ public class AddPostActivity extends AppCompatActivity {
     private RestInterface restInterface;
     private SharedPreferences sharedpreferences;
     private int count = 0;
-    private CreateShopModel shop;
+    private Call<CreateShopModel> shopModelCall;
     private PopupWindow pw;
     private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
     public static boolean[] checkSelected;
     ArrayList<String> shopServicesList;
+    private CreateShopModel shop;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -458,6 +460,11 @@ public class AddPostActivity extends AppCompatActivity {
                 alertDialog.dismiss();
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+
     }
     public void createShop() {
         MultipartBody.Part fileToUpload = null;

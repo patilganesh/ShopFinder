@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="15dp"
-                android:background="@drawable/roundedview"
                 android:text="Search Shops" />
 
             <android.support.v7.widget.RecyclerView

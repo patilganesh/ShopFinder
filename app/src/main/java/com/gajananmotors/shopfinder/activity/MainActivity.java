@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
             TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
-            tvOwner_Name.setText("");
-            tvOwner_Email.setText("");
+            tvOwner_Name.setText("User Name");
+            tvOwner_Email.setText("User Email_id");
         }
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
@@ -325,12 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.clear();
             editor.apply();
             startActivity(new Intent(this, MainActivity.class));
-            navigationView.removeHeaderView(navigationView.getHeaderView(0));
-            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
-            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
-            tvOwner_Name.setText("User Name");
-            tvOwner_Email.setText("User Email_id");
+
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
