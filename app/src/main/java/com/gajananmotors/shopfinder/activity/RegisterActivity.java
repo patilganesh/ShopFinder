@@ -49,6 +49,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.facebook.GraphRequest.TAG;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
@@ -62,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private CircleImageView imgProfile;
     private Bitmap bitmap;
     private Button btnSubmit;
-    private String Device_Token = "";
+    private String device_token;
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
@@ -71,8 +73,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-        Device_Token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000000");
+
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -86,6 +87,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         StrictMode.setVmPolicy(builder.build());
         imgProfile.setOnClickListener(this);
         // outPutFile = null;
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+
+
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
+        Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         etDate.setOnClickListener(this);
@@ -113,7 +119,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user_data.setOwner_email(etEmail.getText().toString());
         user_data.setPassword(etPassword.getText().toString());
         user_data.setDate_of_birth(etDate.getText().toString());
-        user_data.setDevice_token(Device_Token);
+        user_data.setDevice_token(device_token);
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         if (!flag) {

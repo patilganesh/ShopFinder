@@ -114,18 +114,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             fab.setVisibility(View.GONE);
         }
-
+        Call<CategoryListModel> call = restInterface.getCategoryList();
+        call.enqueue(new Callback<CategoryListModel>() {
+            @Override
+            public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
+                if (response.isSuccessful()) {
+                    CategoryListModel categoryListModel = response.body();
+                    category_Model_list = categoryListModel.getCategories();
+                    for (CategoryModel model : category_Model_list) {
+                        categoryNames.add(model.getName());
+                        categoryImages.add(model.getImage());
+                        categoryId.add(model.getCategory_id());
+                    }
+                    setadapter(categoryNames, categoryImages, categoryId);
+                }
+            }
+            @Override
+            public void onFailure(Call<CategoryListModel> call, Throwable t) {
+                // Toast.makeText(MainActivity.this, "Fail to load categories,check your internet connection!", Toast.LENGTH_SHORT).show();
+               /* Snackbar snackbar = Snackbar
+                        .make(coordinate_layout, "Fail to load categories,check your internet connection!", Snackbar.LENGTH_LONG);*/
 
         checkConnection();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
             fab.setVisibility(View.GONE);
+
+        }else {
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            tvOwner_Name.setText("");
+            tvOwner_Email.setText("");
         }
         navigationView.setNavigationItemSelectedListener(this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
