@@ -123,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_addpost).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_allposts).setVisible(true);
             fab.setVisibility(View.GONE);
 
         }else {

@@ -21,10 +21,12 @@
         <item
             android:id="@+id/nav_addpost"
             android:icon="@drawable/ic_action_done"
+            android:visible="false"
             android:title="Add Post" />
         <item
             android:id="@+id/nav_allposts"
             android:icon="@drawable/ic_menu_manage"
+            android:visible="false"
             android:title="View &amp; Edit Posts" />
     </group>
 
