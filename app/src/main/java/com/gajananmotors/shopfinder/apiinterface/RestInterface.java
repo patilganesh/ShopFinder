@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.apiinterface;
-
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
@@ -10,7 +9,6 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
-
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -52,7 +50,6 @@ public interface RestInterface {
             @Field("password") String password,
             @Field("device_token") String device_token
     );
-
     @FormUrlEncoded
     @POST("index.php/mobile_api/delete_owner")
     Call<DeleteUserModel> deleteOwnerList(
@@ -89,7 +86,6 @@ public interface RestInterface {
             @Part("mob_no") String mob_no,
             @Part("date_of_birth") String date_of_birth,
             @Part MultipartBody.Part image
-
     );
     @FormUrlEncoded
     @POST("index.php/mobile_api/update_owner")
@@ -125,7 +121,6 @@ public interface RestInterface {
             @Part MultipartBody.Part shop_pic,
             @Part("shop_mob_no") String shop_mob_no
     );
-
     @FormUrlEncoded
     @POST("index.php/mobile_api/create_shop")
     Call<CreateShopModel> createShopforEmptyImage(

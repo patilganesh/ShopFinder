@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = findViewById(R.id.progressbar);
         //getSupportActionBar().hide();
@@ -103,26 +102,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
         login.setReadPermissions("public_profile email");
-/*        etUserName.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                Validation.isPhoneNumber(etUserName, true);
-            }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-        etPassword.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                Validation.hasText(etPassword);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });*/
         login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -137,14 +116,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         l_name = profile.getLastName();
                         full_name = profile.getName();
                         profile_image = profile.getProfilePictureUri(50, 50).toString();
-                        /*Bundle b = new Bundle();
-                        if (b != null) {
-                            b.putString("owner_name", profile.getName());
-                            b.putString("owner_profile", profile_image);
-                            Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
-                            in.putExtras(b);
-                            startActivity(in);
-                        }*/
+
                     }
                 }
             }
@@ -160,15 +132,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection Failed : " + connectionResult);
     }
-   /* private boolean checkValidation() {
-        boolean ret = true;
-        if (!Validation.isPhoneNumber(etUserName, true,"Mobile Number")) ret = false;
-        if (!Validation.hasText(etPassword,"Password")) ret = false;
-        return ret;
-    }*/
-
-
-
     private boolean checkValidation() {
         boolean ret=true;
         LinearLayout linear_layout=findViewById(R.id.linear_layout);

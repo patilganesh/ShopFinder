@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -46,6 +47,7 @@ public class ItemDetailsActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        viewLayout = findViewById(R.id.viewLayout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         recyclerView = findViewById(R.id.recyclerView);
         viewPostLayout = findViewById(R.id.viewLayout);

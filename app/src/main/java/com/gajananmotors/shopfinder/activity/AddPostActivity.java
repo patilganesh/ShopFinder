@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -50,6 +49,7 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
@@ -78,7 +78,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 public class AddPostActivity extends AppCompatActivity {
     private TextView txtBusinessLocation;
     private int PLACE_PICKER_REQUEST = 1;
@@ -89,7 +88,6 @@ public class AddPostActivity extends AppCompatActivity {
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
-    //private AllCategory allCategory;
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
@@ -109,7 +107,6 @@ public class AddPostActivity extends AppCompatActivity {
     private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
     public static boolean[] checkSelected;
     ArrayList<String> shopServicesList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +116,7 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
-
-
-        /*StringCallback stringCallback = new StringCallback() {
+         /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
                 if (TextUtils.equals(s,"1")){
@@ -136,7 +131,6 @@ public class AddPostActivity extends AppCompatActivity {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             ArrayList<CategoryModel> categoryModelArrayList = new ArrayList<>();
-
             @Override
             public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {
@@ -145,10 +139,8 @@ public class AddPostActivity extends AppCompatActivity {
                     getCategoryData();
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
-
             }
         });
         category = findViewById(R.id.spnBusinessCategory);
@@ -185,7 +177,6 @@ public class AddPostActivity extends AppCompatActivity {
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
     }
-
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
@@ -202,7 +193,6 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 str_cat_spinner = category.getText().toString();
@@ -283,8 +273,7 @@ public class AddPostActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
-            @Override
+              @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
@@ -300,7 +289,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
-
     private void getImages(Config config) {
         ImagePickerActivity.setConfig(config);
         Intent intent = new Intent(this, ImagePickerActivity.class);
@@ -325,7 +313,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
         strBusinessLocation = etBusinessLocation.getText().toString().trim();
@@ -339,7 +326,6 @@ public class AddPostActivity extends AppCompatActivity {
         if (checkValidation())
             confirmdetails();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -380,7 +366,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
     }
-
     private void showMedia() {
         int index = 1;
         mSelectedImagesContainer.removeAllViews();
@@ -392,7 +377,7 @@ public class AddPostActivity extends AppCompatActivity {
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         for (final Uri uri : image_uris) {
-            if (index <= 7) {
+            if (index <= 6) {
                 Log.i("path", "\nImages Path: " + uri.getPath().toString());
                 final View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
                 final ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
@@ -433,7 +418,6 @@ public class AddPostActivity extends AppCompatActivity {
                 break;
         }
     }
-
     private void confirmdetails() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
@@ -455,7 +439,7 @@ public class AddPostActivity extends AppCompatActivity {
         tvArea.setText(city + "," + state);
         tvMobile.setText(strBusinessMobile);
         tvAddress.setText(strBusinessLocation);
-        Toast.makeText(this, "Get Images Size:" + getImages.length(), Toast.LENGTH_LONG).show();
+        tvCategory.setText(str_cat_spinner + "/" + str_subCat_spinner);
         Glide.with(AddPostActivity.this)
                 .load(getImages)
                 .fitCenter()
@@ -465,7 +449,6 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-
             }
         });
         tvConfirm.setOnClickListener(new View.OnClickListener() {
@@ -476,106 +459,88 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
-
     public void createShop() {
         MultipartBody.Part fileToUpload = null;
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
         if (!getImages.equals("")) {
             File filePath = new File(getImages);
             try {
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
                 fileToUpload = MultipartBody.Part.createFormData("shop_pic", filePath.getName(), mFile);
+                shopModelCall = restInterface.createShop(
+                        int_cat_id, int_subcat_id, str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
+                        strBusinessHour, strBusinessLocation, strBusinessServices,
+                        String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
+                        strPlaceSearch, strBusinessWebUrl, fileToUpload, strBusinessMobile);
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
+        } else {
+            shopModelCall = restInterface.createShopforEmptyImage(
+                    int_cat_id, int_subcat_id, str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
+                    strBusinessHour, strBusinessLocation, strBusinessServices,
+                    String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
+                    strPlaceSearch, strBusinessWebUrl, strBusinessMobile);
         }
-        Retrofit retrofit = APIClient.getClient();
-        RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<CreateShopModel> shopModelCall = restInterface.createShop(
-                int_cat_id, int_subcat_id,str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
-                strBusinessHour, strBusinessLocation, strBusinessServices,
-                String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
-                strPlaceSearch, strBusinessWebUrl, fileToUpload, strBusinessMobile);
         shopModelCall.enqueue(new Callback<CreateShopModel>() {
             @Override
             public void onResponse(Call<CreateShopModel> call, Response<CreateShopModel> response) {
                 if (response.isSuccessful()) {
                     shop = response.body();
                     if (shop.getResult() == 1) {
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putInt(Constant.SHOP_ID, shop.getShop_id());
+                        editor.apply();
                         Toast.makeText(AddPostActivity.this, "Shop Create Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
                         uploadShopImages(count);
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<CreateShopModel> call, Throwable t) {
             }
         });
     }
-
-    public void uploadShopImages(final int index) {
+    public void uploadShopImages(int index) {
         if (image_uris.size() > index) {
             //int size=image_uris.size();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
 
-                    File file_path = new File(image_uris.get(index).getPath().toString());
-                    MultipartBody.Part fileToUpload = null;
-                    if (file_path != null) {
-                        try {
-                            RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
-                            fileToUpload = MultipartBody.Part.createFormData("image", file_path.getName(), mFile);
-                        } catch (Exception e) {
-                            Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    Retrofit retrofit = APIClient.getClient();
-                    RestInterface restInterface = retrofit.create(RestInterface.class);
-                    Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
-                            shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "Create", index);
-                    call.enqueue(new Callback<UploadShopImagesModel>() {
-                        @Override
-                        public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
-                            if (response.isSuccessful()) {
-                                UploadShopImagesModel uploadShopImagesModel = response.body();
-                                if (uploadShopImagesModel.getResult() == 1)
-                                    uploadShopImages(uploadShopImagesModel.getCount());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
-
-                        }
-                    });
+            File file_path = new File(image_uris.get(index).getPath().toString());
+            MultipartBody.Part fileToUpload = null;
+            if (file_path != null) {
+                try {
+                    RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
+                    fileToUpload = MultipartBody.Part.createFormData("image" + (index + 1), file_path.getName(), mFile);
+                } catch (Exception e) {
+                    Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
-            }, 4000);
+            }
+            Retrofit retrofit = APIClient.getClient();
+            RestInterface restInterface = retrofit.create(RestInterface.class);
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
+                    shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+            call.enqueue(new Callback<UploadShopImagesModel>() {
+                @Override
+                public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
+                    if (response.isSuccessful()) {
+                        UploadShopImagesModel uploadShopImagesModel = response.body();
+                        if (uploadShopImagesModel.getResult() == 1)
+                            uploadShopImages(uploadShopImagesModel.getCount());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
+                    Toast.makeText(AddPostActivity.this, "Error: " + t.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
-/*
     private boolean checkValidation() {
         boolean ret = true;
-        if (!Validation.hasText(etBusinessName,"Business Name")) ret = false;
-        if (!Validation.hasText(etBusinessLocation,"Business Location")) ret = false;
-        if (!Validation.isEmailAddress(etBusinessEmail, true,"Email")) ret = false;
-        if (!Validation.isPhoneNumber(etBusinessMobile, true,"Mobile Number")) ret = false;
-        if (!Validation.hasText(category,"Category")) ret = false;
-        if (!Validation.hasText(subcategory,"Subcategory")) ret = false;
-        if (mSelectedImagesContainer.equals("")) {
-            Toast.makeText(getApplicationContext(), "Click Select Photo button", Toast.LENGTH_SHORT).show();
-        }
-
-        return ret;
-    }*/
-
-
-    private boolean checkValidation() {
-        boolean ret = true;
-
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         LinearLayout linear_layout = findViewById(R.id.linear_layout);
-
         String name = etBusinessName.getText().toString();
         String email = etBusinessEmail.getText().toString();
         String location = etBusinessLocation.getText().toString();
@@ -647,7 +612,6 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-
         if (mSelectedImagesContainer.equals("")) {
             Toast.makeText(getApplicationContext(), "Click Select Photo button", Toast.LENGTH_SHORT).show();
         }

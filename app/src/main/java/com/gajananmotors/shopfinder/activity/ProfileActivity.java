@@ -1,6 +1,7 @@
 package com.gajananmotors.shopfinder.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -148,7 +149,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     etEmail.setFocusable(false);
                     etEmail.setFocusableInTouchMode(false);
                     etEmail.setClickable(false);
-
                     updateUser();
                 }
                 break;
@@ -180,7 +180,23 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 break;
             case R.id.btn_delete:
-                deleteOwnerService();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                        ProfileActivity.this);
+                alertDialog.setMessage("Are you sure you want to delete your account? ");
+                alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
+                alertDialog.setCancelable(false);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteOwnerService();
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.show();
                 break;
         }
     }
@@ -189,7 +205,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         Retrofit retrofit;
         DeleteUserModel deleteOwner;
         deleteOwner=new DeleteUserModel();
-
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<DeleteUserModel> deleteUser= restInterface.deleteOwnerList( sharedpreferences.getInt(Constant.OWNER_ID, 0));
@@ -198,7 +213,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onResponse(Call<DeleteUserModel> call, Response<DeleteUserModel> response) {
                 if (response.isSuccessful()){
                  String msg=  response.body().getMsg();
-                    Snackbar.make(coordinatorLayout_setting,""+msg,Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(coordinatorLayout_setting, "" + msg, Snackbar.LENGTH_LONG).show();
                     sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.clear();
@@ -206,15 +221,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     startActivity(new Intent(ProfileActivity.this,MainActivity.class));
                 }
             }
-
             @Override
             public void onFailure(Call<DeleteUserModel> call, Throwable t) {
 
             }
         });
-
     }
-
     private void updateUser() {
         File shop_cover_photo = null;
         byte[] imgbyte = null;
@@ -281,10 +293,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         Toast.makeText(ProfileActivity.this, "Error!", Toast.LENGTH_LONG).show();
                     }
-
                 }
             }
-
             @Override
             public void onFailure(Call<UpdateUserModel> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
@@ -292,7 +302,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
-
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ProfileActivity.this);

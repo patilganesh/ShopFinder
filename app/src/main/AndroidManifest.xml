@@ -37,9 +37,10 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <service android:name=".helper.FirebaseInstanceIDService">
+        <service
+            android:name=".helper.FirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
         <service android:name=".service.FirebaseMessagingService">
@@ -116,6 +117,11 @@
         <activity
             android:name=".activity.ItemDetailsActivity"
             android:parentActivityName=".activity.SubCategoryActivity" />
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
+
         <activity android:name=".tedpicker.ImagePickerActivity" />
 
         <meta-data
@@ -125,7 +131,8 @@
         <activity
             android:name=".activity.AllPostsActivity"
             android:parentActivityName=".activity.MainActivity" />
-        <activity android:name=".activity.ViewPostActivity">
+        <activity android:name=".activity.ViewPostActivity"
+            android:parentActivityName=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
 
@@ -136,6 +143,8 @@
             android:name=".activity.GallaryActivity"
             android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.EditPostActivity"></activity>
+
+
     </application>
 
 </manifest>
