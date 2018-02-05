@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/3FEBShopFinder.iml" filepath="$PROJECT_DIR$/3FEBShopFinder.iml" />
       <module fileurl="file://D:\Github\ShopFinderLatest1\ShopFinderLatest.iml" filepath="D:\Github\ShopFinderLatest1\ShopFinderLatest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ShopFinderLatest1.iml" filepath="$PROJECT_DIR$/ShopFinderLatest1.iml" />
+      <module fileurl="file://D:\3FEBShopFinder\ShopFinderLatest1.iml" filepath="D:\3FEBShopFinder\ShopFinderLatest1.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
