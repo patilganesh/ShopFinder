@@ -102,12 +102,12 @@ public class AddPostActivity extends AppCompatActivity {
     private RestInterface restInterface;
     private SharedPreferences sharedpreferences;
     private int count = 0;
-    private Call<CreateShopModel> shopModelCall;
+    private CreateShopModel shop;
     private PopupWindow pw;
     private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
     public static boolean[] checkSelected;
     ArrayList<String> shopServicesList;
-    private CreateShopModel shop;
+    private Call<CreateShopModel> shopModelCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +184,7 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         category.setAdapter(categoryAdapter);
         category.addTextChangedListener(new TextWatcher() {
@@ -460,11 +460,6 @@ public class AddPostActivity extends AppCompatActivity {
                 alertDialog.dismiss();
             }
         });
-    }
-    @Override
-    public void onBackPressed() {
-        finish();
-
     }
     public void createShop() {
         MultipartBody.Part fileToUpload = null;
