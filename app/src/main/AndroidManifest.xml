@@ -51,6 +51,7 @@
         <activity
             android:name=".activity.AddPostActivity"
             android:configChanges="orientation|screenSize"
+            android:label="@string/string_shop_post"
             android:parentActivityName=".activity.MainActivity" />
 
         <meta-data
@@ -99,6 +100,7 @@
         <activity
             android:name=".activity.RegisterActivity"
             android:configChanges="orientation|screenSize"
+            android:label="@string/string_sign_up"
             android:parentActivityName=".activity.LoginActivity" />
 
         <meta-data
@@ -107,6 +109,7 @@
 
         <activity
             android:name=".activity.SubCategoryActivity"
+            android:label="@string/string_sub_category"
             android:parentActivityName=".activity.MainActivity" />
 
         <meta-data
@@ -115,6 +118,7 @@
 
         <activity
             android:name=".activity.ItemDetailsActivity"
+            android:label="@string/string_shop_list"
             android:parentActivityName=".activity.SubCategoryActivity" />
 
         <meta-data
@@ -129,9 +133,11 @@
 
         <activity
             android:name=".activity.AllPostsActivity"
+            android:label="@string/string_shop_posts"
             android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.ViewPostActivity"
+            android:label="@string/string_shop_details"
             android:parentActivityName=".activity.SubCategoryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
@@ -146,15 +152,18 @@
 
         <activity
             android:name=".activity.GallaryActivity"
+            android:label="@string/string_image_gallary"
             android:parentActivityName=".activity.ViewPostActivity" />
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
 
-        <activity android:name=".activity.EditPostActivity" />
+        <activity android:name=".activity.EditPostActivity"
+            android:label="@string/string_update_post"/>
         <activity
             android:name=".activity.UserViewPostActivity"
+            android:label="@string/string_shop_details"
             android:parentActivityName=".activity.SubCategoryActivity" />
 
         <meta-data
@@ -162,6 +171,7 @@
             android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
 
         <activity android:name=".activity.UserGallaryActivity"
+            android:label="@string/string_image_gallary"
             android:parentActivityName=".activity.UserViewPostActivity" />
 
         <meta-data

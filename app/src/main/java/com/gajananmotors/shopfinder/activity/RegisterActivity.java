@@ -68,6 +68,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
+    private String name,email,profile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            name = extras.getString("owner_name");
+            email = extras.getString("owner_email");
+            profile = extras.getString("owner_profile");
+            outPutFile= new File(profile);
+            etName.setText(name);
+            etEmail.setText(email);
+            Picasso.with(RegisterActivity.this)
+                    .load(profile)
+                    .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
+                    .into(imgProfile);
+        }
         etDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         validation();
