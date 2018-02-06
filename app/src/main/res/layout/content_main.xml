@@ -9,7 +9,7 @@
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -50,10 +50,11 @@
                        android:text="Search Shops" />-->
             </LinearLayout>
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ededed"
+                android:background="#fff"
                 android:orientation="vertical">
 
                 <TextView
@@ -61,18 +62,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="15dp"
-                    android:textSize="15dp"
-                    android:text="Hospitals" />
+                    android:layout_margin="10dp"
+                    android:text="Hospitals"
+                    android:textColor="@color/black"
+                    android:textSize="17dp" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fadingEdgeLength="1px"
                     android:layout_margin="@dimen/activity_horizontal_top_margin"
-                    android:descendantFocusability="beforeDescendants" />
+                    android:descendantFocusability="beforeDescendants"
+                    android:fadingEdgeLength="1px" />
             </LinearLayout>
+
 
             <ProgressBar
                 android:id="@+id/category_progressbar"
