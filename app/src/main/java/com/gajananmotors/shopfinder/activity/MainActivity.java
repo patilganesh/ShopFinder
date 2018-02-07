@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -17,14 +16,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +46,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.gajananmotors.shopfinder.activity.SubCategoryActivity.imglist;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
@@ -67,8 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Integer> categoryId = new ArrayList<>();
     private Retrofit retrofit;
     private RestInterface restInterface;
-    private ImageView nearby;
-    private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
     private SharedPreferences sharedpreferences;
@@ -90,10 +82,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
+        // mLayoutManager_vertical = new GridLayoutManager(this, 3);
+
+        recycler_view_vertical.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
+        // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
-        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+      //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;

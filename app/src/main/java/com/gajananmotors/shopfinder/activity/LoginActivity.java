@@ -281,8 +281,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     if (json != null) {
                         String text = "<b>Name:</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
-
-
+                        owner_name=json.getString("name");
+                        owner_email=json.getString("email");
+                        owner_image=json.getString("link");
+                        FacegleloginService();
 
                     }
 
@@ -340,18 +342,64 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Log.e("google result", tvDetails);
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
-               /* Bundle b = new Bundle();
-                b.putString("owner_name", acct.getDisplayName());
-                b.putString("owner_email", acct.getEmail());
-                b.putString("owner_profile", acct.getPhotoUrl().toString());
-                Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
-                in.putExtras(b);
-                startActivity(in);*/
+                owner_name= acct.getDisplayName();
+                owner_email= acct.getEmail();
+                owner_image= acct.getPhotoUrl().toString();
+                FacegleloginService();
+
             }
         }
     }
+    private void FacegleloginService() {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<LoginUserModel> loginUser = restInterface.loginUsersFacegleList(owner_email,device_token);
+        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setLeft(20);
+        // btnLogin.setVisibility(View.GONE);
+        progressBar.setIndeterminate(true);
+        progressBar.setProgress(500);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            progressBar.setMin(0);
+        }
+        progressBar.setMax(100);
+        loginUser.enqueue(new Callback<LoginUserModel>() {
+            @Override
+            public void onResponse(Call<LoginUserModel> call, Response<LoginUserModel> response) {
+                if (response.isSuccessful()) {
+                    LoginUserModel user = response.body();
+                    String msg = user.getMsg();
+                    status = user.getStatus();
+                    if (user.getResult() == 1 && status == 1) {
+Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
+                        finish();
+                        progressBar.setVisibility(View.GONE);
+                    } else if(user.getResult() == 0) {
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+                        Bundle b = new Bundle();
+                        b.putString("owner_name",owner_name);
+                        b.putString("owner_email", owner_email);
+                        b.putString("owner_profile", owner_image);
+                        Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
+                        in.putExtras(b);
+                        startActivity(in);
+
+                    }else {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<LoginUserModel> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
+
         finish();
 
     }

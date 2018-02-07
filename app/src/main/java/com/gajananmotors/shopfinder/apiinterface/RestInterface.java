@@ -51,6 +51,12 @@ public interface RestInterface {
             @Field("device_token") String device_token
     );
     @FormUrlEncoded
+    @POST("index.php/mobile_api/login_with_google")
+    Call<LoginUserModel> loginUsersFacegleList(
+            @Field("owner_email") String owner_email,
+            @Field("device_token") String device_token
+    );
+    @FormUrlEncoded
     @POST("index.php/mobile_api/delete_owner")
     Call<DeleteUserModel> deleteOwnerList(
             @Field("owner_id") int owner_id);

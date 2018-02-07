@@ -67,10 +67,15 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopCallLayout.setOnClickListener(this);
         shopMsgLayout = findViewById(R.id.shopMsgLayout);
         shopMsgLayout.setOnClickListener(this);
+        LinearLayout linearLyoutWithoutEdit=findViewById(R.id.linearLyoutWithoutEdit);
+        LinearLayout linearLyoutWithEdit=findViewById(R.id.linearLyoutWithEdit);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-            shopEditLayout.setVisibility(View.VISIBLE);
+
+            linearLyoutWithEdit.setVisibility(View.VISIBLE);
+            linearLyoutWithoutEdit.setVisibility(View.GONE);
+            /*shopEditLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
-            shopMsgLayout.setVisibility(View.GONE);
+            shopMsgLayout.setVisibility(View.GONE);*/
         }
         Picasso.with(ViewPostActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + viewShopList.getShop_id() + "/" + viewShopList.getStrShop_pic())

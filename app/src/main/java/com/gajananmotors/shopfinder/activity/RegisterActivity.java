@@ -50,6 +50,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.facebook.GraphRequest.TAG;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
@@ -63,10 +65,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private CircleImageView imgProfile;
     private Bitmap bitmap;
     private Button btnSubmit;
-    private String device_Token = "";
+    private String device_token = "";
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
+    private String name,email,profile;
     private ProgressBar register_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-        device_Token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000000");
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000000");
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -89,11 +92,27 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         imgProfile.setOnClickListener(this);
         register_progressbar = findViewById(R.id.register_progressbar);
         // outPutFile = null;
-      /*  sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");*/
-        // Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+
+
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
+        Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            name = extras.getString("owner_name");
+            email = extras.getString("owner_email");
+            profile = extras.getString("owner_profile");
+            outPutFile= new File(profile);
+            etName.setText(name);
+            etEmail.setText(email);
+            Picasso.with(RegisterActivity.this)
+                    .load(profile)
+                    .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
+                    .into(imgProfile);
+        }
         etDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         validation();
@@ -118,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user_data.setOwner_email(etEmail.getText().toString());
         user_data.setPassword(etPassword.getText().toString());
         user_data.setDate_of_birth(etDate.getText().toString());
-        user_data.setDevice_token(device_Token);
+        user_data.setDevice_token(device_token);
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         if (!flag) {
@@ -184,6 +203,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_LONG).show();
                 }
             }
+
             @Override
             public void onFailure(Call<UserRegisterModel> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
