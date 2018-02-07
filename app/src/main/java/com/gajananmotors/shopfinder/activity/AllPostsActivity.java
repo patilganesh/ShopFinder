@@ -66,7 +66,7 @@ public class AllPostsActivity extends AppCompatActivity {
                             shops_list.add(model);
                         }
                     }
-               
+
                     setAdapter(true);
                 }
             }
@@ -90,7 +90,6 @@ public class AllPostsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
-
 
     }
     @Override

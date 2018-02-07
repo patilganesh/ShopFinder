@@ -32,6 +32,7 @@ import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
+import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
 import com.gajananmotors.shopfinder.model.DeleteUserModel;
@@ -70,7 +71,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private boolean flag = false;
     private CoordinatorLayout coordinatorLayout_setting;
     private Call<UpdateUserModel> user;
-
     private String name,email,dob,mobile,image;
     private int owner_id;
     private Toolbar toolbar;
@@ -112,15 +112,57 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(imgProfile);
         }
-
-
         btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
+    }
+
+    public void checkConnection(final String service) {
+        final ConnectionDetector detector = new ConnectionDetector(ProfileActivity.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                ProfileActivity.this);
+        if (!detector.isConnectingToInternet()) {
+            alertDialog.setMessage("Network not available!");
+            alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
+            alertDialog.setCancelable(false);
+            alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    if (service.equalsIgnoreCase("update")) {
+                        if (detector.isConnectingToInternet()) {
+                            dialog.dismiss();
+                            updateUser();
+                        } else {
+                            checkConnection("update");
+                        }
+                    } else {
+                        if (service.equalsIgnoreCase("delete")) {
+                            if (detector.isConnectingToInternet()) {
+                                dialog.dismiss();
+                                deleteOwnerService();
+                            } else {
+                                checkConnection("delete");
+                            }
+                        }
+                    }
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alertDialog.show();
+        } else {
+            if (service.equalsIgnoreCase("update"))
+                updateUser();
+            else
+                deleteOwnerService();
+        }
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnEdit:
+
                 if (btnEdit.getText().toString().equals("Edit")) {
                     RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
                     deleteLayout.setVisibility(View.GONE);
@@ -153,7 +195,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     etEmail.setFocusable(false);
                     etEmail.setFocusableInTouchMode(false);
                     etEmail.setClickable(false);
-                    updateUser();
+                    checkConnection("update");
+                    // updateUser();
                 }
                 break;
             case R.id.imgProfile:
@@ -191,7 +234,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 alertDialog.setCancelable(false);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteOwnerService();
+                        checkConnection("delete");
                         dialog.dismiss();
                     }
                 });

@@ -70,11 +70,10 @@ public class UserGallaryActivity extends AppCompatActivity {
                 //  selectedImageView.setImageResource(images.get(position));
             }
         });
-
     }
     @Override
     public void onBackPressed() {
         images.clear();
-
+        finish();
     }
 }

@@ -22,19 +22,18 @@ public class APIClient {
     public static String getImagePath() {
         return "http://www.findashop.in/images/";
     }
-
     public static String getShopOwnerProfilePhoto() {
         return "http://www.findashop.in/images/owner_profile/";
     }
-
     public static Retrofit getClient() {
-
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10000, TimeUnit.SECONDS)
-                .readTimeout(10000, TimeUnit.SECONDS).build();
+                .readTimeout(10000, TimeUnit.SECONDS)
+                .writeTimeout(10000, TimeUnit.SECONDS)
+                .build();
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.findashop.in/")

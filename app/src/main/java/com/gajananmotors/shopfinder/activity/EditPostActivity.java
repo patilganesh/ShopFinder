@@ -1,15 +1,15 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
-
 public class EditPostActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+    private int shop_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,5 +17,7 @@ public class EditPostActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        shop_id = getIntent().getIntExtra("shop_id", 00000);
+        Toast.makeText(this, "Shop_id:" + shop_id, Toast.LENGTH_LONG).show();
     }
 }
