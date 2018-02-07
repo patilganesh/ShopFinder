@@ -102,7 +102,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // outPutFile = null;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
-
+        if(sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")){
+            device_token=Constant.device_token;
+        }
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
         //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 

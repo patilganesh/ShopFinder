@@ -85,7 +85,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         login_progressbar = findViewById(R.id.login_progressbar);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "000000");
+        if(sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")){
+            device_token=Constant.device_token;
+        }
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();

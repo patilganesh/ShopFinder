@@ -95,8 +95,8 @@ public class ImagePickerActivity extends AppCompatActivity implements CameraHost
 
     private void initView() {
 
-       /* toolbar =  findViewById(R.id.toolbar1);
-        setSupportActionBar(toolbar);*/
+        toolbar =  findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Add Post Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
