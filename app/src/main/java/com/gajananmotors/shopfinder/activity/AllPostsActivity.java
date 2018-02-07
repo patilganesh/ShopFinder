@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -34,12 +35,16 @@ public class AllPostsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
+    private boolean b=true;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_posts);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
@@ -54,7 +59,7 @@ public class AllPostsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
                     shops_list = list.getShopList();
-                    setAdapter();
+                    setAdapter(true);
                 }
             }
 
@@ -70,9 +75,9 @@ public class AllPostsActivity extends AppCompatActivity {
 
     }
 
-    private void setAdapter() {
+    private void setAdapter(boolean b) {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
+        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);

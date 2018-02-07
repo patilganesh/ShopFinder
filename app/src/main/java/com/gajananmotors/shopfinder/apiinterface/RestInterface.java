@@ -60,12 +60,12 @@ public interface RestInterface {
     @POST("index.php/mobile_api/delete_owner")
     Call<DeleteUserModel> deleteOwnerList(
             @Field("owner_id") int owner_id);
- /*   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("index.php/mobile_api/delete_shop")
     Call<DeleteShopModel> deleteShop(
             @Field("shop_id") int shop_id
 
-    );*/
+    );
     @POST("index.php/mobile_api/get_categories")
     Call<CategoryListModel> getCategoryList();
     @FormUrlEncoded

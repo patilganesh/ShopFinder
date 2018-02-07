@@ -33,7 +33,7 @@
     <string name="todo">TODO</string>
     <string name="btn_confirm">Confirm</string>
     <string name="string_confirm">Confirmation</string>
-    <string name="btn_edit">Edit</string>
+    <string name="btn_edit">Cancel</string>
     <string name="String_Date"> Date of Birth</string>
     <string name="string_or">OR</string>
     <string name="dateofbirth">Date of birth</string>
@@ -78,6 +78,7 @@
     <string name="string_shop_details">Shop Details</string>
     <string name="string_image_gallary">Image Gallary</string>
     <string name="string_update_post">Update Post</string>
+    <string name="string_delete">Delete</string>
 
 
 </resources>

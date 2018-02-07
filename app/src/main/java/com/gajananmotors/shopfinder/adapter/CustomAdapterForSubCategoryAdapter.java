@@ -25,7 +25,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
     private ArrayList<String> subCategoryNames = new ArrayList<>();
     private ArrayList<String> subCategoryImages = new ArrayList<>();
     private ArrayList<Integer> subCatIds = new ArrayList<>();
-    private int CatId,subCatId;
+    private int catId,subCatId;
     private String[] name;
     private Context context;
     private int[] imageId;
@@ -41,7 +41,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
         Log.d("CustomAdapter","called");
         this.subCategoryNames = subCategoryNames;
         this.subCategoryImages = subCategoryImages;
-        this.CatId = int_cat_id;
+        this.catId = int_cat_id;
         this.subCatIds = subCatId;
 
 
@@ -83,7 +83,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
             public void onClick(View v) {
                 subCatId=subCatIds.get(position);
                 Intent intent = new Intent(context, ItemDetailsActivity.class);
-                intent.putExtra("CategoryId",CatId );
+                intent.putExtra("CategoryId",catId );
                 intent.putExtra("Sub_CategoryId",subCatId);
                 context.startActivity(intent);
             }
@@ -93,7 +93,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
             public void onClick(View v) {
                 subCatId=subCatIds.get(position);
                 Intent intent = new Intent(context, ItemDetailsActivity.class);
-                intent.putExtra("CategoryId",CatId);
+                intent.putExtra("CategoryId",catId);
                 intent.putExtra("Sub_CategoryId",subCatId);
                 context.startActivity(intent);
             }

@@ -113,6 +113,8 @@ public class AddPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
@@ -429,7 +431,7 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
-        TextView tvEdit = confirmDialog.findViewById(R.id.tvEdit);
+        TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");

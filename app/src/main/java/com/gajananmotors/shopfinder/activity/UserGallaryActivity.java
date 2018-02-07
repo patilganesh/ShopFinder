@@ -6,6 +6,7 @@ package com.gajananmotors.shopfinder.activity;
         import android.support.v4.view.GravityCompat;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.AppCompatActivity;
+        import android.support.v7.widget.Toolbar;
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.Gallery;
@@ -25,10 +26,14 @@ public class UserGallaryActivity extends AppCompatActivity {
     // array of images
     int shop_id;
     ArrayList<String> images=new ArrayList<>();
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         Intent i = getIntent();
         String img=i.getExtras().getString("image");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);

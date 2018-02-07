@@ -15,6 +15,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -69,11 +70,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Call<UserRegisterModel> user;
     private boolean flag = false;
     private String name,email,profile;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imgProfile = findViewById(R.id.imgProfile);

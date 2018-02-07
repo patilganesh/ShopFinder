@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -72,12 +73,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private String name,email,dob,mobile,image;
     private int owner_id;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
@@ -416,6 +420,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         if (mImageCaptureUri != null) {
                             getContentResolver().delete(mImageCaptureUri, null, null);
                             mImageCaptureUri = null;
+
                         }
                     }
                 });
