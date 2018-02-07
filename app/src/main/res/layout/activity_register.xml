@@ -9,6 +9,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.RegisterActivity">
+    <include layout="@layout/toolbar" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.GallaryActivity">
+    <include layout="@layout/toolbar" />
+
 
     <ImageView
         android:id="@+id/selectedImageView"
