@@ -53,7 +53,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Constant.MyPREFERENCES;
-
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private CallbackManager callbackManager;
     private LoginButton login;
@@ -68,18 +67,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String tvDetails = "", owner_name = "", owner_email = "", ownner_mobile = "", owner_dob = "", owner_image = "";
     private SignInButton btnSignIn;
     private Button btnLogin, btnRegister;
-    private ProgressBar progressBar;
+    private ProgressBar login_progressbar;
     private SharedPreferences sharedpreferences;
     private String device_token="";
     private int owner_id, status;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        progressBar = findViewById(R.id.progressbar);
+        login_progressbar = findViewById(R.id.login_progressbar);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "000000");
@@ -116,7 +114,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         l_name = profile.getLastName();
                         full_name = profile.getName();
                         profile_image = profile.getProfilePictureUri(50, 50).toString();
-
                     }
                 }
             }
@@ -170,7 +167,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
                 }
             }
-
                 break;
             case R.id.btnRegister:
                 //  Toast.makeText(this, "Clicked....", Toast.LENGTH_LONG).show();
@@ -185,16 +181,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void loginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<LoginUserModel> loginUser = restInterface.loginUsersList(etUserName.getText().toString(), etPassword.getText().toString(), "device_token");
-        progressBar.setVisibility(View.VISIBLE);
+        Call<LoginUserModel> loginUser = restInterface.loginUsersList(etUserName.getText().toString(), etPassword.getText().toString(), device_token);
+        login_progressbar.setVisibility(View.VISIBLE);
         //progressBar.setLeft(20);
         // btnLogin.setVisibility(View.GONE);
-        progressBar.setIndeterminate(true);
-        progressBar.setProgress(500);
+        login_progressbar.setIndeterminate(true);
+        login_progressbar.setProgress(500);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            progressBar.setMin(0);
+            login_progressbar.setMin(0);
         }
-        progressBar.setMax(100);
+        login_progressbar.setMax(100);
         loginUser.enqueue(new Callback<LoginUserModel>() {
             @Override
             public void onResponse(Call<LoginUserModel> call, Response<LoginUserModel> response) {
@@ -224,12 +220,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();
-                        progressBar.setVisibility(View.GONE);
+                        login_progressbar.setVisibility(View.GONE);
                     } else {
                         Toast.makeText(LoginActivity.this, "Fail to Login:", Toast.LENGTH_LONG).show();
                         etUserName.setText("");
                         etPassword.setText("");
-                        progressBar.setVisibility(View.GONE);
+                        login_progressbar.setVisibility(View.GONE);
                     }
                 }
             }

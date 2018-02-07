@@ -126,14 +126,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.getMenu().findItem(R.id.nav_addpost).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_allposts).setVisible(true);
             fab.setVisibility(View.GONE);
-
         }else {
             navigationView.removeHeaderView(navigationView.getHeaderView(0));
             View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
             TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
             tvOwner_Name.setText("User Name");
-            tvOwner_Email.setText("User Email_id");
+            tvOwner_Email.setText("User Email Id");
         }
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
-
             Picasso.with(MainActivity.this)
                     .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
@@ -170,14 +168,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
     }
-
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
         category_progressbar.setIndeterminate(true);
         category_progressbar.setProgress(500);
         call.enqueue(new Callback<CategoryListModel>() {
-
             @Override
             public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {

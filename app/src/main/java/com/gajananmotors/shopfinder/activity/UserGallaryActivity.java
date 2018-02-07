@@ -1,7 +1,7 @@
 package com.gajananmotors.shopfinder.activity;
 
 
-        import android.content.Intent;
+import android.content.Intent;
         import android.os.Bundle;
         import android.support.v4.view.GravityCompat;
         import android.support.v4.widget.DrawerLayout;
@@ -10,8 +10,9 @@ package com.gajananmotors.shopfinder.activity;
         import android.widget.AdapterView;
         import android.widget.Gallery;
         import android.widget.ImageView;
+import android.widget.Toast;
 
-        import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.R;
         import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
         import com.squareup.picasso.Picasso;
 
@@ -29,6 +30,7 @@ public class UserGallaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent i = getIntent();
         String img=i.getExtras().getString("image");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
@@ -64,11 +66,11 @@ public class UserGallaryActivity extends AppCompatActivity {
                 //  selectedImageView.setImageResource(images.get(position));
             }
         });
-
     }
     @Override
     public void onBackPressed() {
+        Toast.makeText(this, "On Back Pressed....", Toast.LENGTH_SHORT).show();
         images.clear();
-
+        finish();
     }
 }

@@ -1,10 +1,13 @@
 package com.gajananmotors.shopfinder.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -38,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +70,10 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +116,9 @@ public class AddPostActivity extends AppCompatActivity {
     public static boolean[] checkSelected;
     private ArrayList<String> shopServicesList;
     private Call<CreateShopModel> shopModelCall;
+    private ProgressBar addPostProgressbar;
+    private TextView tvConfirm;
+    private ProgressBar subcategory_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +128,7 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
+        subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -185,11 +196,11 @@ public class AddPostActivity extends AppCompatActivity {
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         category.setAdapter(categoryAdapter);
+
         category.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
@@ -202,16 +213,19 @@ public class AddPostActivity extends AppCompatActivity {
                     }
                 }
                 Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
+                subcategory_progressbar.setVisibility(View.VISIBLE);
+                subcategory_progressbar.setProgress(500);
+                subcategory_progressbar.setIndeterminate(true);
                 sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
                     @Override
                     public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
                         if (response.isSuccessful()) {
+                            subcategory_progressbar.setVisibility(View.INVISIBLE);
                             SubCategoryListModel list = response.body();
                             sub_category_list = list.getSubcategory();
                             getSubCategoryData();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                     }
@@ -292,7 +306,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
     }
-
     public void getAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -362,16 +375,13 @@ public class AddPostActivity extends AppCompatActivity {
     private void showMedia() {
         int index = 1;
         mSelectedImagesContainer.removeAllViews();
-
         if (image_uris.size() >= 1) {
             mSelectedImagesContainer.setVisibility(View.VISIBLE);
-
         }
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         for (final Uri uri : image_uris) {
             if (index <= 6) {
-                Log.i("path", "\nImages Path: " + uri.getPath().toString());
                 final View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
                 final ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
                 thumbnail.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +395,7 @@ public class AddPostActivity extends AppCompatActivity {
                         alertDialog.setCancelable(false);
                         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getBaseContext(), " Successfully set your shop cover photo!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getBaseContext(), " Shop cover photo set successfully!", Toast.LENGTH_LONG).show();
                                 getImages = uri.toString();
                             }
                         });
@@ -421,7 +431,8 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
         TextView tvEdit = confirmDialog.findViewById(R.id.tvEdit);
-        TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
+        tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
+        addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
         alert.setView(confirmDialog);
@@ -448,7 +459,7 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createShop();//calling web services for create shop
-                alertDialog.dismiss();
+                //  alertDialog.dismiss();
             }
         });
     }
@@ -476,6 +487,10 @@ public class AddPostActivity extends AppCompatActivity {
                     String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
                     strPlaceSearch, strBusinessWebUrl, strBusinessMobile);
         }
+        addPostProgressbar.setVisibility(View.VISIBLE);
+        addPostProgressbar.setIndeterminate(true);
+        addPostProgressbar.setProgress(500);
+        tvConfirm.setVisibility(View.INVISIBLE);
         shopModelCall.enqueue(new Callback<CreateShopModel>() {
             @Override
             public void onResponse(Call<CreateShopModel> call, Response<CreateShopModel> response) {
@@ -485,7 +500,7 @@ public class AddPostActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(Constant.SHOP_ID, shop.getShop_id());
                         editor.apply();
-                        Toast.makeText(AddPostActivity.this, "Shop Create Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
+                        //         Toast.makeText(AddPostActivity.this, "Shop Created Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
                         uploadShopImages(count);
                     }
                 }
@@ -497,9 +512,21 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void uploadShopImages(int index) {
         if (image_uris.size() > index) {
+            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            byte[] BYTE;
+            FileOutputStream fos;
             //int size=image_uris.size();
-
             File file_path = new File(image_uris.get(index).getPath().toString());
+          /*  Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
+            bitmap.compress(Bitmap.CompressFormat.JPEG,40,bytearrayoutputstream);
+            BYTE=bytearrayoutputstream.toByteArray();
+            try {
+                fos = new FileOutputStream(file_path.getAbsolutePath());
+                fos.write(BYTE);
+                fos.flush();
+                fos.close();
+            }
+            catch(Exception e){}*/
             MultipartBody.Part fileToUpload = null;
             if (file_path != null) {
                 try {
@@ -511,8 +538,11 @@ public class AddPostActivity extends AppCompatActivity {
             }
             Retrofit retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
-                    shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+         /*   addPostProgressbar.setVisibility(View.VISIBLE);
+            addPostProgressbar.setIndeterminate(true);
+            addPostProgressbar.setProgress(500);
+            tvConfirm.setVisibility(View.INVISIBLE);*/
             call.enqueue(new Callback<UploadShopImagesModel>() {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
@@ -522,12 +552,19 @@ public class AddPostActivity extends AppCompatActivity {
                             uploadShopImages(uploadShopImagesModel.getCount());
                     }
                 }
-
                 @Override
                 public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
                     Toast.makeText(AddPostActivity.this, "Error: " + t.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            addPostProgressbar.setVisibility(View.INVISIBLE);
+            tvConfirm.setVisibility(View.VISIBLE);
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(AddPostActivity.this, MainActivity.class));
+            startActivity(intent);
+            finish();
+            Toast.makeText(AddPostActivity.this, "Shop Created Success...", Toast.LENGTH_LONG).show();
         }
     }
     private boolean checkValidation() {
