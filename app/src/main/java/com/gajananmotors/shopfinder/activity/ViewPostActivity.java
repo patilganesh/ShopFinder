@@ -85,6 +85,9 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             /*shopEditLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
             shopMsgLayout.setVisibility(View.GONE);*/
+        }else{
+            linearLyoutWithEdit.setVisibility(View.GONE);
+            linearLyoutWithoutEdit.setVisibility(View.VISIBLE);
         }
         Picasso.with(ViewPostActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + viewShopList.getStrShop_pic())

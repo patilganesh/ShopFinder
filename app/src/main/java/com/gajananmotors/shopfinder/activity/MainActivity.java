@@ -16,19 +16,17 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -40,6 +38,7 @@ import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.gajananmotors.shopfinder.utility.GridSpacingItemDecoration;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private static String search_text;
-    private android.support.v7.widget.SearchView searchView;
+    private FloatingSearchView searchView;
     private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
@@ -72,7 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
-
+    int spanCount = 3; // 3 columns
+    int spacing = 50; // 50px
+    boolean includeEdge = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +83,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
+
+        searchView = findViewById(R.id.floating_search_view);
+       // searchView.clearSearchFocus();
+
+        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @Override
+            public void onFocus() {
+                toolbar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFocusCleared() {
+                toolbar.setVisibility(View.VISIBLE);
+            }
+        });
         //searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);
         //   searchView=findViewById(R.id.action_search);
         retrofit = APIClient.getClient();
@@ -94,8 +111,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
         // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
-      //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+      //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator1());
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
+
+
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -235,6 +254,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
         recycler_view_vertical.setAdapter(gridAdapter);
+      //  recycler_view_vertical.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+
+
     }
 
     @Override
@@ -251,47 +273,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
-        searchView.setIconifiedByDefault(true);
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+       // searchView = (FloatingSearchView) MenuItemCompat.getActionView(item);
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() > 0) {
-                    recycler_view_vertical.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-                newText = newText.toLowerCase();
-                search_text = newText;
-                ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-              /*  for (ShopsListModel s : shops_list) {
-                    if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))
-                        suggest_list.add(s);
-                    else if (s.getName().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getType().toLowerCase().endsWith(newText) || s.getDistance().toLowerCase().endsWith(newText) || s.getTiming().toLowerCase().endsWith(newText) || s.getMobileNo().toLowerCase().endsWith(newText))
-                        suggest_list.add(s);
-                    else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
-                        suggest_list.add(s);
-                }*/
-                adapter.setFilter(suggest_list);
-                return true;
-            }
-        });
-        //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-       /* switch (item.getItemId()) {
-
-            case R.id.action_change_city:
-                return true;
-        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -300,7 +283,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view listview_map_activity_data clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_profile) {
 
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
