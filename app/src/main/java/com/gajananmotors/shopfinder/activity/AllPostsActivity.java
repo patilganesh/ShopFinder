@@ -62,30 +62,19 @@ public class AllPostsActivity extends AppCompatActivity {
                     setAdapter(true);
                 }
             }
-
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
             }
-
-
-
         });
-
-
     }
-
     private void setAdapter(boolean b) {
-
         adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-
     }
     @Override
     public void onBackPressed() {
         finish();
-
     }
 }

@@ -51,8 +51,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.facebook.GraphRequest.TAG;
-
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
@@ -100,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
-        Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
+        //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         Bundle extras = getIntent().getExtras();
@@ -207,7 +205,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<UserRegisterModel> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
@@ -215,7 +212,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -250,7 +246,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
-
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
@@ -276,7 +271,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
         builder.show();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -295,9 +289,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     Picasso.with(RegisterActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
                         }
-
                         @Override
                         public void onError() {
                         }
@@ -467,7 +459,6 @@ private boolean checkValidation() {
     String mob = etContactNumber.getText().toString();
     String password = etPassword.getText().toString();
     String cpassword = etConfirmPassword.getText().toString();
-
     if (name.matches("")) {
 
         Snackbar snackbar = Snackbar
@@ -534,5 +525,4 @@ private boolean checkValidation() {
     }
     return ret;
 }
-
 }

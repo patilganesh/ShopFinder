@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
@@ -39,7 +38,6 @@ import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
-import com.gajananmotors.shopfinder.utility.GridSpacingItemDecoration;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import retrofit2.Call;
@@ -81,8 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         searchView = findViewById(R.id.floating_search_view);
        // searchView.clearSearchFocus();
-
-        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+       /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
@@ -93,16 +90,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onFocusCleared() {
                 toolbar.setVisibility(View.VISIBLE);
             }
-        });
+        });*/
         //searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);
         //   searchView=findViewById(R.id.action_search);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         // mLayoutManager_vertical = new GridLayoutManager(this, 3);
-
         recycler_view_vertical.setHasFixedSize(true);
-
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
         // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
@@ -177,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+        DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
     }
@@ -297,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }*/
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -338,7 +332,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.clear();
             editor.apply();
             startActivity(new Intent(this, MainActivity.class));
-
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

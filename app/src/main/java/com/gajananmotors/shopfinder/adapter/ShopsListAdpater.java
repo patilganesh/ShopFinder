@@ -53,14 +53,12 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     private int index;
     ViewShopList viewShopList=new ViewShopList();
     private boolean b;
-
-
+    private Context context;
     public ShopsListAdpater(Activity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
         this.list = shops_list;
         this.activity = activity;
         this.viewPostLayout = viewPostLayout;
     }
-
     public ShopsListAdpater(ArrayList<ShopsListModel> shops_list) {
         this.list = shops_list;
     }
@@ -80,7 +78,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ShopsListHolder holder, final int position) {
+    public void onBindViewHolder(ShopsListHolder holder, final int position) {
         holder.name.setText(list.get(position).getShop_name());
         holder.address.setText(list.get(position).getAddress());
         holder.distance.setText(list.get(position).getCity()+"/"+list.get(position).getState()+"/"+list.get(position).getCountry());
@@ -88,7 +86,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         holder.type.setText(list.get(position).getShop_mob_no());
         holder.weburl.setText(list.get(position).getWebsite());
 
-        Picasso.with(activity)
+        Picasso.with(context)
                 .load("http://findashop.in/images/shop_profile/"+list.get(position).getShop_id()+"/"+list.get(position).getShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
@@ -133,21 +131,17 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 viewShopList.setStrSub_category(list.get(position).getSub_category_name());
                 viewShopList.setStrWeburl(list.get(position).getWebsite());
                 viewShopList.setStrMobile(list.get(position).getShop_mob_no());
-
                 images.add(index++,list.get(position).getImage1());
                 images.add(index++,list.get(position).getImage2());
                 images.add(index++,list.get(position).getImage3());
                 images.add(index++,list.get(position).getImage4());
                 images.add(index++,list.get(position).getImage5());
                 images.add(index++,list.get(position).getImage6());
-
-
                 viewShopList.setArrayList(images);
                 viewShopList.setStrShop_pic(list.get(position).getShop_pic());
                 transition();
             }
         });
-
     }
 
     private void deleteShopServices() {
@@ -189,7 +183,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         return list.size();
 
     }
-
     public void setFilter(ArrayList<ShopsListModel> newList) {
         list = new ArrayList<>();
         list.addAll(newList);

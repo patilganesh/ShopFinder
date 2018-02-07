@@ -432,8 +432,7 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvAddress = confirmDialog.findViewById(R.id.tvAddress);
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
-        TextView tvEdit = confirmDialog.findViewById(R.id.tvEdit);
-
+        TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
         //TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);

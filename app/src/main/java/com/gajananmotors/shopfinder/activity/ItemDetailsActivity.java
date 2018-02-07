@@ -29,13 +29,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 public class ItemDetailsActivity extends AppCompatActivity{
-
     private LinearLayout viewLayout;
     private LinearLayout shopDirection;
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
-    ShopsListAdpater adapter;
+    private ShopsListAdpater adapter;
     private RecyclerView recyclerView;
     private LinearLayout viewPostLayout;
     private Retrofit retrofit;
@@ -72,43 +70,26 @@ public class ItemDetailsActivity extends AppCompatActivity{
 
                 }
             }
-
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
             }
-
-
-
         });
-
-
     }
-
-
-
-
 /*
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
-
-
         ScaleInAnimationAdapter alphaAdapter = new ScaleInAnimationAdapter(adapter);
         alphaAdapter.setDuration(1000);
         alphaAdapter.setInterpolator(new AccelerateDecelerateInterpolator());
         alphaAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(alphaAdapter);*/
-
-    private void setAdapter() {
-
+private void setAdapter() {
         adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-
     }
-
 
 }
 
