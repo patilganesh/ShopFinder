@@ -231,6 +231,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
+
     private void updateUser() {
         File shop_cover_photo = null;
         byte[] imgbyte = null;

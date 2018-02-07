@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -17,22 +17,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -41,18 +37,20 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
+import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.gajananmotors.shopfinder.activity.SubCategoryActivity.imglist;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
@@ -67,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Integer> categoryId = new ArrayList<>();
     private Retrofit retrofit;
     private RestInterface restInterface;
-    private ImageView nearby;
-    private LinearLayoutManager mLayoutManager_vertical;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
     private SharedPreferences sharedpreferences;
@@ -76,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,10 +87,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        mLayoutManager_vertical.setOrientation(LinearLayout.VERTICAL);
+        // mLayoutManager_vertical = new GridLayoutManager(this, 3);
+
+        recycler_view_vertical.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
+        // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
-        recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+      //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.getMenu().findItem(R.id.nav_allposts).setVisible(true);
             fab.setVisibility(View.GONE);
 
-        }else {
+        } else {
             navigationView.removeHeaderView(navigationView.getHeaderView(0));
             View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
 
             Picasso.with(MainActivity.this)
-                    .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .load("http://www.findashop.in/images/owner_profile/" + sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(user_profile);
@@ -192,12 +193,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     setadapter(categoryNames, categoryImages, categoryId);
                 }
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
 
@@ -228,10 +231,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
+
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
         recycler_view_vertical.setAdapter(gridAdapter);
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -241,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -252,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() > 0) {
@@ -276,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -333,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -340,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     public void onClick(View v) {
         /*switch (v.getId()) {
