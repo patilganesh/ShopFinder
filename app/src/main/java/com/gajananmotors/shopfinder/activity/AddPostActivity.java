@@ -513,10 +513,10 @@ public class AddPostActivity extends AppCompatActivity {
         if (image_uris.size() > index) {
             ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
             byte[] BYTE;
-            FileOutputStream fos;
+            FileOutputStream fos = null;
             //int size=image_uris.size();
             File file_path = new File(image_uris.get(index).getPath().toString());
-          /*  Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
+            Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
             bitmap.compress(Bitmap.CompressFormat.JPEG,40,bytearrayoutputstream);
             BYTE=bytearrayoutputstream.toByteArray();
             try {
@@ -524,8 +524,8 @@ public class AddPostActivity extends AppCompatActivity {
                 fos.write(BYTE);
                 fos.flush();
                 fos.close();
+            } catch (Exception e) {
             }
-            catch(Exception e){}*/
             MultipartBody.Part fileToUpload = null;
             if (file_path != null) {
                 try {

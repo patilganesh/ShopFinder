@@ -354,15 +354,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<LoginUserModel> loginUser = restInterface.loginUsersFacegleList(owner_email,device_token);
-        progressBar.setVisibility(View.VISIBLE);
+        login_progressbar.setVisibility(View.VISIBLE);
         //progressBar.setLeft(20);
         // btnLogin.setVisibility(View.GONE);
-        progressBar.setIndeterminate(true);
-        progressBar.setProgress(500);
+        login_progressbar.setIndeterminate(true);
+        login_progressbar.setProgress(500);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            progressBar.setMin(0);
+            login_progressbar.setMin(0);
         }
-        progressBar.setMax(100);
+        login_progressbar.setMax(100);
         loginUser.enqueue(new Callback<LoginUserModel>() {
             @Override
             public void onResponse(Call<LoginUserModel> call, Response<LoginUserModel> response) {
@@ -374,7 +374,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();
-                        progressBar.setVisibility(View.GONE);
+                        login_progressbar.setVisibility(View.GONE);
                     } else if(user.getResult() == 0) {
                         Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
                         Bundle b = new Bundle();
@@ -386,7 +386,7 @@ Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
                         startActivity(in);
 
                     }else {
-                        progressBar.setVisibility(View.GONE);
+                        login_progressbar.setVisibility(View.GONE);
                     }
                 }
             }
