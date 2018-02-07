@@ -58,7 +58,15 @@ public class AllPostsActivity extends AppCompatActivity {
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
-                    shops_list = list.getShopList();
+                    ArrayList<ShopsListModel>shopsListModels=list.getShopList();
+                    for(ShopsListModel model:shopsListModels)
+                    {
+                        if(model.getStatus()==1)
+                        {
+                            shops_list.add(model);
+                        }
+                    }
+               
                     setAdapter(true);
                 }
             }
@@ -80,7 +88,9 @@ public class AllPostsActivity extends AppCompatActivity {
         adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+
 
     }
     @Override

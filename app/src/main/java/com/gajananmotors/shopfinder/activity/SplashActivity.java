@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         MultiDex.install(this);
         setContentView(R.layout.activity_splash);
         txtscreen = findViewById(R.id.txtscreen);
-        getSupportActionBar().hide();
+     
         final Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.move);
         Thread thread = new Thread() {

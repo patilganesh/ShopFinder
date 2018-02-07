@@ -47,6 +47,7 @@ public class UserGallaryActivity extends AppCompatActivity {
         images=i.getExtras().getStringArrayList("images");
 
         customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(),images ,shop_id);
+        customGalleryAdapter.notifyDataSetChanged();
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(UserGallaryActivity.this);

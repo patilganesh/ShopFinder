@@ -87,7 +87,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         holder.timing.setText(list.get(position).getShop_timing());
         holder.type.setText(list.get(position).getShop_mob_no());
         holder.weburl.setText(list.get(position).getWebsite());
-
+        shop_id=list.get(position).getShop_id();
         Picasso.with(activity)
                 .load("http://findashop.in/images/shop_profile/"+list.get(position).getShop_id()+"/"+list.get(position).getShop_pic())
                 .fit()
@@ -107,7 +107,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        deleteShopServices();
+                        deleteShopServices(shop_id);
                         dialog.dismiss();
                     }
                 });
@@ -150,19 +150,21 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
 
     }
 
-    private void deleteShopServices() {
+    private void deleteShopServices(int shop_id) {
             Retrofit retrofit;
         DeleteShopModel deleteShopModel;
         deleteShopModel=new DeleteShopModel();
+      // Toast.makeText(activity,shop_id,Toast.LENGTH_LONG).show();
             retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<DeleteShopModel> deleteShop= restInterface.deleteShop(viewShopList.getShop_id());
+            Call<DeleteShopModel> deleteShop= restInterface.deleteShop(shop_id);
             deleteShop.enqueue(new Callback<DeleteShopModel>() {
                 @Override
                 public void onResponse(Call<DeleteShopModel> call, Response<DeleteShopModel> response) {
                     if (response.isSuccessful()){
                         String msg=  response.body().getMsg();
                         Toast.makeText(activity,msg,Toast.LENGTH_LONG).show();
+                        activity.finish();
                         activity.startActivity(new Intent(activity,AllPostsActivity.class));
                     }
                 }
