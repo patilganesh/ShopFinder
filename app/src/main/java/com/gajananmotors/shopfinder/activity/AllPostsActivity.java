@@ -1,11 +1,13 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -46,6 +48,12 @@ public class AllPostsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
@@ -82,6 +90,11 @@ public class AllPostsActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
 
     private void setAdapter(boolean b) {
 
@@ -92,9 +105,5 @@ public class AllPostsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
     }
-    @Override
-    public void onBackPressed() {
-        finish();
 
-    }
 }

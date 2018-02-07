@@ -52,7 +52,12 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -122,7 +127,7 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                     startActivity(mapIntent);
                 }
                 //startActivity(new Intent(this, MapsActivity.class));
-                return;
+                break;
             case R.id.shopGallaryLayout:
                 Intent i = new Intent(this, UserGallaryActivity.class);
                 // i.putExtra("images", allimages );
@@ -132,7 +137,7 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                 startActivity(i);
 
 
-                return;
+                break;
             case R.id.shopCallLayout:
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -143,23 +148,28 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
-                    return;
+                    break;
                 }
 
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + tvMobile.getText().toString()));
                 startActivity(callIntent);
-                return;
+                break;
             case R.id.shopMsgLayout:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", tvMobile.getText().toString(), null)));
-                return;
+                break;
             case R.id.shopEditLayout:
                 startActivity(new Intent(this, EditPostActivity.class));
-                return;
+                break;
             case R.id.shopShareLayout:
                 Toast.makeText(this, "Share Post", Toast.LENGTH_SHORT).show();
-                return;
+                break;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
 
 

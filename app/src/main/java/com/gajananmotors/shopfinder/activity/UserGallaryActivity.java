@@ -34,6 +34,13 @@ public class UserGallaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         Intent i = getIntent();
         String img=i.getExtras().getString("image");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
@@ -73,6 +80,7 @@ public class UserGallaryActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         images.clear();
         finish();
     }

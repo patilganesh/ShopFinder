@@ -16,7 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -169,6 +171,12 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessHour = findViewById(R.id.etBusinessHour);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         getImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -738,6 +746,12 @@ public class AddPostActivity extends AppCompatActivity {
         final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
         DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
         list.setAdapter(adapter);
+
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
 
     }
 

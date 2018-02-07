@@ -102,6 +102,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //onBackPressed();
+            }
+        });
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
         login.setReadPermissions("public_profile email");
@@ -130,6 +136,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection Failed : " + connectionResult);
@@ -404,8 +412,7 @@ Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
 
     @Override
     public void onBackPressed() {
-
-        finish();
+      super.onBackPressed();
 
     }
 }

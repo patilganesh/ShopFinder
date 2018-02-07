@@ -56,6 +56,12 @@ public class SubCategoryActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         Intent intent = getIntent();
         int_cat_id = intent.getIntExtra("CategoryId", 0);
@@ -97,4 +103,10 @@ public class SubCategoryActivity extends AppCompatActivity {
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategoryAdapter);
         recycler_view.setAdapter(alphaAdapter);
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
+
 }

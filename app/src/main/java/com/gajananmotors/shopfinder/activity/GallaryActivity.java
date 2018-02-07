@@ -32,6 +32,7 @@ public class GallaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setSupportActionBar(toolbar);
         Intent i = getIntent();
         String img=i.getExtras().getString("image");
@@ -68,10 +69,17 @@ public class GallaryActivity extends AppCompatActivity {
               //  selectedImageView.setImageResource(images.get(position));
             }
         });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
     }
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         images.clear();
 
     }

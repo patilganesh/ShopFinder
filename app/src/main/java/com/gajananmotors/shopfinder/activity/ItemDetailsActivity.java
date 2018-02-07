@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -53,6 +54,12 @@ public class ItemDetailsActivity extends AppCompatActivity{
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         recyclerView = findViewById(R.id.recyclerView);
         viewPostLayout = findViewById(R.id.viewLayout);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         Intent intent = getIntent();
         int_cat_id = intent.getIntExtra("CategoryId", 0);
         int_sub_cat_id = intent.getIntExtra("Sub_CategoryId", 0);
@@ -82,7 +89,13 @@ public class ItemDetailsActivity extends AppCompatActivity{
             }
         });
     }
-/*
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
+
+    /*
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);

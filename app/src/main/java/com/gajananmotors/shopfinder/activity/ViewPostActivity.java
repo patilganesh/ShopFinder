@@ -72,6 +72,12 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopCallLayout.setOnClickListener(this);
         shopMsgLayout = findViewById(R.id.shopMsgLayout);
         shopMsgLayout.setOnClickListener(this);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         LinearLayout linearLyoutWithoutEdit=findViewById(R.id.linearLyoutWithoutEdit);
         LinearLayout linearLyoutWithEdit=findViewById(R.id.linearLyoutWithEdit);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
@@ -147,6 +153,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 Toast.makeText(this, "Share Post", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
 
 }

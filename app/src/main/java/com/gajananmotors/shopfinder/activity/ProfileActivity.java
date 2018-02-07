@@ -96,6 +96,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnEdit.setOnClickListener(this);
         etDate.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         Button btnEdit = findViewById(R.id.btnEdit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -475,7 +481,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
     @Override
     public void onBackPressed() {
-        finish();
+        super.onBackPressed();
+
 
     }
 }

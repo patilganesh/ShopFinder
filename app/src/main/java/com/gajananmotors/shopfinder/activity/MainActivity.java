@@ -76,8 +76,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
-        searchView = findViewById(R.id.floating_search_view);
+       // searchView = findViewById(R.id.floating_search_view);
        // searchView.clearSearchFocus();
        /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override

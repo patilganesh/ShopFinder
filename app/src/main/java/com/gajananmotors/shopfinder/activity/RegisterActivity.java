@@ -88,6 +88,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etContactNumber = findViewById(R.id.etContactNumber);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         btnSubmit = findViewById(R.id.btnSubmit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -369,7 +375,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
     @Override
     public void onBackPressed() {
-        finish();
+  super.onBackPressed();
 
     }
     private void validation() {
