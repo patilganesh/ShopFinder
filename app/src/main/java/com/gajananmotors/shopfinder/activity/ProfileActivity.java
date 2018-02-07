@@ -415,6 +415,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         if (mImageCaptureUri != null) {
                             getContentResolver().delete(mImageCaptureUri, null, null);
                             mImageCaptureUri = null;
+
                         }
                     }
                 });

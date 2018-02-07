@@ -96,6 +96,12 @@
             android:layout_margin="5dp"
             android:src="@drawable/new_shop_image" />
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_Shop_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/string_delete"/>
     <View
         android:layout_width="match_parent"
         android:layout_height=".3dp"

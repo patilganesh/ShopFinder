@@ -34,6 +34,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
+    private boolean b=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class AllPostsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
                     shops_list = list.getShopList();
-                    setAdapter();
+                    setAdapter(true);
                 }
             }
 
@@ -70,9 +71,9 @@ public class AllPostsActivity extends AppCompatActivity {
 
     }
 
-    private void setAdapter() {
+    private void setAdapter(boolean b) {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
+        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
