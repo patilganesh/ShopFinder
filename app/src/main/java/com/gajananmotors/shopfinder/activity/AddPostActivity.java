@@ -123,6 +123,8 @@ public class AddPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
@@ -193,7 +195,7 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         category.setAdapter(categoryAdapter);
         category.addTextChangedListener(new TextWatcher() {
@@ -225,6 +227,7 @@ public class AddPostActivity extends AppCompatActivity {
                             getSubCategoryData();
                         }
                     }
+
                     @Override
                     public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                     }
@@ -430,8 +433,11 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
         TextView tvEdit = confirmDialog.findViewById(R.id.tvEdit);
+
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
+        //TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
+        TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
         alert.setView(confirmDialog);
@@ -537,11 +543,8 @@ public class AddPostActivity extends AppCompatActivity {
             }
             Retrofit retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
-         /*   addPostProgressbar.setVisibility(View.VISIBLE);
-            addPostProgressbar.setIndeterminate(true);
-            addPostProgressbar.setProgress(500);
-            tvConfirm.setVisibility(View.INVISIBLE);*/
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
+                    shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
             call.enqueue(new Callback<UploadShopImagesModel>() {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {

@@ -56,16 +56,6 @@
                 android:background="#ffffff"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="Hospitals"
-                    android:textColor="@color/black"
-                    android:textSize="17dp" />
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_vertical"
                     android:layout_width="match_parent"
@@ -76,17 +66,13 @@
             </LinearLayout>
 
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-                <ProgressBar
-                    android:id="@+id/category_progressbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:theme="@style/CircularProgress"
-                    android:visibility="gone"
-                    android:layout_centerInParent="true" />
-            </RelativeLayout>
+            <ProgressBar
+                android:id="@+id/category_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:theme="@style/CircularProgress"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

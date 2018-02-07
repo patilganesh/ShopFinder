@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,10 +33,14 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private ViewShopList viewShopList;
     private int shop_id;
     private SharedPreferences sharedpreferences;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         viewPostLayout = findViewById(R.id.viewPostLayout);
@@ -76,9 +81,12 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             /*shopEditLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
             shopMsgLayout.setVisibility(View.GONE);*/
+        }else{
+            linearLyoutWithEdit.setVisibility(View.GONE);
+            linearLyoutWithoutEdit.setVisibility(View.VISIBLE);
         }
         Picasso.with(ViewPostActivity.this)
-                .load("http://findashop.in/images/shop_profile/" + viewShopList.getShop_id() + "/" + viewShopList.getStrShop_pic())
+                .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + viewShopList.getStrShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(shopCoverphoto);

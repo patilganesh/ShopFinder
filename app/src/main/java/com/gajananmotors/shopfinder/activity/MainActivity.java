@@ -15,9 +15,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -28,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -36,9 +36,10 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
+import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.gajananmotors.shopfinder.utility.GridSpacingItemDecoration;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import retrofit2.Call;
@@ -77,6 +78,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
+
+        searchView = findViewById(R.id.floating_search_view);
+       // searchView.clearSearchFocus();
+
+        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @Override
+            public void onFocus() {
+                toolbar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFocusCleared() {
+                toolbar.setVisibility(View.VISIBLE);
+            }
+        });
         //searchView = (android.support.v7.widget.SearchView) findViewById(R.id.simpleSearchView);
         //   searchView=findViewById(R.id.action_search);
         retrofit = APIClient.getClient();
@@ -128,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
             TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
             tvOwner_Name.setText("User Name");
-            tvOwner_Email.setText("User Email Id");
+            tvOwner_Email.setText("User Email_id");
         }
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
         String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
@@ -141,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
             tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
             Picasso.with(MainActivity.this)
-                    .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .load("http://www.findashop.in/images/owner_profile/" + sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(user_profile);
@@ -244,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() > 0) {
@@ -268,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 

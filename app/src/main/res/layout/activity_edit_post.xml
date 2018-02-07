@@ -6,6 +6,9 @@
     android:background="@color/colorGraylight"
     android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.EditPostActivity">
+    <include layout="@layout/toolbar" />
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

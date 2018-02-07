@@ -11,6 +11,7 @@ package com.gajananmotors.shopfinder.activity;
         import android.os.Bundle;
         import android.support.v4.app.ActivityCompat;
         import android.support.v7.app.AppCompatActivity;
+        import android.support.v7.widget.Toolbar;
         import android.util.Log;
         import android.view.View;
         import android.widget.ImageView;
@@ -40,11 +41,14 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
     ViewShopList viewShopList;
     int shop_id;
     private SharedPreferences sharedpreferences;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
@@ -62,7 +66,7 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
         tvWebsite = findViewById(R.id.tvWebsite);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout = findViewById(R.id.shopEditLayout);
-        viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
+        viewShopList =  getIntent().getParcelableExtra("shop_list");
         tvShopName.setText(viewShopList.getStrShop_name());
         tvAddress.setText(viewShopList.getStrAddress());
         tvCategory.setText(viewShopList.getStrCategory());
@@ -78,10 +82,18 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
         shopCallLayout.setOnClickListener(this);
         shopMsgLayout = findViewById(R.id.shopMsgLayout);
         shopMsgLayout.setOnClickListener(this);
+        LinearLayout linearLyoutWithoutEdit=findViewById(R.id.linearLyoutWithoutEdit);
+        LinearLayout linearLyoutWithEdit=findViewById(R.id.linearLyoutWithEdit);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-            shopEditLayout.setVisibility(View.VISIBLE);
+
+            linearLyoutWithEdit.setVisibility(View.VISIBLE);
+            linearLyoutWithoutEdit.setVisibility(View.GONE);
+            /*shopEditLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
-            shopMsgLayout.setVisibility(View.GONE);
+            shopMsgLayout.setVisibility(View.GONE);*/
+        }else {
+            linearLyoutWithEdit.setVisibility(View.GONE);
+            linearLyoutWithoutEdit.setVisibility(View.VISIBLE);
         }
         Picasso.with(UserViewPostActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + viewShopList.getStrShop_pic())

@@ -138,7 +138,7 @@
         <activity
             android:name=".activity.ViewPostActivity"
             android:label="@string/string_shop_details"
-            android:parentActivityName=".activity.SubCategoryActivity">
+            android:parentActivityName=".activity.AllPostsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
 
@@ -164,7 +164,7 @@
         <activity
             android:name=".activity.UserViewPostActivity"
             android:label="@string/string_shop_details"
-            android:parentActivityName=".activity.SubCategoryActivity" />
+            android:parentActivityName=".activity.ItemDetailsActivity" />
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"

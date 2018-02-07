@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -45,11 +46,15 @@ public class SubCategoryActivity extends AppCompatActivity {
     private RecyclerView recycler_view;
     private LinearLayoutManager mLayoutManager;
     private CustomAdapterForSubCategoryAdapter customAdapterForSubCategoryAdapter;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         setContentView(R.layout.activity_sub_category);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         Intent intent = getIntent();

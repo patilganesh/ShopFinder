@@ -15,6 +15,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -70,14 +71,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Call<UserRegisterModel> user;
     private boolean flag = false;
     private String name,email,profile;
+    private Toolbar toolbar;
+
     private ProgressBar register_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000000");
+
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
