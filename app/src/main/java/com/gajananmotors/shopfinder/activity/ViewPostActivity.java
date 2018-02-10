@@ -56,7 +56,9 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         tvWebsite = findViewById(R.id.tvWebsite);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout = findViewById(R.id.shopEditLayout);
+
         viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
+
         tvShopName.setText(viewShopList.getStrShop_name());
         tvAddress.setText(viewShopList.getStrAddress());
         tvCategory.setText(viewShopList.getStrCategory());
@@ -84,9 +86,9 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
 
             linearLyoutWithEdit.setVisibility(View.VISIBLE);
             linearLyoutWithoutEdit.setVisibility(View.GONE);
-            /*shopEditLayout.setVisibility(View.VISIBLE);
+            shopEditLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
-            shopMsgLayout.setVisibility(View.GONE);*/
+            shopMsgLayout.setVisibility(View.GONE);
         }else{
             linearLyoutWithEdit.setVisibility(View.GONE);
             linearLyoutWithoutEdit.setVisibility(View.VISIBLE);
@@ -118,7 +120,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.shopGallaryLayout:
                 Intent i = new Intent(this, GallaryActivity.class);
-                // i.putExtra("images", allimages );
                 i.putStringArrayListExtra("images", allimages);
                 i.putExtra("shopCoverphoto", shopCoverpic);
                 i.putExtra("shop_id", shop_id);
@@ -157,6 +158,8 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        allimages.clear();
+      Log.d("listsize", String.valueOf(allimages.size()));
 
     }
 

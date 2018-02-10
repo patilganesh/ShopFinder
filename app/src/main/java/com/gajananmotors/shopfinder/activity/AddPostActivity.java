@@ -29,6 +29,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -128,6 +129,7 @@ public class AddPostActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -174,7 +176,7 @@ public class AddPostActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finish();
             }
         });
         getImages.setOnClickListener(new View.OnClickListener() {
@@ -245,13 +247,13 @@ public class AddPostActivity extends AppCompatActivity {
         // subcategory.setAdapter(categoryAdapter);
     }
 
-    @Override
+  /*  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setIconifiedByDefault(true);
-       /* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+       *//* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -277,10 +279,10 @@ public class AddPostActivity extends AppCompatActivity {
                 adapter.setFilter(suggest_list);
                 return true;
             }
-        });*/
+        });*//*
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
-    }
+    }*/
 
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
@@ -749,10 +751,17 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed();
+        }
+        return true;
+    }
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
 
 
     }
-
 }

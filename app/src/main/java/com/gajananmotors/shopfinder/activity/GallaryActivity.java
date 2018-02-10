@@ -6,6 +6,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
@@ -32,26 +33,30 @@ public class GallaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent i = getIntent();
         String img=i.getExtras().getString("image");
+        String shop_pic=i.getExtras().getString("shopCoverphoto");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
         shop_id=i.getIntExtra("shop_id",0);
         selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
-        Picasso.with(GallaryActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+i.getExtras().getString("shopCoverphoto"))
+       /* Picasso.with(GallaryActivity.this)
+                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+shop_pic)
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
-                .into(selectedImageView);
+                .into(selectedImageView);*/
+        images.clear();
         images=i.getExtras().getStringArrayList("images");
 
         customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(),images ,shop_id);
+        customGalleryAdapter.notifyDataSetChanged();
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(GallaryActivity.this);
         Picasso.with(GallaryActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+images.get(0))
+                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+shop_pic)
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(selectedImageView);
@@ -81,6 +86,8 @@ public class GallaryActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         images.clear();
+        Log.d("listsize", String.valueOf(images.size()));
+
 
     }
 }

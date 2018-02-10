@@ -2,11 +2,8 @@ package com.gajananmotors.shopfinder.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -19,17 +16,12 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.AllPostsActivity;
-import com.gajananmotors.shopfinder.activity.MainActivity;
-import com.gajananmotors.shopfinder.activity.ProfileActivity;
-import com.gajananmotors.shopfinder.activity.UserViewPostActivity;
 import com.gajananmotors.shopfinder.activity.ViewPostActivity;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.common.ViewShopList;
-import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.holder.ShopsListHolder;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
-import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.squareup.picasso.Picasso;
 
@@ -48,10 +40,10 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     Activity activity;
     ArrayList<ShopsListModel> list = new ArrayList<>();
     private LinearLayout viewPostLayout;
-    private ArrayList<String> images=new ArrayList<>();
+    private ArrayList<String> images = new ArrayList<>();
     private int shop_id;
-    private int index;
-    ViewShopList viewShopList=new ViewShopList();
+    private int index=0;
+    ViewShopList viewShopList = new ViewShopList();
     private boolean b;
 
 
@@ -66,10 +58,10 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     }
 
     public ShopsListAdpater(AllPostsActivity allPostsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, boolean b) {
-        this.activity=allPostsActivity;
-        this.viewPostLayout=viewPostLayout;
-        this.list=shops_list;
-        this.b=b;
+        this.activity = allPostsActivity;
+        this.viewPostLayout = viewPostLayout;
+        this.list = shops_list;
+        this.b = b;
     }
 
     @Override
@@ -83,18 +75,18 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     public void onBindViewHolder(final ShopsListHolder holder, final int position) {
         holder.name.setText(list.get(position).getShop_name());
         holder.address.setText(list.get(position).getAddress());
-        holder.distance.setText(list.get(position).getCity()+"/"+list.get(position).getState()+"/"+list.get(position).getCountry());
+        holder.distance.setText(list.get(position).getCity() + "/" + list.get(position).getState() + "/" + list.get(position).getCountry());
         holder.timing.setText(list.get(position).getShop_timing());
         holder.type.setText(list.get(position).getShop_mob_no());
         holder.weburl.setText(list.get(position).getWebsite());
-        shop_id=list.get(position).getShop_id();
+       // shop_id = list.get(position).getShop_id();
         Picasso.with(activity)
-                .load("http://findashop.in/images/shop_profile/"+list.get(position).getShop_id()+"/"+list.get(position).getShop_pic())
+                .load("http://findashop.in/images/shop_profile/" + list.get(position).getShop_id() + "/" + list.get(position).getShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(holder.image);
 
-        if(b==true) {
+        if (b == true) {
             holder.btn_Shop_delete.setVisibility(View.VISIBLE);
         }
         holder.btn_Shop_delete.setOnClickListener(new View.OnClickListener() {
@@ -106,8 +98,9 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 alertDialog.setCancelable(false);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
-                        deleteShopServices(shop_id);
+                  //   Toast.makeText(activity,shop_id,Toast.LENGTH_LONG).show();
+                       int shop_id1=list.get(position).getShop_id();
+                        deleteShopServices(shop_id1);
                         dialog.dismiss();
                     }
                 });
@@ -117,7 +110,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                     }
                 });
                 alertDialog.show();
-
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -133,57 +125,71 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 viewShopList.setStrSub_category(list.get(position).getSub_category_name());
                 viewShopList.setStrWeburl(list.get(position).getWebsite());
                 viewShopList.setStrMobile(list.get(position).getShop_mob_no());
-
-                images.add(index++,list.get(position).getImage1());
-                images.add(index++,list.get(position).getImage2());
-                images.add(index++,list.get(position).getImage3());
-                images.add(index++,list.get(position).getImage4());
-                images.add(index++,list.get(position).getImage5());
-                images.add(index++,list.get(position).getImage6());
-
-
+                images.clear();
+                index = 0;
+                if (list.get(position).getImage1()!=null) {
+                    images.add(index++, list.get(position).getImage1());
+                }
+                 if (list.get(position).getImage2()!=null) {
+                    images.add(index++, list.get(position).getImage2());
+                }  if (list.get(position).getImage3()!=null) {
+                    images.add(index++, list.get(position).getImage3());
+                }  if (list.get(position).getImage4()!=null) {
+                    images.add(index++, list.get(position).getImage4());
+                } if (list.get(position).getImage5()!=null) {
+                    images.add(index++, list.get(position).getImage5());
+                }  if (list.get(position).getImage6()!=null) {
+                    images.add(index++, list.get(position).getImage6());
+                }
                 viewShopList.setArrayList(images);
                 viewShopList.setStrShop_pic(list.get(position).getShop_pic());
                 transition();
+               // activity.finish();
+               Log.e("updatedsize", String.valueOf(images.size()));
             }
         });
-
     }
 
     private void deleteShopServices(int shop_id) {
-            Retrofit retrofit;
+        Retrofit retrofit;
         DeleteShopModel deleteShopModel;
-        deleteShopModel=new DeleteShopModel();
-      // Toast.makeText(activity,shop_id,Toast.LENGTH_LONG).show();
-            retrofit = APIClient.getClient();
-            RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<DeleteShopModel> deleteShop= restInterface.deleteShop(shop_id);
-            deleteShop.enqueue(new Callback<DeleteShopModel>() {
-                @Override
-                public void onResponse(Call<DeleteShopModel> call, Response<DeleteShopModel> response) {
-                    if (response.isSuccessful()){
-                        String msg=  response.body().getMsg();
-                        Toast.makeText(activity,msg,Toast.LENGTH_LONG).show();
-                        activity.finish();
-                        activity.startActivity(new Intent(activity,AllPostsActivity.class));
-                    }
+        deleteShopModel = new DeleteShopModel();
+        // Toast.makeText(activity,shop_id,Toast.LENGTH_LONG).show();
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<DeleteShopModel> deleteShop = restInterface.deleteShop(shop_id);
+        deleteShop.enqueue(new Callback<DeleteShopModel>() {
+            @Override
+            public void onResponse(Call<DeleteShopModel> call, Response<DeleteShopModel> response) {
+                if (response.isSuccessful()) {
+                    String msg = response.body().getMsg();
+                    Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
+                    activity.finish();
+                    activity.startActivity(new Intent(activity, AllPostsActivity.class));
                 }
+            }
 
-                @Override
-                public void onFailure(Call<DeleteShopModel> call, Throwable t) {
+            @Override
+            public void onFailure(Call<DeleteShopModel> call, Throwable t) {
 
-                }
-            });
+            }
+        });
     }
 
     private void transition() {
         Log.d("Allpost", "transition");
-        Intent intent = new Intent(activity, UserViewPostActivity.class);
-        intent.putExtra("shop_list",viewShopList);
-        Pair<View, String> p1 = Pair.create((View) viewPostLayout, "view");
+
+        Intent intent = new Intent(activity, ViewPostActivity.class);
+        intent.putExtra("shop_list", viewShopList);
+       /* Pair<View, String> p1 = Pair.create((View) viewPostLayout, "view");
         ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation(activity, p1);
-        activity.startActivity(intent, options.toBundle());
+                makeSceneTransitionAnimation(activity, p1);*/
+
+      //  activity.startActivity(intent, options.toBundle());
+        activity.startActivity(intent);
+
+        //  activity.finish();
+
     }
 
     @Override

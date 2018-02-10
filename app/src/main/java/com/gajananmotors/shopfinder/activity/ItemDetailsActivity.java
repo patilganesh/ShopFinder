@@ -79,7 +79,6 @@ public class ItemDetailsActivity extends AppCompatActivity{
                             shops_list.add(model);
                         }
                     }
-
                         setAdapter();
 
                 }
@@ -92,18 +91,10 @@ public class ItemDetailsActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
 
     }
 
-    /*
-        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(mDividerItemDecoration);
-        ScaleInAnimationAdapter alphaAdapter = new ScaleInAnimationAdapter(adapter);
-        alphaAdapter.setDuration(1000);
-        alphaAdapter.setInterpolator(new AccelerateDecelerateInterpolator());
-        alphaAdapter.notifyDataSetChanged();
-        mRecyclerView.setAdapter(alphaAdapter);*/
 private void setAdapter() {
         adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

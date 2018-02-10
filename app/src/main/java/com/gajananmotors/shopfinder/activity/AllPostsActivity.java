@@ -61,6 +61,7 @@ public class AllPostsActivity extends AppCompatActivity {
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID,0));
+        shops_list.clear();
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
@@ -76,6 +77,7 @@ public class AllPostsActivity extends AppCompatActivity {
                     }
 
                     setAdapter(true);
+
                 }
             }
 
@@ -93,6 +95,8 @@ public class AllPostsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        shops_list.clear();
+finish();
 
     }
 
@@ -103,6 +107,7 @@ public class AllPostsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+
 
     }
 
