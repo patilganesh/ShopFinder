@@ -3,10 +3,14 @@ package com.gajananmotors.shopfinder.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -38,7 +42,9 @@ public class AllPostsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
+    private boolean b=true;
     private Toolbar toolbar;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,21 +63,19 @@ public class AllPostsActivity extends AppCompatActivity {
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
-        sharedPreferences=getSharedPreferences(Constant.MyPREFERENCES,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Constant.MyPREFERENCES, MODE_PRIVATE);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
-        Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID,0));
+        Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID, 0));
         shops_list.clear();
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
-                    ArrayList<ShopsListModel>shopsListModels=list.getShopList();
-                    for(ShopsListModel model:shopsListModels)
-                    {
-                        if(model.getStatus()==1)
-                        {
+                    ArrayList<ShopsListModel> shopsListModels = list.getShopList();
+                    for (ShopsListModel model : shopsListModels) {
+                        if (model.getStatus() == 1) {
                             shops_list.add(model);
                         }
                     }
@@ -85,18 +89,22 @@ public class AllPostsActivity extends AppCompatActivity {
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
 
             }
-
-
-
         });
-
-
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+                return true;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         shops_list.clear();
-finish();
+        finish();
 
     }
 

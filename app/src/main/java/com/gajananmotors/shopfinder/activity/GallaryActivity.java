@@ -2,8 +2,6 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,7 +24,7 @@ public class GallaryActivity extends AppCompatActivity {
     ImageView selectedImageView;
     // array of images
     int shop_id;
- ArrayList<String>images=new ArrayList<>();
+    ArrayList<String> images = new ArrayList<>();
     private Toolbar toolbar;
 
 
@@ -39,36 +37,36 @@ public class GallaryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent i = getIntent();
-        String img=i.getExtras().getString("image");
-        String shop_pic=i.getExtras().getString("shopCoverphoto");
+        String img = i.getExtras().getString("image");
+        String shop_pic = i.getExtras().getString("shopCoverphoto");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
-        shop_id=i.getIntExtra("shop_id",0);
+        shop_id = i.getIntExtra("shop_id", 0);
         selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
         images.clear();
-        images=i.getExtras().getStringArrayList("images");
+        images = i.getExtras().getStringArrayList("images");
 
-        customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(),images ,shop_id);
+        customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(), images, shop_id);
         customGalleryAdapter.notifyDataSetChanged();
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(GallaryActivity.this);
         Picasso.with(GallaryActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+shop_pic)
+                .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(selectedImageView);
-       // selectedImageView.setImageResource(images.get(0));
+        // selectedImageView.setImageResource(images.get(0));
 
         simpleGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ImageView imageView = new ImageView(GallaryActivity.this);
                 Picasso.with(GallaryActivity.this)
-                        .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+images.get(position))
+                        .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + images.get(position))
                         .fit()
                         .placeholder(R.drawable.background_splashscreen)
                         .into(selectedImageView);
-              //  selectedImageView.setImageResource(images.get(position));
+                //  selectedImageView.setImageResource(images.get(position));
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -79,6 +77,7 @@ public class GallaryActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
