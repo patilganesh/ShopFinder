@@ -21,6 +21,7 @@ import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -37,7 +38,6 @@ public class AllPostsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
-    private boolean b=true;
     private Toolbar toolbar;
 
     @Override
@@ -76,7 +76,7 @@ public class AllPostsActivity extends AppCompatActivity {
                         }
                     }
 
-                    setAdapter(true);
+                    setAdapter();
 
                 }
             }
@@ -100,9 +100,9 @@ finish();
 
     }
 
-    private void setAdapter(boolean b) {
+    private void setAdapter() {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
+        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();

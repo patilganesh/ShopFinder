@@ -180,6 +180,37 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/shopDeleteLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            tools:ignore="DuplicateIds">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="5dp"
+                                android:padding="5dp"
+                                android:src="@drawable/delete" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="3dp"
+                                android:padding="5dp"
+                                android:text="DELETE"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/shopShareLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -296,6 +327,13 @@
                             android:layout_weight="1"
                             android:orientation="vertical"
                             tools:ignore="DuplicateIds">
+                            <ProgressBar
+                                android:id="@+id/viewpost_progressbar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:theme="@style/CircularProgress"
+                                android:visibility="gone"
+                                android:layout_centerInParent="true" />
 
                             <ImageView
                                 android:layout_width="50dp"

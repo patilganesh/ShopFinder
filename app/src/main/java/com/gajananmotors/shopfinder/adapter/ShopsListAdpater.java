@@ -44,7 +44,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     private int shop_id;
     private int index=0;
     ViewShopList viewShopList = new ViewShopList();
-    private boolean b;
 
 
     public ShopsListAdpater(Activity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
@@ -57,11 +56,11 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         this.list = shops_list;
     }
 
-    public ShopsListAdpater(AllPostsActivity allPostsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, boolean b) {
+    public ShopsListAdpater(AllPostsActivity allPostsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
         this.activity = allPostsActivity;
         this.viewPostLayout = viewPostLayout;
         this.list = shops_list;
-        this.b = b;
+
     }
 
     @Override
@@ -79,39 +78,14 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         holder.timing.setText(list.get(position).getShop_timing());
         holder.type.setText(list.get(position).getShop_mob_no());
         holder.weburl.setText(list.get(position).getWebsite());
-       // shop_id = list.get(position).getShop_id();
+
         Picasso.with(activity)
                 .load("http://findashop.in/images/shop_profile/" + list.get(position).getShop_id() + "/" + list.get(position).getShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(holder.image);
 
-        if (b == true) {
-            holder.btn_Shop_delete.setVisibility(View.VISIBLE);
-        }
-        holder.btn_Shop_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
-                alertDialog.setMessage("Are you sure you want to delete your shop post? ");
-                alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
-                alertDialog.setCancelable(false);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                  //   Toast.makeText(activity,shop_id,Toast.LENGTH_LONG).show();
-                       int shop_id1=list.get(position).getShop_id();
-                        deleteShopServices(shop_id1);
-                        dialog.dismiss();
-                    }
-                });
-                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                alertDialog.show();
-            }
-        });
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,31 +124,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         });
     }
 
-    private void deleteShopServices(int shop_id) {
-        Retrofit retrofit;
-        DeleteShopModel deleteShopModel;
-        deleteShopModel = new DeleteShopModel();
-        // Toast.makeText(activity,shop_id,Toast.LENGTH_LONG).show();
-        retrofit = APIClient.getClient();
-        RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<DeleteShopModel> deleteShop = restInterface.deleteShop(shop_id);
-        deleteShop.enqueue(new Callback<DeleteShopModel>() {
-            @Override
-            public void onResponse(Call<DeleteShopModel> call, Response<DeleteShopModel> response) {
-                if (response.isSuccessful()) {
-                    String msg = response.body().getMsg();
-                    Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
-                    activity.finish();
-                    activity.startActivity(new Intent(activity, AllPostsActivity.class));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DeleteShopModel> call, Throwable t) {
-
-            }
-        });
-    }
 
     private void transition() {
         Log.d("Allpost", "transition");

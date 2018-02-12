@@ -385,7 +385,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String msg = user.getMsg();
                     status = user.getStatus();
                     if (user.getResult() == 1 && status == 1) {
-Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();
                         login_progressbar.setVisibility(View.GONE);
