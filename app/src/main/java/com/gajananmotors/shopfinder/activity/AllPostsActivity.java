@@ -2,10 +2,14 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -36,6 +40,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private boolean b = true;
     private Toolbar toolbar;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +85,15 @@ public class AllPostsActivity extends AppCompatActivity {
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
 
             }
-
-
         });
+    }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+                return true;
     }
 
     @Override
@@ -102,8 +111,6 @@ public class AllPostsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
-
-
     }
 
 }
