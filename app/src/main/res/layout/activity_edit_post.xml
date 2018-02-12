@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGraylight"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.EditPostActivity">
-    <include layout="@layout/toolbar" />
 
+    <include layout="@layout/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,25 +66,6 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="15dp"
-                android:text="Services Offered"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/etServicesOffered"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
                 android:text="Mobile Number"
                 android:textColor="#000000" />
 
@@ -92,26 +77,24 @@
                 android:layout_marginRight="20dp"
                 android:background="@drawable/catregory_border"
                 android:padding="5dp" />
+            <!-- <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginBottom="2dp"
+                 android:layout_marginLeft="20dp"
+                 android:layout_marginRight="20dp"
+                 android:layout_marginTop="15dp"
+                 android:text="Email"
+                 android:textColor="#000000" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Email"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
-
+             <EditText
+                 android:id="@+id/etEmail"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="20dp"
+                 android:layout_marginRight="20dp"
+                 android:background="@drawable/catregory_border"
+                 android:padding="5dp" />-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,14 +105,18 @@
                 android:text="Category"
                 android:textColor="#000000" />
 
-            <EditText
+
+            <Button
                 android:id="@+id/etCategory"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+                android:drawableRight="@drawable/navigation_arrow" />
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -141,8 +128,40 @@
                 android:text="Sub Category"
                 android:textColor="#000000" />
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etSubcategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/catregory_border"
+                    android:padding="5dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/navigation_arrow" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp"
+                android:text="Services Offered"
+                android:textColor="#000000" />
+
             <EditText
-                android:id="@+id/etSubcategory"
+                android:id="@+id/etServicesOffered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -234,6 +253,7 @@
 
             <Button
                 android:id="@+id/btnUpdate"
+                style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -241,8 +261,7 @@
                 android:background="@color/colorPrimaryDark"
                 android:text="Update"
                 android:textAlignment="center"
-                android:textColor="#ffffff"
-                style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"/>
+                android:textColor="#ffffff" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

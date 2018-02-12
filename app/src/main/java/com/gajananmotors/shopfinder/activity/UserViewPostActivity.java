@@ -1,8 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 
-
-
-        import android.Manifest;
+import android.Manifest;
         import android.content.Context;
         import android.content.Intent;
         import android.content.SharedPreferences;
@@ -31,18 +29,16 @@ package com.gajananmotors.shopfinder.activity;
         import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
 
 public class UserViewPostActivity extends AppCompatActivity implements View.OnClickListener {
-
     private LinearLayout viewPostLayout, shopDirectionLayout, shopShareLayout, shopEditLayout, shopGallaryLayout, shopCallLayout, shopMsgLayout;
     private TextView mob;
     private String shopCoverpic;
     private ImageView shopCoverphoto;
     private ArrayList<String> allimages = new ArrayList<>();
     private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite;
-    ViewShopList viewShopList;
-    int shop_id;
+    private ViewShopList viewShopList;
+    private int shop_id;
     private SharedPreferences sharedpreferences;
     private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +46,13 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -85,7 +85,6 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
         LinearLayout linearLyoutWithoutEdit=findViewById(R.id.linearLyoutWithoutEdit);
         LinearLayout linearLyoutWithEdit=findViewById(R.id.linearLyoutWithEdit);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-
             linearLyoutWithEdit.setVisibility(View.VISIBLE);
             linearLyoutWithoutEdit.setVisibility(View.GONE);
             /*shopEditLayout.setVisibility(View.VISIBLE);
@@ -100,11 +99,7 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(shopCoverphoto);
-
-
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -122,7 +117,7 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                     startActivity(mapIntent);
                 }
                 //startActivity(new Intent(this, MapsActivity.class));
-                return;
+                break;
             case R.id.shopGallaryLayout:
                 Intent i = new Intent(this, UserGallaryActivity.class);
                 // i.putExtra("images", allimages );
@@ -130,11 +125,8 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                 i.putExtra("shopCoverphoto", shopCoverpic);
                 i.putExtra("shop_id", shop_id);
                 startActivity(i);
-
-
-                return;
+                break;
             case R.id.shopCallLayout:
-
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -143,24 +135,35 @@ public class UserViewPostActivity extends AppCompatActivity implements View.OnCl
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
-                    return;
+                    break;
                 }
-
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + tvMobile.getText().toString()));
                 startActivity(callIntent);
-                return;
+                break;
             case R.id.shopMsgLayout:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", tvMobile.getText().toString(), null)));
-                return;
+                break;
             case R.id.shopEditLayout:
-                startActivity(new Intent(this, EditPostActivity.class));
-                return;
+                Intent intent = new Intent(this, EditPostActivity.class);
+                intent.putExtra("shop_list", viewShopList);
+              /*  intent.putStringArrayListExtra("images", allimages);
+                intent.putExtra("shopCoverphoto", shopCoverpic);
+                intent.putExtra("shop_id", shop_id);*/
+                startActivity(intent);
+                // startActivity(new Intent(this, EditPostActivity.class));
+                break;
             case R.id.shopShareLayout:
                 Toast.makeText(this, "Share Post", Toast.LENGTH_SHORT).show();
-                return;
+                break;
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        allimages.clear();
+        finish();
 
+    }
 }

@@ -51,7 +51,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     private ArrayList<String> images=new ArrayList<>();
     private int shop_id;
     private int index;
-    ViewShopList viewShopList=new ViewShopList();
+    private ViewShopList viewShopList = new ViewShopList();
     private boolean b;
     private Context context;
     public ShopsListAdpater(Activity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
@@ -62,21 +62,18 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     public ShopsListAdpater(ArrayList<ShopsListModel> shops_list) {
         this.list = shops_list;
     }
-
     public ShopsListAdpater(AllPostsActivity allPostsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, boolean b) {
         this.activity=allPostsActivity;
         this.viewPostLayout=viewPostLayout;
         this.list=shops_list;
         this.b=b;
     }
-
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.activity_shops_list, parent, false);
         return new ShopsListHolder(view);
     }
-
     @Override
     public void onBindViewHolder(ShopsListHolder holder, final int position) {
         holder.name.setText(list.get(position).getShop_name());
@@ -85,7 +82,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         holder.timing.setText(list.get(position).getShop_timing());
         holder.type.setText(list.get(position).getShop_mob_no());
         holder.weburl.setText(list.get(position).getWebsite());
-
         Picasso.with(context)
                 .load("http://findashop.in/images/shop_profile/"+list.get(position).getShop_id()+"/"+list.get(position).getShop_pic())
                 .fit()
@@ -104,7 +100,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 alertDialog.setCancelable(false);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
                         deleteShopServices();
                         dialog.dismiss();
                     }
@@ -115,7 +110,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                     }
                 });
                 alertDialog.show();
-
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +125,8 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 viewShopList.setStrSub_category(list.get(position).getSub_category_name());
                 viewShopList.setStrWeburl(list.get(position).getWebsite());
                 viewShopList.setStrMobile(list.get(position).getShop_mob_no());
+                viewShopList.setStrShop_time(list.get(position).getShop_timing());
+                viewShopList.setStrShop_services(list.get(position).getShop_details());
                 images.add(index++,list.get(position).getImage1());
                 images.add(index++,list.get(position).getImage2());
                 images.add(index++,list.get(position).getImage3());
@@ -143,7 +139,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
             }
         });
     }
-
     private void deleteShopServices() {
             Retrofit retrofit;
         DeleteShopModel deleteShopModel;
@@ -160,7 +155,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                         activity.startActivity(new Intent(activity,AllPostsActivity.class));
                     }
                 }
-
                 @Override
                 public void onFailure(Call<DeleteShopModel> call, Throwable t) {
 

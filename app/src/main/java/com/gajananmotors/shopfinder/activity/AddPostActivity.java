@@ -109,7 +109,6 @@ public class AddPostActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedpreferences;
-    private int count = 0;
     private CreateShopModel shop;
     private PopupWindow pw;
     private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
@@ -119,6 +118,8 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm;
     private ProgressBar subcategory_progressbar;
+    //dont make it private,as we are accessing it from other acticity
+    private ArrayList<String> categoryNames = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +192,7 @@ public class AddPostActivity extends AppCompatActivity {
                 .build();
     }
     public void getCategoryData() {
-        ArrayList<String> categoryNames = new ArrayList<>();
+
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
@@ -472,7 +473,25 @@ public class AddPostActivity extends AppCompatActivity {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         if (!getImages.equals("")) {
-            File filePath = new File(getImages);
+
+            File file_Path = new File(getImages);
+            File filePath = null;
+            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            byte[] BYTE;
+            FileOutputStream fos = null;
+            //int size=image_uris.size();
+            // File file_path = new File(image_uris.get(index).getPath().toString());
+            Bitmap bitmap = BitmapFactory.decodeFile(file_Path.getAbsolutePath());
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytearrayoutputstream);
+            BYTE = bytearrayoutputstream.toByteArray();
+            try {
+                fos = new FileOutputStream(file_Path.getAbsolutePath());
+                fos.write(BYTE);
+                filePath = new File(file_Path.getAbsolutePath());
+                fos.flush();
+                fos.close();
+            } catch (Exception e) {
+            }
             try {
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
                 fileToUpload = MultipartBody.Part.createFormData("shop_pic", filePath.getName(), mFile);
@@ -505,7 +524,7 @@ public class AddPostActivity extends AppCompatActivity {
                         editor.putInt(Constant.SHOP_ID, shop.getShop_id());
                         editor.apply();
                         //         Toast.makeText(AddPostActivity.this, "Shop Created Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
-                        uploadShopImages(count);
+                        uploadShopImages(0);
                     }
                 }
             }
@@ -515,14 +534,16 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
     public void uploadShopImages(int index) {
-        if (image_uris.size() > index) {
+        Log.i("Images Size", "uploadShopImages Size: " + image_uris.size());
+        Log.i("Index", "uploadShopImages Index: " + index);
+        if (image_uris.size() > index && image_uris.size() > 1) {
             ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
             byte[] BYTE;
             FileOutputStream fos = null;
             //int size=image_uris.size();
             File file_path = new File(image_uris.get(index).getPath().toString());
             Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
-            bitmap.compress(Bitmap.CompressFormat.JPEG,40,bytearrayoutputstream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytearrayoutputstream);
             BYTE=bytearrayoutputstream.toByteArray();
             try {
                 fos = new FileOutputStream(file_path.getAbsolutePath());
@@ -578,7 +599,6 @@ public class AddPostActivity extends AppCompatActivity {
         String mob = etBusinessMobile.getText().toString();
         String categoryType = category.getText().toString();
         String subcategoryType = subcategory.getText().toString();
-
         if (name.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -662,16 +682,11 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < checkSelected.length; i++) {
             checkSelected[i] = false;
         }
-
 	/*SelectBox is the TextView where the selected values will be displayed in the form of "Item 1 & 'n' more".
          * When this selectBox is clicked it will display all the selected values
     	 * and when clicked again it will display in shortened representation as before.
     	 * */
-
-
-
         etBusinessServices.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
@@ -697,27 +712,19 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
-
     /*
      * Function to set up the pop-up window which acts as drop-down list
      * */
     private void initiatePopUp(ArrayList<String> items, TextView tv) {
         LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.poupup_shop_services_menu, (ViewGroup) findViewById(R.id.PopUpView));
-
         LinearLayout layout1 = (LinearLayout) findViewById(R.id.linear_layout);
         pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-
         pw.setBackgroundDrawable(new BitmapDrawable());
         pw.setTouchable(true);
-
         pw.setOutsideTouchable(false);
         pw.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-
         pw.setTouchInterceptor(new View.OnTouchListener() {
-
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
                 if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -727,9 +734,7 @@ public class AddPostActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         pw.setContentView(layout);
-
         // pw.showAsDropDown(layout1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             pw.showAsDropDown(etBusinessServices, Gravity.CENTER,0,0);
@@ -741,4 +746,9 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // finish();
+    }
 }

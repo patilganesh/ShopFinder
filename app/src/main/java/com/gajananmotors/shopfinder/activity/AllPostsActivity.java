@@ -29,7 +29,7 @@ import retrofit2.Retrofit;
 public class AllPostsActivity extends AppCompatActivity {
 
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
-    ShopsListAdpater adapter;
+    private ShopsListAdpater adapter;
     private RecyclerView recyclerView;
     private LinearLayout viewPostLayout;
     private Retrofit retrofit;
@@ -37,7 +37,6 @@ public class AllPostsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private boolean b=true;
     private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +45,6 @@ public class AllPostsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
         sharedPreferences=getSharedPreferences(Constant.MyPREFERENCES,MODE_PRIVATE);
@@ -75,6 +73,7 @@ public class AllPostsActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         finish();
     }
 }

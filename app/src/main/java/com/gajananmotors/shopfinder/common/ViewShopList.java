@@ -21,7 +21,27 @@ public class ViewShopList implements Parcelable {
     private String strSub_category;
     private String strWeburl;
     private String strMobile;
+    private String strShop_pic;
+    private String strShop_time;
+    private String strShop_services;
 
+    public String getStrShop_time() {
+        return strShop_time;
+    }
+
+    public void setStrShop_time(String strShop_time) {
+        this.strShop_time = strShop_time;
+    }
+
+    public String getStrShop_services() {
+        return strShop_services;
+    }
+
+    public void setStrShop_services(String strShop_services) {
+        this.strShop_services = strShop_services;
+    }
+
+    private ArrayList arrayList = new ArrayList<>();
     public String getStrShop_pic() {
         return strShop_pic;
     }
@@ -30,8 +50,7 @@ public class ViewShopList implements Parcelable {
         this.strShop_pic = strShop_pic;
     }
 
-    private String strShop_pic;
-    private ArrayList arrayList=new ArrayList<>();
+
     public ViewShopList(){}
     public ViewShopList(Parcel in) {
         shop_id = in.readInt();
@@ -44,6 +63,8 @@ public class ViewShopList implements Parcelable {
         strWeburl = in.readString();
         strMobile = in.readString();
         strShop_pic = in.readString();
+        strShop_time = in.readString();
+        strShop_services = in.readString();
         in.readList(arrayList,null);
     }
 
@@ -52,7 +73,6 @@ public class ViewShopList implements Parcelable {
         public ViewShopList createFromParcel(Parcel in) {
             return new ViewShopList(in);
         }
-
         @Override
         public ViewShopList[] newArray(int size) {
             return new ViewShopList[size];
@@ -156,6 +176,9 @@ public class ViewShopList implements Parcelable {
         dest.writeString(strWeburl);
         dest.writeString(strMobile);
         dest.writeString(strShop_pic);
+        dest.writeString(strShop_time);
+        dest.writeString(strShop_services);
         dest.writeList(arrayList);
+
     }
 }

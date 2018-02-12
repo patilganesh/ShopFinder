@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_below="@+id/view_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:minHeight="?attr/actionBarSize"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <!-- android:theme="@style/AppTheme.NoActionBar">-->
+    <!-- app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+    <TextView
+        android:id="@+id/tv_toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+    <!-- <ImageView
+         android:id="@+id/nearby"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="2dp"
+         android:layout_marginLeft="2dp"
+         android:layout_marginRight="2dp"
+         android:layout_marginTop="3dp"
+         android:layout_weight=".2"
+         android:src="@drawable/google_map" />-->
+
+</android.support.v7.widget.Toolbar>

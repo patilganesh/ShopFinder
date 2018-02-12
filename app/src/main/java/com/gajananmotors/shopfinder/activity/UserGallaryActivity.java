@@ -7,6 +7,8 @@ package com.gajananmotors.shopfinder.activity;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
+        import android.util.Log;
+        import android.view.KeyEvent;
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.Gallery;
@@ -34,6 +36,13 @@ public class UserGallaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         Intent i = getIntent();
         String img=i.getExtras().getString("image");
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
@@ -45,7 +54,7 @@ public class UserGallaryActivity extends AppCompatActivity {
                 .placeholder(R.drawable.background_splashscreen)
                 .into(selectedImageView);
         images=i.getExtras().getStringArrayList("images");
-
+        Log.i("Image Size:" + images.size(), "" + images.size());
         customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(),images ,shop_id);
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
@@ -56,7 +65,6 @@ public class UserGallaryActivity extends AppCompatActivity {
                 .placeholder(R.drawable.background_splashscreen)
                 .into(selectedImageView);
         // selectedImageView.setImageResource(images.get(0));
-
         simpleGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -72,7 +80,16 @@ public class UserGallaryActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         images.clear();
         finish();
     }
+   /* @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            customGalleryAdapter.notifyDataSetChanged();
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }*/
 }
