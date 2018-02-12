@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -109,6 +110,7 @@ public class AddPostActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedpreferences;
+    private int count = 0;
     private CreateShopModel shop;
     private PopupWindow pw;
     private boolean expanded;        //to  store information whether the selected values are displayed completely or in shortened representatn
@@ -170,6 +172,12 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessHour = findViewById(R.id.etBusinessHour);
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         getImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,7 +200,7 @@ public class AddPostActivity extends AppCompatActivity {
                 .build();
     }
     public void getCategoryData() {
-
+        ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
@@ -534,9 +542,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
     public void uploadShopImages(int index) {
-        Log.i("Images Size", "uploadShopImages Size: " + image_uris.size());
-        Log.i("Index", "uploadShopImages Index: " + index);
-        if (image_uris.size() > index && image_uris.size() > 1) {
+        if (image_uris.size() > index) {
             ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
             byte[] BYTE;
             FileOutputStream fos = null;
@@ -599,6 +605,7 @@ public class AddPostActivity extends AppCompatActivity {
         String mob = etBusinessMobile.getText().toString();
         String categoryType = category.getText().toString();
         String subcategoryType = subcategory.getText().toString();
+
         if (name.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -682,11 +689,16 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < checkSelected.length; i++) {
             checkSelected[i] = false;
         }
+
 	/*SelectBox is the TextView where the selected values will be displayed in the form of "Item 1 & 'n' more".
          * When this selectBox is clicked it will display all the selected values
     	 * and when clicked again it will display in shortened representation as before.
     	 * */
+
+
+
         etBusinessServices.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
@@ -712,19 +724,27 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
+
     /*
      * Function to set up the pop-up window which acts as drop-down list
      * */
     private void initiatePopUp(ArrayList<String> items, TextView tv) {
         LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.poupup_shop_services_menu, (ViewGroup) findViewById(R.id.PopUpView));
+
         LinearLayout layout1 = (LinearLayout) findViewById(R.id.linear_layout);
         pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+
         pw.setBackgroundDrawable(new BitmapDrawable());
         pw.setTouchable(true);
+
         pw.setOutsideTouchable(false);
         pw.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+
         pw.setTouchInterceptor(new View.OnTouchListener() {
+
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
                 if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -734,7 +754,9 @@ public class AddPostActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         pw.setContentView(layout);
+
         // pw.showAsDropDown(layout1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             pw.showAsDropDown(etBusinessServices, Gravity.CENTER,0,0);

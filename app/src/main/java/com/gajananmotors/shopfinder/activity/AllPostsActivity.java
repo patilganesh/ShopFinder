@@ -1,11 +1,13 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -37,6 +39,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private boolean b=true;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,13 @@ public class AllPostsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
         sharedPreferences=getSharedPreferences(Constant.MyPREFERENCES,MODE_PRIVATE);
@@ -56,7 +66,15 @@ public class AllPostsActivity extends AppCompatActivity {
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
-                    shops_list = list.getShopList();
+                    ArrayList<ShopsListModel>shopsListModels=list.getShopList();
+                    for(ShopsListModel model:shopsListModels)
+                    {
+                        if(model.getStatus()==1)
+                        {
+                            shops_list.add(model);
+                        }
+                    }
+
                     setAdapter(true);
                 }
             }
@@ -65,15 +83,20 @@ public class AllPostsActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        shops_list.clear();
+finish();
+
+    }
+
     private void setAdapter(boolean b) {
         adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
+
 }

@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,17 +69,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
+
+    public static Activity activityMain;
+
+    public static void finishActivity(Context context){
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        activityMain = MainActivity.this;
         drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
-        searchView = findViewById(R.id.floating_search_view);
+       // searchView = findViewById(R.id.floating_search_view);
        // searchView.clearSearchFocus();
        /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
@@ -117,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
+
             }
         });
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
@@ -127,37 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-            navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_addpost).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_allposts).setVisible(true);
-            fab.setVisibility(View.GONE);
-        }else {
-            navigationView.removeHeaderView(navigationView.getHeaderView(0));
-            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
-            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
-            tvOwner_Name.setText("User Name");
-            tvOwner_Email.setText("User Email_id");
-        }
-        navigationView.setNavigationItemSelectedListener(MainActivity.this);
-        String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
-        if (name != null) {
-            navigationView.removeHeaderView(navigationView.getHeaderView(0));
-            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
-            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
-            CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
-            tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
-            tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
-            Picasso.with(MainActivity.this)
-                    .load("http://www.findashop.in/images/owner_profile/" + sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
-                    .fit()
-                    .placeholder(R.drawable.ic_account_circle_black_24dp)
-                    .into(user_profile);
-        }
+
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
         // below code is for feature refernce,please dont delete this code.
@@ -245,6 +231,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationView = findViewById(R.id.nav_view);
+        if (navigationView!=null){
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_addpost).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_allposts).setVisible(true);
+            fab.setVisibility(View.GONE);
+        }else {
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            tvOwner_Name.setText("User Name");
+            tvOwner_Email.setText("User Email_id");
+        }
+        navigationView.setNavigationItemSelectedListener(MainActivity.this);
+        String name = sharedpreferences.getString(Constant.OWNER_NAME, "");
+        if (!TextUtils.isEmpty(name)) {
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            CircleImageView user_profile = headerView.findViewById(R.id.imgProfile);
+            tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
+            tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
+            Picasso.with(MainActivity.this)
+                    .load("http://www.findashop.in/images/owner_profile/" + sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
+                    .into(user_profile);
+        }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);

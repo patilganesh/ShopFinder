@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -71,16 +72,23 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SharedPreferences sharedpreferences;
     private String device_token="";
     private int owner_id, status;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         login_progressbar = findViewById(R.id.login_progressbar);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "000000");
+        if(sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()){
+            device_token=Constant.device_token;
+        }
+        //Log.e("deviceToken",device_token);
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -97,6 +105,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
+
         callbackManager = CallbackManager.Factory.create();
         login = findViewById(R.id.login_button);
         login.setReadPermissions("public_profile email");
@@ -125,6 +134,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection Failed : " + connectionResult);
@@ -219,6 +230,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNER_PROFILE,owner_image);
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
+                        if (MainActivity.activityMain != null){
+                        MainActivity.activityMain.finish();
+                        }
                         finish();
                         login_progressbar.setVisibility(View.GONE);
                     } else {
@@ -384,6 +398,10 @@ Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
                         Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                         in.putExtras(b);
                         startActivity(in);
+                        if (MainActivity.activityMain != null){
+                            MainActivity.activityMain.finish();
+                        }
+                        finish();
 
                     }else {
                         login_progressbar.setVisibility(View.GONE);
@@ -397,12 +415,7 @@ Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
         });
     }
 
-    @Override
-    public void onBackPressed() {
 
-        finish();
-
-    }
 }
 
 

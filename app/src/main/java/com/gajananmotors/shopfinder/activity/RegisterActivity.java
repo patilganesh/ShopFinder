@@ -88,6 +88,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etContactNumber = findViewById(R.id.etContactNumber);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         btnSubmit = findViewById(R.id.btnSubmit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -96,7 +102,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // outPutFile = null;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
-
+        if(sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")){
+            device_token=Constant.device_token;
+        }
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
         //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
@@ -369,7 +377,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
     @Override
     public void onBackPressed() {
-        finish();
+  super.onBackPressed();
 
     }
     private void validation() {

@@ -18,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -69,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button btnEdit, btn_delete;
     private ImageView edtProfile;
     private boolean flag = false;
-    private CoordinatorLayout coordinatorLayout_setting;
+    private LinearLayout coordinatorLayout_setting;
     private Call<UpdateUserModel> user;
     private String name,email,dob,mobile,image;
     private int owner_id;
@@ -83,6 +84,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
         etName = findViewById(R.id.etName);
@@ -96,6 +104,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnEdit.setOnClickListener(this);
         etDate.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
+
         Button btnEdit = findViewById(R.id.btnEdit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -474,8 +483,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed();
+        }
+        return true;
+    }
+    @Override
     public void onBackPressed() {
+        super.onBackPressed();
         finish();
+
 
     }
 }

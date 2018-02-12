@@ -5,11 +5,8 @@ import android.content.SharedPreferences;
 
 public class Constant{
 
-
-
-
     public static final String MyPREFERENCES = "MyPrefs";
-    private SharedPreferences sharedpreferences;
+    public static String device_token;
     public static final String OWNER_NAME = "owner_name";
     public static final String  ADDRESS= "address";
     public static final String MOBILE = "mob_no";

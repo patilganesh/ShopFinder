@@ -47,36 +47,15 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <activity
             android:name=".activity.AddPostActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/string_shop_post"
-            android:parentActivityName=".activity.MainActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
+            android:label="@string/string_shop_post" />
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.ProfileActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/profile"
-            android:parentActivityName=".activity.MainActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
-        <activity
-            android:name=".activity.MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name=".activity.SplashActivity">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -84,99 +63,54 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.ProfileActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activity.MainActivity" />
+            android:label="@string/profile" />
+        <activity
+            android:name=".activity.MapsActivity"
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".activity.SplashActivity">
+
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:configChanges="orientation|screenSize" />
         <!--
             <activity
             android:name=".activity.ItemLocation"
             android:label="@string/title_activity_item_location" />
         -->
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
         <activity
             android:name=".activity.RegisterActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/string_sign_up"
-            android:parentActivityName=".activity.LoginActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
+            android:label="@string/string_sign_up" />
         <activity
             android:name=".activity.SubCategoryActivity"
-            android:label="@string/string_sub_category"
-            android:parentActivityName=".activity.MainActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
+            android:label="@string/string_sub_category" />
         <activity
             android:name=".activity.ItemDetailsActivity"
-            android:label="@string/string_shop_list"
-            android:parentActivityName=".activity.SubCategoryActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
+            android:label="@string/string_shop_list" />
         <activity android:name=".tedpicker.ImagePickerActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
         <activity
             android:name=".activity.AllPostsActivity"
-            android:label="@string/string_shop_posts"
-            android:parentActivityName=".activity.MainActivity" />
+            android:label="@string/string_shop_posts" />
         <activity
             android:name=".activity.ViewPostActivity"
-            android:label="@string/string_shop_details"
-            android:parentActivityName=".activity.AllPostsActivity">
+            android:label="@string/string_shop_details">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
         <activity
             android:name=".activity.GallaryActivity"
-            android:label="@string/string_image_gallary"
-            android:parentActivityName=".activity.ViewPostActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
-
-        <activity android:name=".activity.EditPostActivity"
-            android:label="@string/string_update_post"/>
+            android:label="@string/string_image_gallary" />
         <activity
-            android:name=".activity.UserViewPostActivity"
-            android:label="@string/string_shop_details"
-            android:parentActivityName=".activity.ItemDetailsActivity" />
+            android:name=".activity.EditPostActivity"
+            android:label="@string/string_update_post" />
 
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
 
-        <activity android:name=".activity.UserGallaryActivity"
-            android:label="@string/string_image_gallary"
-            android:parentActivityName=".activity.UserViewPostActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.gajananmotors.shopfinder.activity.ProfileActivity" />
     </application>
 
 </manifest>
