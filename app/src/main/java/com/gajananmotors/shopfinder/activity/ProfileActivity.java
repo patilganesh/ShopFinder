@@ -274,6 +274,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.clear();
                     editor.apply();
+                    finish();
                     startActivity(new Intent(ProfileActivity.this,MainActivity.class));
                 }
             }
@@ -344,6 +345,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         edtProfile.setVisibility(View.GONE);
                         btnEdit.setText("Edit");
                         startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                        finish();
                         // updateserProfile();
                         Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
 
