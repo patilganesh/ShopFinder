@@ -1,6 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +17,6 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.ShopsArrayListModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
-import com.gajananmotors.shopfinder.model.SubCategoryListModel;
-import com.gajananmotors.shopfinder.model.SubCategoryModel;
 
 import java.util.ArrayList;
 
@@ -37,7 +34,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
-    private boolean b=true;
+    private boolean b = true;
     private Toolbar toolbar;
 
     @Override
@@ -57,21 +54,19 @@ public class AllPostsActivity extends AppCompatActivity {
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
-        sharedPreferences=getSharedPreferences(Constant.MyPREFERENCES,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Constant.MyPREFERENCES, MODE_PRIVATE);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
-        Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID,0));
+        Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID, 0));
         shops_list.clear();
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
-                    ArrayList<ShopsListModel>shopsListModels=list.getShopList();
-                    for(ShopsListModel model:shopsListModels)
-                    {
-                        if(model.getStatus()==1)
-                        {
+                    ArrayList<ShopsListModel> shopsListModels = list.getShopList();
+                    for (ShopsListModel model : shopsListModels) {
+                        if (model.getStatus() == 1) {
                             shops_list.add(model);
                         }
                     }
@@ -87,22 +82,22 @@ public class AllPostsActivity extends AppCompatActivity {
             }
 
 
-
         });
 
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         shops_list.clear();
-finish();
+        finish();
 
     }
 
     private void setAdapter(boolean b) {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,b);
+        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list, b);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();

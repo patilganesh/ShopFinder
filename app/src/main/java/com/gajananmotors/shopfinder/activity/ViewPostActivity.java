@@ -24,7 +24,7 @@ import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForE
 import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
 public class ViewPostActivity extends AppCompatActivity implements View.OnClickListener {
-    private LinearLayout viewPostLayout, shopDirectionLayout, shopShareLayout, shopEditLayout, shopGallaryLayout, shopCallLayout, shopMsgLayout;
+    private LinearLayout viewPostLayout, shopDirectionLayout, shopShareLayout, shopDeleteLayout,shopEditLayout, shopGallaryLayout, shopCallLayout, shopMsgLayout;
     private TextView mob;
     private String shopCoverpic = "";
     private ImageView shopCoverphoto;
@@ -47,16 +47,23 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
         shopGallaryLayout = findViewById(R.id.shopGallaryLayout);
+        shopGallaryLayout.setOnClickListener(this);
         shopCoverphoto = findViewById(R.id.shopCoverphoto);
+        shopEditLayout = findViewById(R.id.shopEditLayout);
+        shopEditLayout.setOnClickListener(this);
+        shopCallLayout = findViewById(R.id.shopCallLayout);
+        shopCallLayout.setOnClickListener(this);
+        shopMsgLayout = findViewById(R.id.shopMsgLayout);
+        shopMsgLayout.setOnClickListener(this);
+        shopDeleteLayout = findViewById(R.id.shopDeleteLayout);
+        shopDeleteLayout.setOnClickListener(this);
+
         tvShopName = findViewById(R.id.tvShopName);
         tvAddress = findViewById(R.id.tvAddress);
         tvMobile = findViewById(R.id.tvMobile);
         tvCategory = findViewById(R.id.tvCategory);
         tvSubcategory = findViewById(R.id.tvSubcategory);
         tvWebsite = findViewById(R.id.tvWebsite);
-        shopGallaryLayout.setOnClickListener(this);
-        shopEditLayout = findViewById(R.id.shopEditLayout);
-
         viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
 
         tvShopName.setText(viewShopList.getStrShop_name());
@@ -68,12 +75,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopCoverpic = viewShopList.getStrShop_pic();
         allimages = viewShopList.getArrayList();
         shop_id = viewShopList.getShop_id();
-        shopEditLayout = findViewById(R.id.shopEditLayout);
-        shopEditLayout.setOnClickListener(this);
-        shopCallLayout = findViewById(R.id.shopCallLayout);
-        shopCallLayout.setOnClickListener(this);
-        shopMsgLayout = findViewById(R.id.shopMsgLayout);
-        shopMsgLayout.setOnClickListener(this);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,9 +88,9 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
 
             linearLyoutWithEdit.setVisibility(View.VISIBLE);
             linearLyoutWithoutEdit.setVisibility(View.GONE);
-            shopEditLayout.setVisibility(View.VISIBLE);
+         /*   shopEditLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
-            shopMsgLayout.setVisibility(View.GONE);
+            shopMsgLayout.setVisibility(View.GONE);*/
         }else{
             linearLyoutWithEdit.setVisibility(View.GONE);
             linearLyoutWithoutEdit.setVisibility(View.VISIBLE);
@@ -149,6 +151,8 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 intent.putExtra("shopCoverphoto", shopCoverpic);
                 intent.putExtra("shop_id", shop_id);
                 startActivity(intent);
+                break;
+            case R.id.shopDeleteLayout:
                 break;
             case R.id.shopShareLayout:
                 Toast.makeText(this, "Share Post", Toast.LENGTH_SHORT).show();
