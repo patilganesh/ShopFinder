@@ -403,22 +403,43 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             CropingIMG();
         } else if (requestCode == CROPING_CODE) {
             try {
-                if (outPutFile.exists()) {
+                if (outPutFile.exists() && resultCode == -1) {
+
                     flag = true;
                     Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
                         }
                         @Override
                         public void onError() {
-
                         }
                     });
-
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error while save image", Toast.LENGTH_SHORT).show();
-                }
+
+                        Picasso.with(ProfileActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+
+                            @Override
+                            public void onSuccess () {
+
+                            }
+
+                            @Override
+                            public void onError () {
+                            }
+                        });
+                    }/*else{ Picasso.with(ProfileActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+
+                        @Override
+                        public void onSuccess () {
+
+                        }
+
+                        @Override
+                        public void onError () {
+                        }
+                    });}*/
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

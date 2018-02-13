@@ -21,6 +21,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
+    public static void finishActivity(Context context){
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,7 +230,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     boolean doubleBackToExitPressedOnce = false;
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed();
+        }
+        return true;
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -235,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
-            return;
+           finish();
         }
 
         this.doubleBackToExitPressedOnce = true;
