@@ -17,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -148,6 +149,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user_data.setPassword(etPassword.getText().toString());
         user_data.setDate_of_birth(etDate.getText().toString());
         user_data.setDevice_token(device_token);
+        user_data.setImage1(profile);
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         if (!flag) {
@@ -165,6 +167,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         } else if (outPutFile == null) {
             user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
+        }else if  (!TextUtils.isEmpty(name)) {
+
+                user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(),user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
+
         }
         btnSubmit.setVisibility(View.INVISIBLE);
         register_progressbar.setVisibility(View.VISIBLE);
@@ -303,16 +309,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         }
                     });
                 } else {
-                    Picasso.with(RegisterActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+                    if (outPutFile == null){
+                        Picasso.with(RegisterActivity.this).load(sharedpreferences.getString(Constant.OWNER_PROFILE,"")).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess () {
 
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError () {
                         }
                     });
+                }else{ Picasso.with(RegisterActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+
+                    @Override
+                    public void onSuccess () {
+
+                    }
+
+                    @Override
+                    public void onError () {
+                    }
+                });}
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

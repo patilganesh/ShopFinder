@@ -42,6 +42,16 @@ public interface RestInterface {
             @Field("date_of_birth") String date_of_birth,
             @Field("password") String password,
             @Field("device_token") String device_token
+    );  @FormUrlEncoded
+    @POST("index.php/mobile_api/create_shop_owner")
+    Call<UserRegisterModel> userRegisterforGoogleImage(
+            @Field("owner_name") String owner_name,
+            @Field("owner_email") String owner_email,
+            @Field("mob_no") String mob_no,
+            @Field("date_of_birth") String date_of_birth,
+            @Field("google_image") String profile,
+            @Field("password") String password,
+            @Field("device_token") String device_token
     );
     @FormUrlEncoded
     @POST("index.php/mobile_api/login_user")
