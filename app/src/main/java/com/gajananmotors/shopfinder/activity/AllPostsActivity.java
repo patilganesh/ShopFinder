@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -21,7 +22,10 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.ShopsArrayListModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.gajananmotors.shopfinder.model.SubCategoryListModel;
+import com.gajananmotors.shopfinder.model.SubCategoryModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -38,7 +42,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
-    private boolean b = true;
+    private boolean b=true;
     private Toolbar toolbar;
     private SearchView searchView;
 
@@ -76,7 +80,7 @@ public class AllPostsActivity extends AppCompatActivity {
                         }
                     }
 
-                    setAdapter(true);
+                    setAdapter();
 
                 }
             }
@@ -104,13 +108,15 @@ public class AllPostsActivity extends AppCompatActivity {
 
     }
 
-    private void setAdapter(boolean b) {
+    private void setAdapter() {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list, b);
+        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+
+
     }
 
 }

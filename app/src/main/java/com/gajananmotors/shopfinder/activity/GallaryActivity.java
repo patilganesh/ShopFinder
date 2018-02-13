@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
@@ -26,6 +27,7 @@ public class GallaryActivity extends AppCompatActivity {
     ArrayList<String> images = new ArrayList<>();
     private Toolbar toolbar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +42,6 @@ public class GallaryActivity extends AppCompatActivity {
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
         shop_id = i.getIntExtra("shop_id", 0);
         selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
-       /* Picasso.with(GallaryActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+shop_pic)
-                .fit()
-                .placeholder(R.drawable.background_splashscreen)
-                .into(selectedImageView);*/
         images.clear();
         images = i.getExtras().getStringArrayList("images");
 

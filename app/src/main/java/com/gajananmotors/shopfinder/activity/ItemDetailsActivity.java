@@ -79,22 +79,22 @@ public class ItemDetailsActivity extends AppCompatActivity{
                             shops_list.add(model);
                         }
                     }
-                        setAdapter();
-
+                    setAdapter();
                 }
             }
+
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
+
             }
         });
-    }
-    @Override
+
+
+    }@Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-
     }
-
 private void setAdapter() {
         adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

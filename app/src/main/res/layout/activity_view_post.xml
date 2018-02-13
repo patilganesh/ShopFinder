@@ -327,6 +327,13 @@
                             android:layout_weight="1"
                             android:orientation="vertical"
                             tools:ignore="DuplicateIds">
+                            <ProgressBar
+                                android:id="@+id/viewpost_progressbar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:theme="@style/CircularProgress"
+                                android:visibility="gone"
+                                android:layout_centerInParent="true" />
 
                             <ImageView
                                 android:layout_width="50dp"
