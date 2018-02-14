@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -30,12 +31,15 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
+import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.helper.HomeItems;
+import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
+    private RecyclerViewType recyclerViewType;
+
     public static void finishActivity(Context context){
 
     }
@@ -112,14 +118,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
-        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        recyclerViewType = RecyclerViewType.GRID;
+        setUpRecyclerView();
+        populateRecyclerView();
+
+        
+        /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         // mLayoutManager_vertical = new GridLayoutManager(this, 3);
         recycler_view_vertical.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
         // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
         //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
-        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
+        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);*/
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -165,6 +176,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);*/
     }
 
+
+    private void setUpRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_vertical);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    //populate recycler view
+    private void populateRecyclerView() {
+        ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
+        //for loop for sections
+        for (int i = 1; i <= 5; i++) {
+            ArrayList<String> itemArrayList = new ArrayList<>();
+
+            //for loop for items
+            for (int j = 1; j <= 10; j++) {
+                itemArrayList.add("Lokmany");
+                itemArrayList.add("Morya");
+                itemArrayList.add("SASUN");
+
+            }
+            //add the section and items to array list
+            sectionModelArrayList.add(new HomeItems("Hospital " + i, itemArrayList));
+        }
+
+        SectionRecyclerViewAdapter adapter = new SectionRecyclerViewAdapter(this, recyclerViewType, sectionModelArrayList);
+        recyclerView.setAdapter(adapter);
+    }
+
+    
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -226,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
-        recycler_view_vertical.setAdapter(gridAdapter);
+       // recycler_view_vertical.setAdapter(gridAdapter);
     }
 
     boolean doubleBackToExitPressedOnce = false;
