@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -17,7 +16,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -79,8 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
+    android.support.design.widget.CoordinatorLayout coordinate_layout;
 
-    public static void finishActivity(Context context){
+    public static void finishActivity(Context context) {
 
     }
 
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onBackPressed();
             }
         });
+        coordinate_layout = findViewById(R.id.coordinate_layout_main);
 
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
     }
 
-    
+
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -268,38 +268,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
-       // recycler_view_vertical.setAdapter(gridAdapter);
+        // recycler_view_vertical.setAdapter(gridAdapter);
     }
 
     boolean doubleBackToExitPressedOnce = false;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
             onBackPressed();
+            return true;
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
+
+
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-           finish();
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Press once again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
+        Snackbar snackbar = Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
             @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
+            public void onClick(View v) {
+                finish();
             }
-        }, 2000);
+        });
+        snackbar.show();
     }
 
 
