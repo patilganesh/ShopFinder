@@ -47,6 +47,7 @@ public class SubCategoryActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private CustomAdapterForSubCategoryAdapter customAdapterForSubCategoryAdapter;
     private Toolbar toolbar;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class SubCategoryActivity extends AppCompatActivity {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         Intent intent = getIntent();
         int_cat_id = intent.getIntExtra("CategoryId", 0);
+         name=intent.getStringExtra("owner");
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         Call<SubCategoryListModel> call = restInterface.getSubCategoryList(int_cat_id);
@@ -83,7 +85,7 @@ public class SubCategoryActivity extends AppCompatActivity {
                         subCategoryImages.add(model.getImage());
                         subCatId.add(model.getSub_category_id());
                     }
-                    setAdapetr(int_cat_id,subCatId);
+                    setAdapetr(int_cat_id,subCatId,name);
                 }
             }
             @Override
@@ -97,9 +99,9 @@ public class SubCategoryActivity extends AppCompatActivity {
         alphaAdapter.setDuration(2000);
         alphaAdapter.setInterpolator(new OvershootInterpolator());
     }
-    public void setAdapetr(int int_cat_id, ArrayList<Integer> subCatId) {
+    public void setAdapetr(int int_cat_id, ArrayList<Integer> subCatId, String name) {
         Log.d("CustomAdapter", "set Adapter method called");
-        customAdapterForSubCategoryAdapter = new CustomAdapterForSubCategoryAdapter(this, subCategoryNames, subCategoryImages,this.int_cat_id, this.subCatId);
+        customAdapterForSubCategoryAdapter = new CustomAdapterForSubCategoryAdapter(this, subCategoryNames, subCategoryImages,this.int_cat_id, this.subCatId,name);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(customAdapterForSubCategoryAdapter);
         recycler_view.setAdapter(alphaAdapter);
     }

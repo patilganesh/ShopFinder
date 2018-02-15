@@ -26,10 +26,10 @@ public class CustomAdapterForNearByLocAdapter extends RecyclerView.Adapter<Custo
         }
     }
 
-    public CustomAdapterForNearByLocAdapter(Activity context, String[] namelist, String[] addresslist) {
+    public CustomAdapterForNearByLocAdapter(Activity context, String[] source, String[] destination) {
 
-        this.name = namelist;
-        this.address = addresslist;
+        this.name = source;
+        this.address = destination;
         this.context1 = context;
     }
 
@@ -45,7 +45,7 @@ public class CustomAdapterForNearByLocAdapter extends RecyclerView.Adapter<Custo
         holder.shop_name.setText(name[position]);
         holder.shop_address.setText(address[position]);
     }
-     @Override
+    @Override
     public int getItemCount() {
         return name.length;
     }

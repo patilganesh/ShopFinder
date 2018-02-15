@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -16,7 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -29,15 +30,12 @@ import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
-import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.helper.HomeItems;
-import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private static String search_text;
-
     private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
@@ -65,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> categoryImages = new ArrayList<>();
     private ArrayList<Integer> categoryId = new ArrayList<>();
     private Retrofit retrofit;
+
     private RestInterface restInterface;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
@@ -73,13 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
-
+String name="user";
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
-    private RecyclerViewType recyclerViewType;
-    android.support.design.widget.CoordinatorLayout coordinate_layout;
-
-    public static void finishActivity(Context context) {
+    public static void finishActivity(Context context){
 
     }
 
@@ -99,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onBackPressed();
             }
         });
-        coordinate_layout = findViewById(R.id.coordinate_layout_main);
 
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
@@ -118,19 +112,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
-        recyclerViewType = RecyclerViewType.GRID;
-        setUpRecyclerView();
-        populateRecyclerView();
-
-        
-        /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         // mLayoutManager_vertical = new GridLayoutManager(this, 3);
         recycler_view_vertical.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
         // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
         //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
-        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);*/
+        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -145,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
+              //  finish();
 
             }
         });
@@ -176,37 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);*/
     }
 
-
-    private void setUpRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_vertical);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-    }
-
-    //populate recycler view
-    private void populateRecyclerView() {
-        ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
-        //for loop for sections
-        for (int i = 1; i <= 5; i++) {
-            ArrayList<String> itemArrayList = new ArrayList<>();
-
-            //for loop for items
-            for (int j = 1; j <= 10; j++) {
-                itemArrayList.add("Lokmany");
-                itemArrayList.add("Morya");
-                itemArrayList.add("SASUN");
-
-            }
-            //add the section and items to array list
-            sectionModelArrayList.add(new HomeItems("Hospital " + i, itemArrayList));
-        }
-
-        SectionRecyclerViewAdapter adapter = new SectionRecyclerViewAdapter(this, recyclerViewType, sectionModelArrayList);
-        recyclerView.setAdapter(adapter);
-    }
-
-
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -224,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         categoryImages.add(model.getImage());
                         categoryId.add(model.getCategory_id());
                     }
-                    setadapter(categoryNames, categoryImages, categoryId);
+                    setadapter(categoryNames, categoryImages, categoryId,name);
                 }
             }
 
@@ -266,34 +225,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
-        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
-        // recycler_view_vertical.setAdapter(gridAdapter);
+    public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
+        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
+        recycler_view_vertical.setAdapter(gridAdapter);
     }
 
     boolean doubleBackToExitPressedOnce = false;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
-                && keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             onBackPressed();
-            return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return true;
     }
-
-
     @Override
     public void onBackPressed() {
-        Snackbar snackbar = Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+           finish();
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press once again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
             @Override
-            public void onClick(View v) {
-                finish();
+            public void run() {
+                doubleBackToExitPressedOnce = false;
             }
-        });
-        snackbar.show();
+        }, 2000);
     }
 
 
@@ -370,8 +335,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         } else if (id == R.id.nav_allposts) {
-
-            startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
+            Intent intent=new Intent(MainActivity.this,AllPostsActivity.class);
+            intent.putExtra("owner","owner");
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);

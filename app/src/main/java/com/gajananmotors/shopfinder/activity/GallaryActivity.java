@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
@@ -22,6 +23,7 @@ public class GallaryActivity extends AppCompatActivity {
     Gallery simpleGallery;
     CustomGalleryAdapter customGalleryAdapter;
     ImageView selectedImageView;
+    TextView text;
     // array of images
     int shop_id;
     ArrayList<String> images = new ArrayList<>();
@@ -39,11 +41,18 @@ public class GallaryActivity extends AppCompatActivity {
         Intent i = getIntent();
         String img = i.getExtras().getString("image");
         String shop_pic = i.getExtras().getString("shopCoverphoto");
-        simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
+
+        simpleGallery = findViewById(R.id.simpleGallery);
+        text =  findViewById(R.id.tvText);
         shop_id = i.getIntExtra("shop_id", 0);
-        selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
+        selectedImageView = findViewById(R.id.selectedImageView);
         images.clear();
         images = i.getExtras().getStringArrayList("images");
+        if(images.isEmpty()){
+            text.setVisibility(View.VISIBLE);
+            text.setText("No shop images found ");
+        }
+        Log.d("listsize", String.valueOf(images.size()));
 
         customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(), images, shop_id);
         customGalleryAdapter.notifyDataSetChanged();
@@ -66,6 +75,7 @@ public class GallaryActivity extends AppCompatActivity {
                         .fit()
                         .placeholder(R.drawable.background_splashscreen)
                         .into(selectedImageView);
+
                 //  selectedImageView.setImageResource(images.get(position));
             }
         });

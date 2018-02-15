@@ -7,13 +7,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.helper.CircleImageView;
 
 /**
  * Created by Ashwin on 1/3/2018.
  */
 public class ShopsListHolder extends RecyclerView.ViewHolder {
     public TextView name, type, distance, address, timing, call, weburl;
-    public ImageView image;
+    public CircleImageView image;
 
 
     public ShopsListHolder(View itemView) {

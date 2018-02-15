@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,7 +46,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private boolean b=true;
     private Toolbar toolbar;
     private SearchView searchView;
-
+    String name="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,9 @@ public class AllPostsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        Intent i = getIntent();
+        name= i.getStringExtra("owner");
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
@@ -78,10 +82,12 @@ public class AllPostsActivity extends AppCompatActivity {
                     for (ShopsListModel model : shopsListModels) {
                         if (model.getStatus() == 1) {
                             shops_list.add(model);
+
                         }
                     }
 
-                    setAdapter();
+                    setAdapter(name);
+
 
                 }
             }
@@ -100,18 +106,23 @@ public class AllPostsActivity extends AppCompatActivity {
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
                 return true;
     }
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed();
+        }
+        return true;
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        shops_list.clear();
         finish();
 
     }
 
-    private void setAdapter() {
+    private void setAdapter(String name) {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list);
+        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,name);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();

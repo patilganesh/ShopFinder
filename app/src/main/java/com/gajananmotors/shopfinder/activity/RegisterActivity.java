@@ -165,11 +165,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             } catch (Exception e) {
                 Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        } else if (outPutFile == null) {
+        } else if (outPutFile == null&& profile.isEmpty()) {
             user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
-        }else if  (!TextUtils.isEmpty(name)) {
+        }else if(!profile.isEmpty()) {
 
-                user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(),user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
+            user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(),user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
 
         }
         btnSubmit.setVisibility(View.INVISIBLE);
