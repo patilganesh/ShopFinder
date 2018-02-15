@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,13 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.common.ViewShopList;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
+import com.gajananmotors.shopfinder.model.LinkShopModel;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -47,6 +51,8 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences sharedpreferences;
     private Toolbar toolbar;
     private ProgressBar viewpost_progressbar;
+    private  LinearLayout linearLayout;
+
 
 
     @Override
@@ -69,6 +75,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         tvMobile = findViewById(R.id.tvMobile);
         tvCategory = findViewById(R.id.tvCategory);
         tvSubcategory = findViewById(R.id.tvSubcategory);
+        linearLayout = findViewById(R.id.lin1);
         tvWebsite = findViewById(R.id.tvWebsite);
         tvWebsiteHeader = findViewById(R.id.tvWebsiteHeader);
         shopGallaryLayout.setOnClickListener(this);
@@ -91,29 +98,29 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         Intent i = getIntent();
-        // Uri data = i.getData();
-        String name= i.getStringExtra("owner");
+
+        String name = i.getStringExtra("owner");
         if (name.equals("owner")) {
             shopEditLayout.setVisibility(View.VISIBLE);
             shopDeleteLayout.setVisibility(View.VISIBLE);
             shopCallLayout.setVisibility(View.GONE);
             shopMsgLayout.setVisibility(View.GONE);
-        }else{
+        } else {
             shopEditLayout.setVisibility(View.GONE);
             shopDeleteLayout.setVisibility(View.GONE);
             shopCallLayout.setVisibility(View.VISIBLE);
             shopMsgLayout.setVisibility(View.VISIBLE);
 
         }
-        if(name.equals("owner")) {
+        if (name.equals("owner")) {
             viewShopList = getIntent().getParcelableExtra("shop_list");
             tvShopName.setText(viewShopList.getStrShop_name());
             tvAddress.setText(viewShopList.getStrAddress());
             tvCategory.setText(viewShopList.getStrCategory());
-            if (viewShopList.getStrWeburl().isEmpty()) {
-                tvWebsiteHeader.setVisibility(View.GONE);
-            }else{
-            tvWebsite.setText(viewShopList.getStrWeburl());}
+            if (!viewShopList.getStrWeburl().isEmpty()) {
+                linearLayout.setVisibility(View.VISIBLE);
+                tvWebsite.setText(viewShopList.getStrWeburl());
+            }
             tvSubcategory.setText(viewShopList.getStrSub_category());
             tvMobile.setText(viewShopList.getStrMobile());
             shopCoverpic = viewShopList.getStrShop_pic();
@@ -125,12 +132,62 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     .placeholder(R.drawable.background_splashscreen)
                     .into(shopCoverphoto);
 
-        }
-
-
+        }/*else{
+            Uri data = i.getData();
+            int shop_id=;
+            LinkShopServices(shop_id);
+        }*/
 
 
     }
+
+
+    private void LinkShopServices(int shop_id) {
+        Retrofit retrofit;
+        retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<LinkShopModel> linkShopModel = restInterface.linkShop(shop_id);
+        viewpost_progressbar.setVisibility(View.VISIBLE);
+        viewpost_progressbar.setIndeterminate(true);
+        viewpost_progressbar.setProgress(500);
+        linkShopModel.enqueue(new Callback<LinkShopModel>() {
+            @Override
+            public void onResponse(Call<LinkShopModel> call, Response<LinkShopModel> response) {
+                if (response.isSuccessful()) {
+                    LinkShopModel linkShopModel = response.body();
+                    viewpost_progressbar.setVisibility(View.INVISIBLE);
+                    String msg = linkShopModel.getCity();
+
+                    tvShopName.setText(viewShopList.getStrShop_name());
+                    tvAddress.setText(viewShopList.getStrAddress());
+                    tvCategory.setText(viewShopList.getStrCategory());
+                    if (viewShopList.getStrWeburl().isEmpty()) {
+                        tvWebsiteHeader.setVisibility(View.GONE);
+                    }else{
+                        tvWebsite.setText(viewShopList.getStrWeburl());}
+                    tvSubcategory.setText(viewShopList.getStrSub_category());
+                    tvMobile.setText(viewShopList.getStrMobile());
+                    shopCoverpic = viewShopList.getStrShop_pic();
+                    allimages = viewShopList.getArrayList();
+                    // shop_id = viewShopList.getShop_id();
+                    Picasso.with(ViewPostActivity.this)
+                            .load("http://findashop.in/images/shop_profile/" +" shop_id "+ "/" + viewShopList.getStrShop_pic())
+                            .fit()
+                            .placeholder(R.drawable.background_splashscreen)
+                            .into(shopCoverphoto);
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+                    startActivity(new Intent(ViewPostActivity.this, AllPostsActivity.class));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LinkShopModel> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -245,7 +302,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         super.onBackPressed();
         allimages.clear();
         finish();
-      Log.d("listsize", String.valueOf(allimages.size()));
 
     }
 
