@@ -46,6 +46,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private SearchView searchView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
