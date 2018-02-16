@@ -1,14 +1,17 @@
 package com.gajananmotors.shopfinder.apiinterface;
+
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
 import com.gajananmotors.shopfinder.model.DeleteUserModel;
+import com.gajananmotors.shopfinder.model.LinkShopModel;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
 import com.gajananmotors.shopfinder.model.ShopsArrayListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
+
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -49,7 +52,7 @@ public interface RestInterface {
             @Field("owner_email") String owner_email,
             @Field("mob_no") String mob_no,
             @Field("date_of_birth") String date_of_birth,
-            @Field("google_image") String profile,
+            @Field("google_image") String google_image,
             @Field("password") String password,
             @Field("device_token") String device_token
     );
@@ -170,5 +173,11 @@ public interface RestInterface {
             @Part("action") String action,
             @Part("count") int count
     );
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/view_single_shop")
+    Call<LinkShopModel> linkShop(
+            @Field("shop_id") int shop_id
+
+    );
+
 }
-//index.php?r=customerRegister/createOwner"

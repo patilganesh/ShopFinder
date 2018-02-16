@@ -1,36 +1,24 @@
 package com.gajananmotors.shopfinder.adapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.AllPostsActivity;
+import com.gajananmotors.shopfinder.activity.ItemDetailsActivity;
 import com.gajananmotors.shopfinder.activity.ViewPostActivity;
-import com.gajananmotors.shopfinder.apiinterface.RestInterface;
-import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.common.ViewShopList;
 import com.gajananmotors.shopfinder.holder.ShopsListHolder;
-import com.gajananmotors.shopfinder.model.DeleteShopModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * Created by Ashwin on 1/1/2018.
@@ -44,24 +32,27 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     private int shop_id;
     private int index=0;
     ViewShopList viewShopList = new ViewShopList();
+    private String name;
 
 
-    public ShopsListAdpater(Activity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
+    public ShopsListAdpater(AllPostsActivity itemDetailsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
+        this.activity = itemDetailsActivity;
+        this.viewPostLayout = viewPostLayout;
+        this.name=name;
+
+    }
+
+    public ShopsListAdpater(ItemDetailsActivity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, String name) {
+
         this.activity = activity;
         this.viewPostLayout = viewPostLayout;
-    }
-
-    public ShopsListAdpater(ArrayList<ShopsListModel> shops_list) {
         this.list = shops_list;
+        this.name=name;
     }
 
-    public ShopsListAdpater(AllPostsActivity allPostsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list) {
-        this.activity = allPostsActivity;
-        this.viewPostLayout = viewPostLayout;
-        this.list = shops_list;
 
-    }
+
 
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -121,23 +112,16 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                // activity.finish();
                Log.e("updatedsize", String.valueOf(images.size()));
             }
-        });
-    }
-
+        });}
 
     private void transition() {
         Log.d("Allpost", "transition");
-
         Intent intent = new Intent(activity, ViewPostActivity.class);
         intent.putExtra("shop_list", viewShopList);
-       /* Pair<View, String> p1 = Pair.create((View) viewPostLayout, "view");
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation(activity, p1);*/
-
-      //  activity.startActivity(intent, options.toBundle());
+        intent.putExtra("owner",name);
         activity.startActivity(intent);
 
-        //  activity.finish();
+
 
     }
 

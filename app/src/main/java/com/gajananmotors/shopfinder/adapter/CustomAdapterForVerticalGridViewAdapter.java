@@ -16,18 +16,21 @@ import com.gajananmotors.shopfinder.helper.CircleImageView;
 import java.util.ArrayList;
 
 public class CustomAdapterForVerticalGridViewAdapter extends RecyclerView.Adapter<CustomAdapterForVerticalGridViewAdapter.MyViewHolder> {
-    private String[] name;
+   // private String[] name;
     private Context context;
     private int[] imageId;
     private ArrayList<String> imageList;
     private ArrayList<String> namesList;
     private ArrayList<Integer> categoryId;
+    private String name;
+/*
 
     public CustomAdapterForVerticalGridViewAdapter(MainActivity mainActivity, String[] nameList, int[] imglist) {
         this.name = nameList;
         this.imageId = imglist;
         this.context = mainActivity;
     }
+*/
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
@@ -42,12 +45,13 @@ public class CustomAdapterForVerticalGridViewAdapter extends RecyclerView.Adapte
         }
     }
 
-    public CustomAdapterForVerticalGridViewAdapter(MainActivity mainActivity, ArrayList<String> namesList, ArrayList<String> imagesList, ArrayList<Integer> categoryId) {
+    public CustomAdapterForVerticalGridViewAdapter(MainActivity mainActivity, ArrayList<String> namesList, ArrayList<String> imagesList, ArrayList<Integer> categoryId, String name) {
 
         this.namesList = namesList;
         this.imageList = imagesList;
         this.categoryId = categoryId;
         this.context = mainActivity;
+        this.name=name;
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,6 +77,7 @@ public class CustomAdapterForVerticalGridViewAdapter extends RecyclerView.Adapte
 
                 Intent intent = new Intent(context, SubCategoryActivity.class);
                 intent.putExtra("CategoryId", categoryId.get(position).intValue());
+                intent.putExtra("owner",name);
                 context.startActivity(intent);
 
                 //  context.startActivity(new Intent(context, SubCategoryActivity.class));

@@ -121,6 +121,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(imgProfile);
         }
+        Log.d("profile",sharedpreferences.getString(Constant.OWNER_PROFILE, ""));
         btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
@@ -312,7 +313,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
               user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
         }
 
@@ -346,7 +346,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         btnEdit.setText("Edit");
                         startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                         finish();
-                        // updateserProfile();
                         Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
 
                     } else {
@@ -374,13 +373,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     mImageCaptureUri = Uri.fromFile(f);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
-                    //cameraIntent();
 
 
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
-                    // galleryIntent();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -427,17 +424,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             public void onError () {
                             }
                         });
-                    }/*else{ Picasso.with(ProfileActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
-
-                        @Override
-                        public void onSuccess () {
-
-                        }
-
-                        @Override
-                        public void onError () {
-                        }
-                    });}*/
+                    }
 
 
             } catch (Exception e) {

@@ -26,23 +26,25 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
     private ArrayList<String> subCategoryImages = new ArrayList<>();
     private ArrayList<Integer> subCatIds = new ArrayList<>();
     private int catId,subCatId;
-    private String[] name;
+   // private String[] name;
     private Context context;
     private int[] imageId;
+    private String name;
 
-    public CustomAdapterForSubCategoryAdapter(Activity subCategory, String[] nameList, int[] imglist) {
+  /*  public CustomAdapterForSubCategoryAdapter(Activity subCategory, String[] nameList, int[] imglist) {
         this.name = nameList;
         this.imageId = imglist;
         context = subCategory;
     }
-
-    public CustomAdapterForSubCategoryAdapter(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, int int_cat_id, ArrayList<Integer> subCatId) {
+*/
+    public CustomAdapterForSubCategoryAdapter(SubCategoryActivity subCategoryActivity, ArrayList<String> subCategoryNames, ArrayList<String> subCategoryImages, int int_cat_id, ArrayList<Integer> subCatId, String name) {
         context = subCategoryActivity;
         Log.d("CustomAdapter","called");
         this.subCategoryNames = subCategoryNames;
         this.subCategoryImages = subCategoryImages;
         this.catId = int_cat_id;
         this.subCatIds = subCatId;
+        this.name=name;
 
 
     }
@@ -85,6 +87,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
                 Intent intent = new Intent(context, ItemDetailsActivity.class);
                 intent.putExtra("CategoryId",catId );
                 intent.putExtra("Sub_CategoryId",subCatId);
+                intent.putExtra("owner",name);
                 context.startActivity(intent);
             }
         });
@@ -95,6 +98,7 @@ public class CustomAdapterForSubCategoryAdapter extends RecyclerView.Adapter<Cus
                 Intent intent = new Intent(context, ItemDetailsActivity.class);
                 intent.putExtra("CategoryId",catId);
                 intent.putExtra("Sub_CategoryId",subCatId);
+                intent.putExtra("owner",name);
                 context.startActivity(intent);
             }
         });
