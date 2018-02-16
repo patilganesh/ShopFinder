@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -104,6 +105,25 @@ public class AllPostsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.toLowerCase();
+                ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
+                for (ShopsListModel s : shops_list) {
+                    if (s.getShop_name().toLowerCase().contains(newText)||s.getCategory_name().toLowerCase().contains(newText)||s.getArea().toLowerCase().contains(newText)||s.getSub_category_name().toLowerCase().contains(newText)||s.getCity().toLowerCase().contains(newText)||s.getShop_mob_no().toLowerCase().contains(newText)||s.getState().toLowerCase().contains(newText)||s.getCountry().toLowerCase().contains(newText)||s.getAddress().toLowerCase().contains(newText)||s.getShop_timing().toLowerCase().contains(newText)||s.getWebsite().toLowerCase().contains(newText))
+
+                    suggest_list.add(s);
+                }
+                adapter.setFilter(suggest_list);
+                return true;
+            }
+        });
                 return true;
     }
     @Override
@@ -119,6 +139,7 @@ public class AllPostsActivity extends AppCompatActivity {
         finish();
 
     }
+
 
     private void setAdapter(String name) {
 
