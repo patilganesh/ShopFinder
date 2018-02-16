@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
-    private String name,email,profile;
+    private String name="",email="",profile="",logingoogle="";
     private Toolbar toolbar;
 
     private ProgressBar register_progressbar;
@@ -115,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             name = extras.getString("owner_name");
             email = extras.getString("owner_email");
             profile = extras.getString("owner_profile");
+            logingoogle = extras.getString("usertype");
             outPutFile= new File(profile);
             etName.setText(name);
             etEmail.setText(email);
@@ -165,12 +166,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             } catch (Exception e) {
                 Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        } else if (outPutFile == null&& profile.isEmpty()) {
-            user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
-        }else if(!profile.isEmpty()) {
-
+        } else if(logingoogle.equals("google")) {
             user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(),user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
-
+        }else if (outPutFile == null&& profile.isEmpty()) {
+            user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
         }
         btnSubmit.setVisibility(View.INVISIBLE);
         register_progressbar.setVisibility(View.VISIBLE);

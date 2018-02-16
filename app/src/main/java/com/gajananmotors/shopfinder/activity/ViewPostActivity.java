@@ -47,8 +47,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private ArrayList<String> allimages = new ArrayList<>();
     private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite,tvWebsiteHeader;
     private ViewShopList viewShopList;
-    private int shop_id;
-    private SharedPreferences sharedpreferences;
+    private int shop_id=0;
     private Toolbar toolbar;
     private ProgressBar viewpost_progressbar;
     private  LinearLayout linearLayout;
@@ -62,7 +61,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
@@ -112,7 +110,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             shopMsgLayout.setVisibility(View.VISIBLE);
 
         }
-        if (name.equals("owner")) {
+        if (!name.isEmpty()) {
             viewShopList = getIntent().getParcelableExtra("shop_list");
             tvShopName.setText(viewShopList.getStrShop_name());
             tvAddress.setText(viewShopList.getStrAddress());
@@ -133,13 +131,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     .into(shopCoverphoto);
 
         }/*else{
-            Uri data = i.getData();
+           Uri data = getIntent().getData();
             int shop_id=;
             LinkShopServices(shop_id);
         }*/
 
-
     }
+
 
 
     private void LinkShopServices(int shop_id) {

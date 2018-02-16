@@ -7,8 +7,6 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import static com.facebook.GraphRequest.TAG;
-
 public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
     private SharedPreferences sharedpreferences;
     private String refreshedToken = "";
@@ -16,7 +14,7 @@ public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
         public void onTokenRefresh() {
             // Get updated InstanceID token.
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
-            Log.e(TAG, "Refreshed token: " + refreshedToken);
+            Log.e("Refreshed token: ", refreshedToken);
             Constant.device_token=refreshedToken;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,23 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.Profile;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
-import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -45,9 +33,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,9 +41,6 @@ import retrofit2.Retrofit;
 import static com.gajananmotors.shopfinder.helper.Constant.MyPREFERENCES;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
-    private CallbackManager callbackManager;
-    private LoginButton login;
-    private String facebook_id, f_name, m_name, l_name, gender, profile_image, full_name, email_id;
     private EditText etUserName, etPassword;
     private com.hbb20.CountryCodePicker ccp;
     private String countryCodeAndroid = "";
@@ -73,17 +55,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SharedPreferences sharedpreferences;
     private String device_token = "";
     private int owner_id, status;
+    private String usertype="google";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
-
         login_progressbar = findViewById(R.id.login_progressbar);
-        //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()) {
             device_token = Constant.device_token;
@@ -107,35 +87,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
 
-        callbackManager = CallbackManager.Factory.create();
-        login = findViewById(R.id.login_button);
-        login.setReadPermissions("public_profile email");
-        login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                facebook_id = f_name = m_name = l_name = gender = profile_image = full_name = email_id = "";
-                if (AccessToken.getCurrentAccessToken() != null) {
-                    RequestData();
-                    Profile profile = Profile.getCurrentProfile();
-                    if (profile != null) {
-                        facebook_id = profile.getId();
-                        f_name = profile.getFirstName();
-                        m_name = profile.getMiddleName();
-                        l_name = profile.getLastName();
-                        full_name = profile.getName();
-                        profile_image = profile.getProfilePictureUri(50, 50).toString();
-                    }
-                }
-            }
 
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-            }
-        });
     }
 
 
@@ -293,33 +245,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
              }
          });
      }*/
-    public void RequestData() {
-        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-
-                JSONObject json = response.getJSONObject();
-                System.out.println("Json data:" + json);
-                try {
-                    if (json != null) {
-                        String text = "<b>Name:</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
-                        owner_name = json.getString("name");
-                        owner_email = json.getString("email");
-                        owner_image = json.getString("link");
-                        FacegleloginService();
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,email,picture");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -350,9 +275,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 64206)
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        else if (requestCode == RC_SIGN_IN) {
+       if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             Log.d(TAG, "handleSignInResult:" + result.isSuccess());
             if (result.isSuccess()) {
@@ -424,12 +347,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         b.putString("owner_name", owner_name);
                         b.putString("owner_email", owner_email);
                         b.putString("owner_profile", owner_image);
+                        b.putString("usertype", usertype);
                         Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
                         in.putExtras(b);
                         startActivity(in);
-                       /* if (MainActivity.activityMain != null) {
-                            MainActivity.activityMain.finish();
-                        }*/
                         finish();
 
                     } else {
