@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
+    private String name="user";
 
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
@@ -225,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         categoryImages.add(model.getImage());
                         categoryId.add(model.getCategory_id());
                     }
-                    setadapter(categoryNames, categoryImages, categoryId);
+                    setadapter(categoryNames, categoryImages, categoryId,name);
                 }
             }
 
@@ -267,8 +268,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id) {
-        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id);
+    public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
+        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
 
