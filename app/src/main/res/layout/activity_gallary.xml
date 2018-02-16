@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/White"
     tools:context="com.gajananmotors.shopfinder.activity.GallaryActivity">
-
     <include layout="@layout/toolbar" />
 
     <RelativeLayout
@@ -31,5 +31,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:unselectedAlpha="0.80" />
-
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/Black"
+        android:visibility="gone"/>
 </LinearLayout>

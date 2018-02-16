@@ -7,14 +7,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.helper.CircleImageView;
 
 /**
  * Created by Ashwin on 1/3/2018.
  */
 public class ShopsListHolder extends RecyclerView.ViewHolder {
     public TextView name, type, distance, address, timing, call, weburl;
-    public ImageView image;
-    public Button btn_Shop_delete;
+    public CircleImageView image;
+
 
     public ShopsListHolder(View itemView) {
         super(itemView);
@@ -25,7 +26,6 @@ public class ShopsListHolder extends RecyclerView.ViewHolder {
         timing = itemView.findViewById(R.id.shop_timing);
         call = itemView.findViewById(R.id.shop_timing);
         weburl = itemView.findViewById(R.id.website);
-        btn_Shop_delete = itemView.findViewById(R.id.btn_Shop_delete);
         image = itemView.findViewById(R.id.shop_image);
     }
 }

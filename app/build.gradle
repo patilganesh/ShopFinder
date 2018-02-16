@@ -20,9 +20,7 @@ android {
     }
 }
 dependencies {
-    //noinspection GradleCompatible
-
-
+    //noinspection GradleCompatib
     implementation 'com.google.firebase:firebase-messaging:11.0.4'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'

@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,20 +86,20 @@
                 android:text="web url"
                 android:textSize="12sp"/>
         </LinearLayout>
-        <ImageView
+        <com.gajananmotors.shopfinder.helper.CircleImageView
             android:id="@+id/shop_image"
+            androidutlineProvider="bounds"
             android:layout_width="0dp"
             android:layout_weight="0.2"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:src="@drawable/new_shop_image" />
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:src="@drawable/new_shop_image"
+            app:civ_border_width="1dp"
+            app:civ_fill_color="@android:color/darker_gray" />
 
-        <Button
-            android:id="@+id/btn_Shop_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/string_delete"
-            android:visibility="gone" />
+
     </LinearLayout>
 
     <View
