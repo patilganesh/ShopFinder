@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -39,11 +40,12 @@ public class AllPostsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private boolean b=true;
     private Toolbar toolbar;
-
+    private ProgressBar allPostProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_posts);
+        allPostProgressBar = findViewById(R.id.allPostProgressBar);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,17 +56,20 @@ public class AllPostsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
         sharedPreferences=getSharedPreferences(Constant.MyPREFERENCES,MODE_PRIVATE);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
+        allPostProgressBar.setVisibility(View.VISIBLE);
+        allPostProgressBar.setIndeterminate(true);
+        allPostProgressBar.setProgress(500);
         Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID,0));
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
+                    allPostProgressBar.setVisibility(View.GONE);
                     ShopsArrayListModel list = response.body();
                     ArrayList<ShopsListModel>shopsListModels=list.getShopList();
                     for(ShopsListModel model:shopsListModels)
@@ -74,7 +79,6 @@ public class AllPostsActivity extends AppCompatActivity {
                             shops_list.add(model);
                         }
                     }
-
                     setAdapter(true);
                 }
             }
@@ -87,8 +91,7 @@ public class AllPostsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         shops_list.clear();
-finish();
-
+        finish();
     }
 
     private void setAdapter(boolean b) {
@@ -98,5 +101,4 @@ finish();
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
-
 }

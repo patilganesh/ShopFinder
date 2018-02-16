@@ -1,16 +1,18 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,35 +22,49 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.adapter.ShopImagesAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.common.ViewShopList;
+import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
+import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
-import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 public class EditPostActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewShopList viewShopList;
-    private int shop_id;
     private EditText etShopName, etAddress, etMobileNumber, etServicesOffered, etShopOpeningHours, etWebsite;
-    private EditText etCategory, etSubcategory;
-    private Button btncategory;
-    private String Category, SubCategory;
+    private Button btncategory, btnsubCategory, btnUpdate;
     private ArrayList<String> categoryNames = new ArrayList<>();
+    private ArrayList<String> subCategoryNames = new ArrayList<>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
-    private ListView listView;
-    private Dialog listDialog;
-    private boolean flag;
+    private RecyclerView img_rcv;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private int PLACE_PICKER_REQUEST = 1;
+    private Place place;
+    private String area = "", city = "", state = "", country = "", pincode = "", strPlaceSearch = "", strCategorySearch = "";
+    private double latitude, longitude;
+    private GoogleApiClient mGoogleApiClient;
+    private int int_cat_id, int_subcat_id, owner_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +80,15 @@ public class EditPostActivity extends AppCompatActivity {
         etShopOpeningHours = findViewById(R.id.etShopOpeningHours);
         etWebsite = findViewById(R.id.etWebsite);
         btncategory = findViewById(R.id.etCategory);
-        etSubcategory = findViewById(R.id.etSubcategory);
+        btnsubCategory = findViewById(R.id.etSubCategory);
+        btnUpdate = findViewById(R.id.btnUpdate);
         viewShopList = getIntent().getParcelableExtra("shop_list");
+        img_rcv = findViewById(R.id.img_rcv);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        img_rcv.setLayoutManager(mLayoutManager);
+        ArrayList<String> images = viewShopList.getArrayList();
+        images.add(0, viewShopList.getStrShop_pic());
+        img_rcv.setAdapter(new ShopImagesAdapter(EditPostActivity.this, images, viewShopList.getShop_id()));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,11 +99,10 @@ public class EditPostActivity extends AppCompatActivity {
         etAddress.setText(viewShopList.getStrAddress());
         etMobileNumber.setText(viewShopList.getStrMobile());
         btncategory.setText(viewShopList.getStrCategory());
-        etSubcategory.setText(viewShopList.getStrSub_category());
+        btnsubCategory.setText(viewShopList.getStrSub_category());
         etServicesOffered.setText(viewShopList.getStrShop_services());
         etShopOpeningHours.setText(viewShopList.getStrShop_time());
         etWebsite.setText(viewShopList.getStrWeburl());
-
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<CategoryListModel> call = restInterface.getCategoryList();
@@ -92,67 +114,71 @@ public class EditPostActivity extends AppCompatActivity {
                     category_Model_list = categoryListModel.getCategories();
                     for (int i = 0; i < category_Model_list.size(); i++) {
                         categoryNames.add(category_Model_list.get(i).getName().toString());
-                        flag = true;
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(EditPostActivity.this, "Fail to Load Category", Toast.LENGTH_SHORT).show();
             }
         });
-
         btncategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                showDialog(categoryNames, true, "Select Category");
             }
         });
-      /*  etCategory.setOnTouchListener(new View.OnTouchListener() {
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                showDialog();
-                return false;
+            public void onClick(View v) {
+                update();
             }
-        });*/
+        });
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
     }
 
-    public void setCategories() {
-        final String[] categories = categoryNames.toArray(new String[categoryNames.size()]);
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, categories);
-        LayoutInflater inflater = LayoutInflater.from(EditPostActivity.this);
-        final View dialog = inflater.inflate(R.layout.category_list, null);
-        final ListView listView = dialog.findViewById(R.id.listview);
-        listView.setAdapter(adapter);
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Select Categories:");
-        dialogBuilder.setView(dialog);
-        dialogBuilder.setCancelable(true);
-        //final AlertDialog alertDialogObject = dialogBuilder.create();
-        final Dialog alertDialogObject = dialogBuilder.show();
-        //Show the dialog
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    public void update() {
+        strPlaceSearch = area + "," + city + "," + state + "," + country;
+        for (SubCategoryModel subCategoryModel : sub_category_list) {
+            if (TextUtils.equals(btnsubCategory.getText().toString().toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
+                int_subcat_id = subCategoryModel.getSub_category_id();
+        }
+        strCategorySearch = btncategory.getText().toString() + btnsubCategory.getText().toString();
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+       /* Call<CreateShopModel> call=restInterface.createShopforEmptyImage(int_cat_id, int_subcat_id, str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
+                    strBusinessHour, strBusinessLocation, strBusinessServices,
+                    String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
+                    strPlaceSearch, strBusinessWebUrl, strBusinessMobile
+            );
+        call.enqueue(new Callback<CreateShopModel>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
-                //    Toast.makeText(EditPostActivity.this, categories[position], Toast.LENGTH_SHORT).show();
-                alertDialogObject.cancel();
-                etCategory.setText(categories[position]);
+            public void onResponse(Call<CreateShopModel> call, Response<CreateShopModel> response) {
+                if(response.isSuccessful())
+                {
+                    Toast.makeText(EditPostActivity.this, "Shop Edit Success!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreateShopModel> call, Throwable t) {
 
             }
         });
-
-        //Create alert dialog object via builder
+ */
     }
 
-    private void showDialog() {
+    private void showDialog(ArrayList<String> categoryNames, final boolean flag, String title) {
         final String[] categories = categoryNames.toArray(new String[categoryNames.size()]);
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, categories);
         final Dialog dialog = new Dialog(this);
+        dialog.setTitle(title);
+        dialog.setCancelable(true);
         View view = getLayoutInflater().inflate(R.layout.category_list, null);
         ListView lv = (ListView) view.findViewById(R.id.listview);
         lv.setAdapter(adapter);
@@ -161,12 +187,94 @@ public class EditPostActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.cancel();
-                btncategory.setText(categories[position]);
+                if (flag == true) {
+                    btncategory.setText(categories[position]);
+                    getSubCategory();
+                } else {
+                    btnsubCategory.setText(categories[position]);
+                }
             }
         });
-
         dialog.setContentView(view);
         dialog.show();
+    }
 
+    public void getSubCategory() {
+        String str_cat_spinner = btncategory.getText().toString();
+        for (CategoryModel cat : category_Model_list) {
+            if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
+                int_cat_id = cat.getCategory_id();
+            }
+        }
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
+        subCategoryNames.clear();
+        sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
+            @Override
+            public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
+                if (response.isSuccessful()) {
+                    // subcategory_progressbar.setVisibility(View.INVISIBLE);
+                    SubCategoryListModel list = response.body();
+                    sub_category_list = list.getSubcategory();
+                    for (int i = 0; i < sub_category_list.size(); i++) {
+                        subCategoryNames.add(sub_category_list.get(i).getName().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
+            }
+        });
+        btnsubCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(subCategoryNames, false, "Select SubCategory:");
+            }
+        });
+    }
+
+
+    public void getEditAddress(View view) {
+        ConnectionDetector detector = new ConnectionDetector(this);
+        if (!detector.isConnectingToInternet())
+            Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
+        else {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                place = PlacePicker.getPlace(data, this);
+                etAddress.setText(place.getAddress());
+                String address1 = place.getName().toString();
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    state = addresses.get(0).getAdminArea().toString();
+                    city = addresses.get(0).getLocality().toString();
+                    area = addresses.get(0).getSubLocality().toString();
+                    country = addresses.get(0).getCountryName();
+                    pincode = addresses.get(0).getPostalCode();
+                    latitude = place.getLatLng().latitude;
+                    longitude = place.getLatLng().longitude;
+                    // Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area+"\nCountry:"+country, Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

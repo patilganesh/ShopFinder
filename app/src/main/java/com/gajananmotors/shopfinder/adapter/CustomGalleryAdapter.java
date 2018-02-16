@@ -18,16 +18,14 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class CustomGalleryAdapter extends BaseAdapter {
-
     private Context context;
     private ArrayList<String> images=new ArrayList<>();
-private int shop_id;
+    private int shop_id;
     public CustomGalleryAdapter(Context c, ArrayList<String> images, int shop_id) {
         context = c;
         this.images = images;
         this.shop_id = shop_id;
     }
-
     // returns the number of images
     public int getCount() {
         return images.size();

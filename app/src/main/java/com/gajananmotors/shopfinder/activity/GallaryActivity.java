@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomGalleryAdapter;
@@ -22,6 +23,7 @@ public class GallaryActivity extends AppCompatActivity {
     Gallery simpleGallery;
     CustomGalleryAdapter customGalleryAdapter;
     ImageView selectedImageView;
+    private ProgressBar gallery_progressbar;
     // array of images
     int shop_id;
  ArrayList<String>images=new ArrayList<>();
@@ -33,6 +35,7 @@ public class GallaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        gallery_progressbar = findViewById(R.id.gallery_progressbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,24 +49,32 @@ public class GallaryActivity extends AppCompatActivity {
         simpleGallery = (Gallery) findViewById(R.id.simpleGallery);
         shop_id=i.getIntExtra("shop_id",0);
         selectedImageView = (ImageView) findViewById(R.id.selectedImageView);
-       /* Picasso.with(GallaryActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+i.getExtras().getString("shopCoverphoto"))
-                .fit()
-                .placeholder(R.drawable.background_splashscreen)
-                .into(selectedImageView);*/
         images = i.getExtras().getStringArrayList("images");
-       // Log.i("Image Size:" + images.size(), "" + images.size());
         customGalleryAdapter = new CustomGalleryAdapter(getApplicationContext(), images, shop_id);
         simpleGallery.setAdapter(customGalleryAdapter);
         simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(GallaryActivity.this);
+        gallery_progressbar.setVisibility(View.VISIBLE);
+        gallery_progressbar.setIndeterminate(true);
+        gallery_progressbar.setProgress(500);
         Picasso.with(GallaryActivity.this)
-                .load("http://findashop.in/images/shop_profile/"+shop_id+"/"+images.get(0))
+                .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
-                .into(selectedImageView);
-       // selectedImageView.setImageResource(images.get(0));
+                .into(selectedImageView, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                //Success image already loaded into the view
+                                gallery_progressbar.setVisibility(View.GONE);
 
+                            }
+
+                            @Override
+                            public void onError() {
+                                //Error placeholder image already loaded into the view, do further handling of this situation here
+                            }
+                        }
+                );
         simpleGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -73,7 +84,6 @@ public class GallaryActivity extends AppCompatActivity {
                         .fit()
                         .placeholder(R.drawable.background_splashscreen)
                         .into(selectedImageView);
-              //  selectedImageView.setImageResource(images.get(position));
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

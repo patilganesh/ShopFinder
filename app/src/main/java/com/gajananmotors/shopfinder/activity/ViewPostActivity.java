@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
@@ -62,9 +63,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         tvWebsite = findViewById(R.id.tvWebsite);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout = findViewById(R.id.shopEditLayout);
-
         viewShopList = (ViewShopList) getIntent().getParcelableExtra("shop_list");
-
         tvShopName.setText(viewShopList.getStrShop_name());
         tvAddress.setText(viewShopList.getStrAddress());
         tvCategory.setText(viewShopList.getStrCategory());
@@ -89,7 +88,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         LinearLayout linearLyoutWithoutEdit=findViewById(R.id.linearLyoutWithoutEdit);
         LinearLayout linearLyoutWithEdit=findViewById(R.id.linearLyoutWithEdit);
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
-
             linearLyoutWithEdit.setVisibility(View.VISIBLE);
             linearLyoutWithoutEdit.setVisibility(View.GONE);
             shopEditLayout.setVisibility(View.VISIBLE);
@@ -151,9 +149,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.shopEditLayout:
                 Intent intent = new Intent(this, EditPostActivity.class);
-                intent.putStringArrayListExtra("images", allimages);
-                intent.putExtra("shopCoverphoto", shopCoverpic);
-                intent.putExtra("shop_id", shop_id);
+                intent.putExtra("shop_list", viewShopList);
                 startActivity(intent);
                 break;
             case R.id.shopShareLayout:
@@ -161,14 +157,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        allimages.clear();
-      Log.d("listsize", String.valueOf(allimages.size()));
-
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

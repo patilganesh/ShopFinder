@@ -24,7 +24,6 @@ public class ViewShopList implements Parcelable {
     private String strShop_pic;
     private String strShop_time;
     private String strShop_services;
-
     public String getStrShop_time() {
         return strShop_time;
     }
@@ -40,17 +39,13 @@ public class ViewShopList implements Parcelable {
     public void setStrShop_services(String strShop_services) {
         this.strShop_services = strShop_services;
     }
-
     private ArrayList arrayList = new ArrayList<>();
     public String getStrShop_pic() {
         return strShop_pic;
     }
-
     public void setStrShop_pic(String strShop_pic) {
         this.strShop_pic = strShop_pic;
     }
-
-
     public ViewShopList(){}
     public ViewShopList(Parcel in) {
         shop_id = in.readInt();
@@ -179,6 +174,5 @@ public class ViewShopList implements Parcelable {
         dest.writeString(strShop_time);
         dest.writeString(strShop_services);
         dest.writeList(arrayList);
-
     }
 }

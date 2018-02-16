@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -13,12 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -28,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -38,13 +35,11 @@ import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
 import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
-import com.gajananmotors.shopfinder.model.UserRegisterModel;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -91,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 onBackPressed();
             }
         });
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
         etName = findViewById(R.id.etName);
@@ -104,7 +100,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnEdit.setOnClickListener(this);
         etDate.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
-
         Button btnEdit = findViewById(R.id.btnEdit);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -124,7 +119,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
-
     public void checkConnection(final String service) {
         final ConnectionDetector detector = new ConnectionDetector(ProfileActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -268,7 +262,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onResponse(Call<DeleteUserModel> call, Response<DeleteUserModel> response) {
                 if (response.isSuccessful()){
-                 String msg=  response.body().getMsg();
+                    String msg = response.body().getMsg();
                     Snackbar.make(coordinatorLayout_setting, "" + msg, Snackbar.LENGTH_LONG).show();
                     sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -283,7 +277,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
-
     private void updateUser() {
         File shop_cover_photo = null;
         byte[] imgbyte = null;
@@ -312,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         } else {
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
-              user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
+            user = restInterface.updateRegisterforEmptyImage(updateUserModel.getOwner_name(), updateUserModel.getOwner_email(), updateUserModel.getMob_no(), updateUserModel.getDate_of_birth(), updateUserModel.getOwner_id());
         }
 
         user.enqueue(new Callback<UpdateUserModel>() {
@@ -422,7 +415,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
-
     private void CropingIMG() {
         final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -472,28 +464,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         if (mImageCaptureUri != null) {
                             getContentResolver().delete(mImageCaptureUri, null, null);
                             mImageCaptureUri = null;
-
                         }
                     }
                 });
-
                 android.support.v7.app.AlertDialog alert = builder.create();
                 alert.show();
             }
         }
     }
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            onBackPressed();
-        }
-        return true;
-    }
-    @Override
     public void onBackPressed() {
-        super.onBackPressed();
         finish();
-
-
     }
 }

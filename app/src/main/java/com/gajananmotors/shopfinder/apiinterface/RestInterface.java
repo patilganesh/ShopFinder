@@ -151,6 +151,7 @@ public interface RestInterface {
             @Field("website") String website,
             @Field("shop_mob_no") String shop_mob_no
     );
+
     @Multipart
     @POST("index.php/mobile_api/upload_shop_images")
     Call<UploadShopImagesModel> uploadShopImages(

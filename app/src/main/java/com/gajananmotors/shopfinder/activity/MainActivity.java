@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private static String search_text;
-    private android.support.v7.widget.SearchView searchView;
+    private FloatingSearchView searchView;
     private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
@@ -69,12 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
-
     public static Activity activityMain;
-
-    public static void finishActivity(Context context){
-
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +87,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-       // searchView = findViewById(R.id.floating_search_view);
-       // searchView.clearSearchFocus();
+        // searchView = findViewById(R.id.floating_search_view);
+        searchView = findViewById(R.id.floating_search_view);
+        // searchView.clearSearchFocus();
        /* searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
         // layoutManager.setOrientation(LinearLayout.VERTICAL);
         recycler_view_vertical.setNestedScrollingEnabled(false);
-      //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
+        //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
         recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
@@ -132,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
-
             }
         });
         if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
@@ -143,6 +138,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
+            navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_addpost).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nav_allposts).setVisible(true);
+            fab.setVisibility(View.GONE);
+        } else {
+            navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView tvOwner_Name = headerView.findViewById(R.id.tvOwner_Name);
+            TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
+            tvOwner_Name.setText("User Name");
+            tvOwner_Email.setText("User Email_id");
+        }
+        navigationView.setNavigationItemSelectedListener(MainActivity.this);
+        String name = sharedpreferences.getString(Constant.OWNER_NAME, null);
 
       /* nearby = findViewById(R.id.nearby);
       nearby.setOnClickListener(this);*/
@@ -161,6 +173,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
+    }
+
+    public static void finishActivity(Context context) {
+
     }
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
@@ -231,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -269,12 +284,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+    /*    searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -291,18 +305,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 newText = newText.toLowerCase();
                 search_text = newText;
                 ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-              /*  for (ShopsListModel s : shops_list) {
+              *//*  for (ShopsListModel s : shops_list) {
                     if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))
                         suggest_list.add(s);
                     else if (s.getName().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getType().toLowerCase().endsWith(newText) || s.getDistance().toLowerCase().endsWith(newText) || s.getTiming().toLowerCase().endsWith(newText) || s.getMobileNo().toLowerCase().endsWith(newText))
                         suggest_list.add(s);
                     else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
                         suggest_list.add(s);
-                }*/
+                }*//*
                 adapter.setFilter(suggest_list);
                 return true;
             }
-        });
+        });*/
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
@@ -340,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         } else if (id == R.id.nav_allposts) {
-
             startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
 
         } else if (id == R.id.nav_share) {

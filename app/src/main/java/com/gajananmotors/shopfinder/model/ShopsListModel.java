@@ -104,10 +104,7 @@ public class ShopsListModel {
         this.setCountry_code(country_code);
         this.setShop_mob_no(shop_mob_no);
         this.setStatus(status);
-
     }
-
-
     public int getShop_id() {
         return shop_id;
     }

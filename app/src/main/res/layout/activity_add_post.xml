@@ -8,7 +8,6 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
     <include layout="@layout/toolbar" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -79,9 +78,7 @@
                         android:inputType="text"
                         android:editable="false"
                         android:textSize="14sp" />
-
                 </android.support.design.widget.TextInputLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -110,7 +107,6 @@
                             android:textSize="14sp" />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -153,7 +149,6 @@
                         android:inputType="text"
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
-
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                     android:id="@+id/spnBusinessCategory"
                     android:layout_width="match_parent"
@@ -164,29 +159,16 @@
                     app:hintTextAppearance="@style/MyAppearance"
                     app:met_floatingLabel="normal" />
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                         android:id="@+id/spnBusinessSubcategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:hint="Sub Category:"
                         android:textSize="14sp"
+                    android:visibility="gone"
                         app:hintTextAppearance="@style/MyAppearance"
                         app:met_floatingLabel="normal" />
-
-                    <ProgressBar
-                        android:id="@+id/subcategory_progressbar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:visibility="invisible" />
-                </RelativeLayout>
-
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

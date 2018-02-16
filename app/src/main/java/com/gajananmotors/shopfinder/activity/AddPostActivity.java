@@ -6,18 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -95,6 +91,8 @@ public class AddPostActivity extends AppCompatActivity {
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<String> image_path = new ArrayList<>();
+    private ArrayList<String> new_image_path = new ArrayList<>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
     private ViewGroup mSelectedImagesContainer;
@@ -119,9 +117,7 @@ public class AddPostActivity extends AppCompatActivity {
     private Call<CreateShopModel> shopModelCall;
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm;
-    private ProgressBar subcategory_progressbar;
-    //dont make it private,as we are accessing it from other acticity
-    private ArrayList<String> categoryNames = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,8 +129,7 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
-        subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
-         /*StringCallback stringCallback = new StringCallback() {
+      /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
                 if (TextUtils.equals(s,"1")){
@@ -204,9 +199,10 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         category.setAdapter(categoryAdapter);
+
         category.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -223,20 +219,16 @@ public class AddPostActivity extends AppCompatActivity {
                     }
                 }
                 Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
-                subcategory_progressbar.setVisibility(View.VISIBLE);
-                subcategory_progressbar.setProgress(500);
-                subcategory_progressbar.setIndeterminate(true);
                 sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
                     @Override
                     public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
                         if (response.isSuccessful()) {
-                            subcategory_progressbar.setVisibility(View.INVISIBLE);
+                            subcategory.setVisibility(View.VISIBLE);
                             SubCategoryListModel list = response.body();
                             sub_category_list = list.getSubcategory();
                             getSubCategoryData();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                     }
@@ -294,12 +286,16 @@ public class AddPostActivity extends AppCompatActivity {
         subcategory.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
-              @Override
+
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-              }
+
+            }
             @Override
             public void afterTextChanged(Editable s) {
+
                 str_subCat_spinner = subcategory.getText().toString();
                 for (SubCategoryModel subCategoryModel : sub_category_list) {
                     if (TextUtils.equals(str_subCat_spinner.toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
@@ -385,8 +381,18 @@ public class AddPostActivity extends AppCompatActivity {
     }
     private void showMedia() {
         int index = 1;
+        //String imagePath="";
         mSelectedImagesContainer.removeAllViews();
         if (image_uris.size() >= 1) {
+            /*for(Uri uri:image_uris) {
+                imagePath=uri.getPath();
+                File file=new File(imagePath);
+                if(file.length()>51200) {
+                    imagePath = ImageCompressor.compressImage(uri.getPath());
+               }
+                Log.i("File Size:", "size: "+file.length());*//*
+                image_path.add(imagePath);
+            }*/
             mSelectedImagesContainer.setVisibility(View.VISIBLE);
         }
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
@@ -444,8 +450,6 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
-        //TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
-        TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
         alert.setView(confirmDialog);
@@ -480,26 +484,14 @@ public class AddPostActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = null;
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        if (!getImages.equals("")) {
-
-            File file_Path = new File(getImages);
-            File filePath = null;
-            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-            byte[] BYTE;
-            FileOutputStream fos = null;
-            //int size=image_uris.size();
-            // File file_path = new File(image_uris.get(index).getPath().toString());
-            Bitmap bitmap = BitmapFactory.decodeFile(file_Path.getAbsolutePath());
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytearrayoutputstream);
-            BYTE = bytearrayoutputstream.toByteArray();
-            try {
-                fos = new FileOutputStream(file_Path.getAbsolutePath());
-                fos.write(BYTE);
-                filePath = new File(file_Path.getAbsolutePath());
-                fos.flush();
-                fos.close();
-            } catch (Exception e) {
+        for (int i = 0; i < image_uris.size(); i++) {
+            String path = image_uris.get(i).getPath();
+            if (!path.equalsIgnoreCase(getImages)) {
+                image_path.add(path);
             }
+        }
+        if (!getImages.equals("")) {
+            File filePath = new File(getImages);
             try {
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
                 fileToUpload = MultipartBody.Part.createFormData("shop_pic", filePath.getName(), mFile);
@@ -532,7 +524,7 @@ public class AddPostActivity extends AppCompatActivity {
                         editor.putInt(Constant.SHOP_ID, shop.getShop_id());
                         editor.apply();
                         //         Toast.makeText(AddPostActivity.this, "Shop Created Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
-                        uploadShopImages(0);
+                        uploadShopImages(count);
                     }
                 }
             }
@@ -541,50 +533,45 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
+
+    int index2 = 1;
     public void uploadShopImages(int index) {
-        if (image_uris.size() > index) {
-            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-            byte[] BYTE;
-            FileOutputStream fos = null;
-            //int size=image_uris.size();
-            File file_path = new File(image_uris.get(index).getPath().toString());
-            Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytearrayoutputstream);
-            BYTE=bytearrayoutputstream.toByteArray();
-            try {
-                fos = new FileOutputStream(file_path.getAbsolutePath());
-                fos.write(BYTE);
-                fos.flush();
-                fos.close();
-            } catch (Exception e) {
-            }
+        if (image_path.size() > index) {
+            File file_path = new File(image_path.get(index));
             MultipartBody.Part fileToUpload = null;
             if (file_path != null) {
                 try {
                     RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
-                    fileToUpload = MultipartBody.Part.createFormData("image" + (index + 1), file_path.getName(), mFile);
+                    fileToUpload = MultipartBody.Part.createFormData("image" + (index2), file_path.getName(), mFile);
+                    ++index2;
                 } catch (Exception e) {
                     Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
             Retrofit retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
-                    shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
             call.enqueue(new Callback<UploadShopImagesModel>() {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
                     if (response.isSuccessful()) {
+
                         UploadShopImagesModel uploadShopImagesModel = response.body();
                         if (uploadShopImagesModel.getResult() == 1)
                             uploadShopImages(uploadShopImagesModel.getCount());
                     }
                 }
+
                 @Override
                 public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
                     Toast.makeText(AddPostActivity.this, "Error: " + t.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
+           /* }
+            else
+            {
+                   uploadShopImages(++index);
+            }*/
         } else {
             addPostProgressbar.setVisibility(View.INVISIBLE);
             tvConfirm.setVisibility(View.VISIBLE);
@@ -765,12 +752,10 @@ public class AddPostActivity extends AppCompatActivity {
         final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
         DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
         list.setAdapter(adapter);
-
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        // finish();
+        finish();
     }
 }

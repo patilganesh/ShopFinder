@@ -31,7 +31,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 public class ItemDetailsActivity extends AppCompatActivity{
-    private LinearLayout viewLayout;
     private LinearLayout shopDirection;
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
@@ -50,7 +49,6 @@ public class ItemDetailsActivity extends AppCompatActivity{
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        viewLayout = findViewById(R.id.viewLayout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         recyclerView = findViewById(R.id.recyclerView);
         viewPostLayout = findViewById(R.id.viewLayout);
