@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_vertical);
+       // recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
