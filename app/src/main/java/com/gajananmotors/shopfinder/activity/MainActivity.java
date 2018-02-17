@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,12 +70,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RestInterface restInterface;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
-    private SharedPreferences sharedpreferences;
     private ProgressBar category_progressbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
     private String name="user";
+    private SharedPreferences sharedpreferences;
+    private String refreshedToken = "";
 
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
@@ -101,7 +104,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
-
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.e("Refreshed token: ", refreshedToken);
+        Constant.device_token=refreshedToken;
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+//      setting values to sharedpreferences keys.
+        editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
+        editor.apply();
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
@@ -377,12 +387,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            Toast.makeText(getApplicationContext(),"Coming soon...",Toast.LENGTH_SHORT).show();
+           /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBodyText = "https://play.google.com/store?hl=en";
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
-            startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
+            startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));*/
         } else if (id == R.id.nav_logout) {
 
             sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);

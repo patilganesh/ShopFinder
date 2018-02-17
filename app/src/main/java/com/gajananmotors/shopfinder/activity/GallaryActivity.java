@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
@@ -39,7 +38,6 @@ public class GallaryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent i = getIntent();
-        String img = i.getExtras().getString("image");
         String shop_pic = i.getExtras().getString("shopCoverphoto");
 
         simpleGallery = findViewById(R.id.simpleGallery);

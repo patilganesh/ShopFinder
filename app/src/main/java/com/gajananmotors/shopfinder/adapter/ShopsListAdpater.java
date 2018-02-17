@@ -90,6 +90,8 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 viewShopList.setStrSub_category(list.get(position).getSub_category_name());
                 viewShopList.setStrWeburl(list.get(position).getWebsite());
                 viewShopList.setStrMobile(list.get(position).getShop_mob_no());
+                viewShopList.setStrShopTime(list.get(position).getShop_timing());
+                viewShopList.setStrservices(list.get(position).getServices());
                 images.clear();
                 index = 0;
                 if (list.get(position).getImage1()!=null) {

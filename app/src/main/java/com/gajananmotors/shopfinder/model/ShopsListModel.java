@@ -24,6 +24,17 @@ public class ShopsListModel {
     private String shop_name;
     @SerializedName("shop_timing")
     private String shop_timing;
+    @SerializedName("services")
+    private String services;
+
+    public String getServices() {
+        return services;
+    }
+
+    public void setServices(String services) {
+        this.services = services;
+    }
+
     @SerializedName("address")
     private String address;
     @SerializedName("shop_details")
@@ -72,7 +83,7 @@ public class ShopsListModel {
                           String shop_lat, String shop_long, String country, String state, String city,
                           String pincode, String area, String place_search, String website, String shop_pic,
                           String image1, String image2, String image3, String image4,
-                          String image5, String image6, String country_code, String shop_mob_no, int status) {
+                          String image5, String image6, String country_code, String shop_mob_no, String services, int status) {
         this.setShop_id(shop_id);
         this.setOwner_id(owner_id);
         this.setCategory_id(category_id);
@@ -104,6 +115,7 @@ public class ShopsListModel {
         this.setCountry_code(country_code);
         this.setShop_mob_no(shop_mob_no);
         this.setStatus(status);
+        this.setServices(services);
 
     }
 
