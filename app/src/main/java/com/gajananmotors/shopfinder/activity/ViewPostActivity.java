@@ -52,8 +52,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private ProgressBar viewpost_progressbar;
     private  LinearLayout linearLayout;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +130,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
 
         }/*else{
            Uri data = getIntent().getData();
-            int shop_id=;
             LinkShopServices(shop_id);
         }*/
 
@@ -156,20 +153,20 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     viewpost_progressbar.setVisibility(View.INVISIBLE);
                     String msg = linkShopModel.getCity();
 
-                    tvShopName.setText(viewShopList.getStrShop_name());
-                    tvAddress.setText(viewShopList.getStrAddress());
-                    tvCategory.setText(viewShopList.getStrCategory());
-                    if (viewShopList.getStrWeburl().isEmpty()) {
+                    tvShopName.setText(linkShopModel.getShop_name());
+                    tvAddress.setText(linkShopModel.getAddress());
+                    tvCategory.setText(linkShopModel.getCategory_name());
+                    if (linkShopModel.getWebsite().isEmpty()) {
                         tvWebsiteHeader.setVisibility(View.GONE);
                     }else{
-                        tvWebsite.setText(viewShopList.getStrWeburl());}
-                    tvSubcategory.setText(viewShopList.getStrSub_category());
-                    tvMobile.setText(viewShopList.getStrMobile());
-                    shopCoverpic = viewShopList.getStrShop_pic();
+                        tvWebsite.setText(linkShopModel.getWebsite());}
+                    tvSubcategory.setText(linkShopModel.getSub_category_name());
+                    tvMobile.setText(linkShopModel.getShop_mob_no());
+                    shopCoverpic = linkShopModel.getShop_pic();
                     allimages = viewShopList.getArrayList();
-                    // shop_id = viewShopList.getShop_id();
+                   // shop_id = linkShopModel.getShop_id();
                     Picasso.with(ViewPostActivity.this)
-                            .load("http://findashop.in/images/shop_profile/" +" shop_id "+ "/" + viewShopList.getStrShop_pic())
+                            .load("http://findashop.in/images/shop_profile/" +"shop_id" + "/" + viewShopList.getStrShop_pic())
                             .fit()
                             .placeholder(R.drawable.background_splashscreen)
                             .into(shopCoverphoto);
