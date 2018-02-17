@@ -41,13 +41,12 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
     private ArrayList<ArrayList<SubCategoryModel>> indi_sub_category_list = new ArrayList<ArrayList<SubCategoryModel>>();
     // private ArrayList<SubCategoryListModel>[] subCategory_data=new ArrayList<>()[5];
-    private Map mMap = new HashMap();
-    private List<Map> list = new ArrayList();
     private ArrayList<String> categoryNames = new ArrayList<>();
     private ArrayList<String> categoryImages = new ArrayList<>();
     private ArrayList<Integer> categoryId = new ArrayList<>();
@@ -75,14 +72,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RestInterface restInterface;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
-    private SharedPreferences sharedpreferences;
     private ProgressBar category_progressbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
     private String name="user";
     private int index = 0;
-    private boolean flag = false;
+    private SharedPreferences sharedpreferences;
+    private String refreshedToken = "";
+
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
@@ -109,6 +107,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.e("Refreshed token: ", refreshedToken);
+        Constant.device_token=refreshedToken;
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+//      setting values to sharedpreferences keys.
+        editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
+        editor.apply();
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
@@ -127,8 +133,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recyclerViewType = RecyclerViewType.GRID;
+        setUpRecyclerView();
+        populateRecyclerView();
 
-     /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+        
+        /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         // mLayoutManager_vertical = new GridLayoutManager(this, 3);
         recycler_view_vertical.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
@@ -179,8 +188,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
-
     }
+
+
     private void setUpRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view_vertical);
         recyclerView.setNestedScrollingEnabled(false);
@@ -375,7 +385,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             //   startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
         } else if (id == R.id.nav_share) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            Toast.makeText(getApplicationContext(),"Coming soon...",Toast.LENGTH_SHORT).show();
+           /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBodyText = "https://play.google.com/store?hl=en";
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");

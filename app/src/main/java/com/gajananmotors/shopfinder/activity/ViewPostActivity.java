@@ -45,13 +45,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private String shopCoverpic = "";
     private ImageView shopCoverphoto;
     private ArrayList<String> allimages = new ArrayList<>();
-    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite,tvWebsiteHeader;
+    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite,tvShopTime;
     private ViewShopList viewShopList;
-    private int shop_id = 0;
-    private SharedPreferences sharedpreferences;
+    private int shop_id=0;
     private Toolbar toolbar;
     private ProgressBar viewpost_progressbar;
     private  LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +59,8 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+
+
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -68,11 +69,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         tvShopName = findViewById(R.id.tvShopName);
         tvAddress = findViewById(R.id.tvAddress);
         tvMobile = findViewById(R.id.tvMobile);
+        tvShopTime = findViewById(R.id.tvShopTime);
         tvCategory = findViewById(R.id.tvCategory);
         tvSubcategory = findViewById(R.id.tvSubcategory);
         linearLayout = findViewById(R.id.lin1);
         tvWebsite = findViewById(R.id.tvWebsite);
-        tvWebsiteHeader = findViewById(R.id.tvWebsiteHeader);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout = findViewById(R.id.shopEditLayout);
         shopShareLayout = findViewById(R.id.shopShareLayout);
@@ -93,20 +94,29 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         Intent i = getIntent();
+
         String name = i.getStringExtra("owner");
-        if (name.equals("owner")) {
-            shopEditLayout.setVisibility(View.VISIBLE);
-            shopDeleteLayout.setVisibility(View.VISIBLE);
-            shopCallLayout.setVisibility(View.GONE);
-            shopMsgLayout.setVisibility(View.GONE);
-        } else {
+
             shopEditLayout.setVisibility(View.GONE);
             shopDeleteLayout.setVisibility(View.GONE);
             shopCallLayout.setVisibility(View.VISIBLE);
             shopMsgLayout.setVisibility(View.VISIBLE);
-        }
-        if (name.equals("owner")) {
+
+
+        if (!name.isEmpty()) {
             viewShopList = getIntent().getParcelableExtra("shop_list");
+            if (name.equals("owner")) {
+                shopEditLayout.setVisibility(View.VISIBLE);
+                shopDeleteLayout.setVisibility(View.VISIBLE);
+                shopCallLayout.setVisibility(View.GONE);
+                shopMsgLayout.setVisibility(View.GONE);
+            } else {
+                shopEditLayout.setVisibility(View.GONE);
+                shopDeleteLayout.setVisibility(View.GONE);
+                shopCallLayout.setVisibility(View.VISIBLE);
+                shopMsgLayout.setVisibility(View.VISIBLE);
+
+            }
             tvShopName.setText(viewShopList.getStrShop_name());
             tvAddress.setText(viewShopList.getStrAddress());
             tvCategory.setText(viewShopList.getStrCategory());
@@ -116,6 +126,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
             tvSubcategory.setText(viewShopList.getStrSub_category());
             tvMobile.setText(viewShopList.getStrMobile());
+            tvShopTime.setText("Open : "+viewShopList.getStrShopTime());
             shopCoverpic = viewShopList.getStrShop_pic();
             allimages = viewShopList.getArrayList();
             shop_id = viewShopList.getShop_id();
@@ -125,16 +136,14 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     .placeholder(R.drawable.background_splashscreen)
                     .into(shopCoverphoto);
 
-        }/*else{
-            Uri data = i.getData();
-            int shop_id=;
+        }
+       /* else*//*{
+           Uri data = i.getData();
             LinkShopServices(shop_id);
         }*/
 
     }
-
-
-    private void LinkShopServices(int shop_id) {
+  private void LinkShopServices(int shop_id) {
         Retrofit retrofit;
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -150,20 +159,21 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     viewpost_progressbar.setVisibility(View.INVISIBLE);
                     String msg = linkShopModel.getCity();
 
-                    tvShopName.setText(viewShopList.getStrShop_name());
-                    tvAddress.setText(viewShopList.getStrAddress());
-                    tvCategory.setText(viewShopList.getStrCategory());
-                    if (viewShopList.getStrWeburl().isEmpty()) {
-                        tvWebsiteHeader.setVisibility(View.GONE);
+                    tvShopName.setText(linkShopModel.getShop_name());
+                    tvAddress.setText(linkShopModel.getAddress());
+                    tvCategory.setText(linkShopModel.getCategory_name());
+                    if (linkShopModel.getWebsite().isEmpty()) {
+                        linearLayout.setVisibility(View.VISIBLE);
                     }else{
-                        tvWebsite.setText(viewShopList.getStrWeburl());}
-                    tvSubcategory.setText(viewShopList.getStrSub_category());
-                    tvMobile.setText(viewShopList.getStrMobile());
-                    shopCoverpic = viewShopList.getStrShop_pic();
+                        tvWebsite.setText(linkShopModel.getWebsite());}
+                    tvSubcategory.setText(linkShopModel.getSub_category_name());
+                    tvMobile.setText(linkShopModel.getShop_mob_no());
+                    shopCoverpic = linkShopModel.getShop_pic();
+                    tvShopTime.setText("Open : "+linkShopModel.getShop_timing());
                     allimages = viewShopList.getArrayList();
-                    // shop_id = viewShopList.getShop_id();
+                   // shop_id = linkShopModel.getShop_id();
                     Picasso.with(ViewPostActivity.this)
-                            .load("http://findashop.in/images/shop_profile/" +" shop_id "+ "/" + viewShopList.getStrShop_pic())
+                            .load("http://findashop.in/images/shop_profile/" +"shop_id" + "/" + viewShopList.getStrShop_pic())
                             .fit()
                             .placeholder(R.drawable.background_splashscreen)
                             .into(shopCoverphoto);
@@ -245,11 +255,14 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.shopEditLayout:
                 Intent intent = new Intent(this, EditPostActivity.class);
-                intent.putExtra("shop_list", viewShopList);
+                intent.putStringArrayListExtra("images", allimages);
+                intent.putExtra("shopCoverphoto", shopCoverpic);
+                intent.putExtra("shop_id", shop_id);
                 startActivity(intent);
                 break;
             case R.id.shopShareLayout:
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                Toast.makeText(getApplicationContext(),"Coming soon...",Toast.LENGTH_SHORT).show();
+               /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBodyText = "http://www.findashop.in/index.php/mobile_api/upload_shop_images"+shop_id;
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");

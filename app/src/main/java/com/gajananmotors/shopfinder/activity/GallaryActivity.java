@@ -46,9 +46,7 @@ public class GallaryActivity extends AppCompatActivity {
             }
         });
         Intent i = getIntent();
-        String img = i.getExtras().getString("image");
         String shop_pic = i.getExtras().getString("shopCoverphoto");
-
         simpleGallery = findViewById(R.id.simpleGallery);
         text =  findViewById(R.id.tvText);
         shop_id = i.getIntExtra("shop_id", 0);
@@ -73,7 +71,7 @@ public class GallaryActivity extends AppCompatActivity {
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
-                .into(selectedImageView);
+
         // selectedImageView.setImageResource(images.get(0));
                 .into(selectedImageView, new com.squareup.picasso.Callback() {
                             @Override
@@ -98,7 +96,8 @@ public class GallaryActivity extends AppCompatActivity {
                         .fit()
                         .placeholder(R.drawable.background_splashscreen)
                         .into(selectedImageView);
-              //  selectedImageView.setImageResource(images.get(position));
+
+                //  selectedImageView.setImageResource(images.get(position));
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -109,6 +108,7 @@ public class GallaryActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

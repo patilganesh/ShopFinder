@@ -21,33 +21,18 @@ public class ViewShopList implements Parcelable {
     private String strSub_category;
     private String strWeburl;
     private String strMobile;
-    private String strShop_pic;
-    private String strShop_time;
-    private String strShop_services;
-    public String getStrShop_time() {
-        return strShop_time;
+
+    public String getStrservices() {
+        return strservices;
     }
 
-    public void setStrShop_time(String strShop_time) {
-        this.strShop_time = strShop_time;
+    public void setStrservices(String strservices) {
+        this.strservices = strservices;
     }
 
-    public String getStrShop_services() {
-        return strShop_services;
-    }
+    private String strservices;
 
-    public void setStrShop_services(String strShop_services) {
-        this.strShop_services = strShop_services;
-    }
-    private ArrayList arrayList = new ArrayList<>();
-    public String getStrShop_pic() {
-        return strShop_pic;
-    }
-    public void setStrShop_pic(String strShop_pic) {
-        this.strShop_pic = strShop_pic;
-    }
-    public ViewShopList(){}
-    public ViewShopList(Parcel in) {
+    protected ViewShopList(Parcel in) {
         shop_id = in.readInt();
         latitude = in.readDouble();
         longitude = in.readDouble();
@@ -57,9 +42,9 @@ public class ViewShopList implements Parcelable {
         strSub_category = in.readString();
         strWeburl = in.readString();
         strMobile = in.readString();
+        strShopTime = in.readString();
         strShop_pic = in.readString();
-        strShop_time = in.readString();
-        strShop_services = in.readString();
+        strservices = in.readString();
         in.readList(arrayList,null);
     }
 
@@ -68,12 +53,34 @@ public class ViewShopList implements Parcelable {
         public ViewShopList createFromParcel(Parcel in) {
             return new ViewShopList(in);
         }
+
         @Override
         public ViewShopList[] newArray(int size) {
             return new ViewShopList[size];
         }
     };
 
+    public String getStrShopTime() {
+        return strShopTime;
+    }
+
+    public void setStrShopTime(String strShopTime) {
+        this.strShopTime = strShopTime;
+    }
+
+    private String strShopTime;
+
+    public String getStrShop_pic() {
+        return strShop_pic;
+    }
+
+    public void setStrShop_pic(String strShop_pic) {
+        this.strShop_pic = strShop_pic;
+    }
+
+    private String strShop_pic;
+    private ArrayList arrayList=new ArrayList<>();
+    public ViewShopList(){}
     public int getShop_id() {
         return shop_id;
     }
@@ -154,6 +161,7 @@ public class ViewShopList implements Parcelable {
         this.arrayList = arrayList;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -170,9 +178,13 @@ public class ViewShopList implements Parcelable {
         dest.writeString(strSub_category);
         dest.writeString(strWeburl);
         dest.writeString(strMobile);
+        dest.writeString(strShopTime);
         dest.writeString(strShop_pic);
-        dest.writeString(strShop_time);
-        dest.writeString(strShop_services);
+        dest.writeString(strservices);
         dest.writeList(arrayList);
     }
+
+
+
+
 }

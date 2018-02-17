@@ -35,7 +35,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
     compile 'com.squareup.picasso:picasso:2.4.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+   // compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.hbb20:ccp:2.1.0'
     compile 'jp.wasabeef:recyclerview-animators:2.2.7'
     compile 'com.android.support:multidex:1.0.2'

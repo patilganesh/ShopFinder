@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -42,6 +43,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private SearchView searchView;
     private int int_cat_id,int_sub_cat_id;
     private String name;
+    //private com.arlib.floatingsearchview.FloatingSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
+      /* *//* searchView = findViewById(R.id.floating_search_view);
+        searchView.clearSearchFocus(*//*);*/
         Intent intent = getIntent();
         int_cat_id = intent.getIntExtra("CategoryId", 0);
         int_sub_cat_id = intent.getIntExtra("Sub_CategoryId", 0);
@@ -97,6 +101,26 @@ public class ItemDetailsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.toLowerCase();
+                ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
+                for (ShopsListModel s : shops_list) {
+                    if (s.getShop_name().toLowerCase().contains(newText)||s.getCategory_name().toLowerCase().contains(newText)||s.getArea().toLowerCase().contains(newText)||s.getSub_category_name().toLowerCase().contains(newText)||s.getCity().toLowerCase().contains(newText)||s.getShop_mob_no().toLowerCase().contains(newText)||s.getState().toLowerCase().contains(newText)||s.getCountry().toLowerCase().contains(newText)||s.getAddress().toLowerCase().contains(newText)||s.getShop_timing().toLowerCase().contains(newText)||s.getWebsite().toLowerCase().contains(newText))
+
+                    suggest_list.add(s);
+                }
+                adapter.setFilter(suggest_list);
+                return true;
+            }
+        });
         return true;
     }
     @Override
@@ -123,5 +147,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
 
     }
+
 
 }

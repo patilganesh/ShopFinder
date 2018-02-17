@@ -195,7 +195,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
-        Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
+        Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_SHORT).show();
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -586,7 +586,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                         sb.append(address.getAddressLine(i) + "\n");
                     }
-                    Toast.makeText(MapsActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapsActivity.this, sb.toString(), Toast.LENGTH_SHORT).show();
                 }
 
                 if (marker != null) {
