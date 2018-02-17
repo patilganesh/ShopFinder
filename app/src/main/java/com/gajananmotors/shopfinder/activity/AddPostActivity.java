@@ -111,7 +111,6 @@ public class AddPostActivity extends AppCompatActivity {
     private Call<CreateShopModel> shopModelCall;
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +134,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         };
         category_Model_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
-
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             @Override
@@ -146,12 +144,10 @@ public class AddPostActivity extends AppCompatActivity {
                     getCategoryData();
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
             }
         });
-
         category = findViewById(R.id.spnBusinessCategory);
         etBusinessName = findViewById(R.id.etBusinessName);
         etBusinessLocation = findViewById(R.id.etBusinessLocation);

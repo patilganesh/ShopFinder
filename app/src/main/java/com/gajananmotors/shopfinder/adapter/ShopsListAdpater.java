@@ -113,22 +113,16 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                Log.e("updatedsize", String.valueOf(images.size()));
             }
         });}
-
     private void transition() {
         Log.d("Allpost", "transition");
         Intent intent = new Intent(activity, ViewPostActivity.class);
         intent.putExtra("shop_list", viewShopList);
         intent.putExtra("owner",name);
         activity.startActivity(intent);
-
-
-
     }
-
     @Override
     public int getItemCount() {
         return list.size();
-
     }
 
     public void setFilter(ArrayList<ShopsListModel> newList) {

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
+import com.gajananmotors.shopfinder.model.SubCategoryModel;
 
 import java.util.ArrayList;
 
@@ -26,11 +27,10 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
             itemLabel = (TextView) itemView.findViewById(R.id.item_label);
         }
     }
-
     private Context context;
-    private ArrayList<String> arrayList;
+    private ArrayList<SubCategoryModel> arrayList;
 
-    public ItemRecyclerViewAdapter(Context context, ArrayList<String> arrayList) {
+    public ItemRecyclerViewAdapter(Context context, ArrayList<SubCategoryModel> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -43,9 +43,8 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.itemLabel.setText(arrayList.get(position));
+        holder.itemLabel.setText(arrayList.get(position).getName());
     }
-
     @Override
     public int getItemCount() {
         return arrayList.size();

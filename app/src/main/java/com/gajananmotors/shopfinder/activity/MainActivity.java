@@ -20,13 +20,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
@@ -41,15 +41,18 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.gajananmotors.shopfinder.model.SubCategoryListModel;
+import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -57,10 +60,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private static String search_text;
-
     private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
+    private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
+    private ArrayList<ArrayList<SubCategoryModel>> indi_sub_category_list = new ArrayList<ArrayList<SubCategoryModel>>();
+    // private ArrayList<SubCategoryListModel>[] subCategory_data=new ArrayList<>()[5];
+    private Map mMap = new HashMap();
+    private List<Map> list = new ArrayList();
     private ArrayList<String> categoryNames = new ArrayList<>();
     private ArrayList<String> categoryImages = new ArrayList<>();
     private ArrayList<Integer> categoryId = new ArrayList<>();
@@ -74,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private FloatingActionButton fab;
     private String name="user";
-
+    private int index = 0;
+    private boolean flag = false;
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
@@ -101,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
-
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
@@ -120,8 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recyclerViewType = RecyclerViewType.GRID;
-        setUpRecyclerView();
-        populateRecyclerView();
+
      /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         // mLayoutManager_vertical = new GridLayoutManager(this, 3);
         recycler_view_vertical.setHasFixedSize(true);
@@ -173,32 +179,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
+
     }
-
-
     private void setUpRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_vertical);
-       // recyclerView.setNestedScrollingEnabled(false);
+        recyclerView = findViewById(R.id.recycler_view_vertical);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        populateRecyclerView();
     }
-
     //populate recycler view
     private void populateRecyclerView() {
         ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
         //for loop for sections
-        for (int i = 1; i <= 5; i++) {
-            ArrayList<String> itemArrayList = new ArrayList<>();
-
-            //for loop for items
-            for (int j = 1; j <= 10; j++) {
-                itemArrayList.add("Lokmany");
-                itemArrayList.add("Morya");
-                itemArrayList.add("SASUN");
-            }
+        for (int i = 0; i < category_Model_list.size(); i++) {
             //add the section and items to array list
-            sectionModelArrayList.add(new HomeItems("Hospital " + i, itemArrayList));
+            sectionModelArrayList.add(new HomeItems(category_Model_list.get(i).getCategory_id(), category_Model_list.get(i).getName(), indi_sub_category_list.get(i)));
         }
         SectionRecyclerViewAdapter adapter = new SectionRecyclerViewAdapter(this, recyclerViewType, sectionModelArrayList);
         recyclerView.setAdapter(adapter);
@@ -215,15 +212,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     category_progressbar.setVisibility(View.GONE);
                     CategoryListModel categoryListModel = response.body();
                     category_Model_list = categoryListModel.getCategories();
-                    for (CategoryModel model : category_Model_list) {
-                        categoryNames.add(model.getName());
-                        categoryImages.add(model.getImage());
-                        categoryId.add(model.getCategory_id());
-                    }
-                    setadapter(categoryNames, categoryImages, categoryId,name);
+                    setadapter(categoryNames, categoryImages, categoryId, name);
+                    for (int i = 0; i < category_Model_list.size(); i++)
+                        getSub(category_Model_list.get(i).getCategory_id());
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
@@ -231,9 +224,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    public void getSub(int int_cat_id) {
+        Call<SubCategoryListModel> call = restInterface.getSubCategoryList(int_cat_id);
+        call.enqueue(new Callback<SubCategoryListModel>() {
+            @Override
+            public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
+                if (response.isSuccessful()) {
+                    SubCategoryListModel list = response.body();
+                    sub_category_list = list.getSubcategory();
+                    indi_sub_category_list.add(sub_category_list);
+                    index++;
+                }
+                if (index == category_Model_list.size()) {
+                    setUpRecyclerView();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
+            }
+        });
+    }
+
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
-
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 MainActivity.this);
         if (!detector.isConnectingToInternet()) {
@@ -253,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
-
                 }
             });
             alertDialog.show();
@@ -265,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
-
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -400,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
         }*/
     }
-   /* @Override
+  /* @Override
     public boolean onQueryTextSubmit(String query) {
 
         Toast.makeText(this, "On Submit......", Toast.LENGTH_SHORT).show();
