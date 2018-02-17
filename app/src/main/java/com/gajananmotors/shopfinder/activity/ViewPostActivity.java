@@ -47,14 +47,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private ArrayList<String> allimages = new ArrayList<>();
     private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite,tvWebsiteHeader;
     private ViewShopList viewShopList;
-    private int shop_id;
+    private int shop_id = 0;
     private SharedPreferences sharedpreferences;
     private Toolbar toolbar;
     private ProgressBar viewpost_progressbar;
     private  LinearLayout linearLayout;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +60,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
-
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -98,7 +93,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         Intent i = getIntent();
-
         String name = i.getStringExtra("owner");
         if (name.equals("owner")) {
             shopEditLayout.setVisibility(View.VISIBLE);
@@ -110,7 +104,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             shopDeleteLayout.setVisibility(View.GONE);
             shopCallLayout.setVisibility(View.VISIBLE);
             shopMsgLayout.setVisibility(View.VISIBLE);
-
         }
         if (name.equals("owner")) {
             viewShopList = getIntent().getParcelableExtra("shop_list");
@@ -137,7 +130,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             int shop_id=;
             LinkShopServices(shop_id);
         }*/
-
 
     }
 
@@ -253,9 +245,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.shopEditLayout:
                 Intent intent = new Intent(this, EditPostActivity.class);
-                intent.putStringArrayListExtra("images", allimages);
-                intent.putExtra("shopCoverphoto", shopCoverpic);
-                intent.putExtra("shop_id", shop_id);
+                intent.putExtra("shop_list", viewShopList);
                 startActivity(intent);
                 break;
             case R.id.shopShareLayout:

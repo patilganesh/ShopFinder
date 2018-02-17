@@ -157,8 +157,8 @@
                     android:hint="Category:"
                     android:textSize="14sp"
                     app:hintTextAppearance="@style/MyAppearance"
-                    app:met_floatingLabel="normal" />
-
+                    app:met_floatingLabel="normal"
+                    android:visibility="gone" />
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                         android:id="@+id/spnBusinessSubcategory"
                         android:layout_width="match_parent"

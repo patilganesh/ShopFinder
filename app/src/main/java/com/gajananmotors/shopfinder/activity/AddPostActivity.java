@@ -41,7 +41,6 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
@@ -66,16 +65,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -141,6 +135,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         };
         category_Model_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
+
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             @Override
@@ -151,10 +146,12 @@ public class AddPostActivity extends AppCompatActivity {
                     getCategoryData();
                 }
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
             }
         });
+
         category = findViewById(R.id.spnBusinessCategory);
         etBusinessName = findViewById(R.id.etBusinessName);
         etBusinessLocation = findViewById(R.id.etBusinessLocation);
@@ -193,6 +190,11 @@ public class AddPostActivity extends AppCompatActivity {
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+        ConnectionDetector detector = new ConnectionDetector(this);
+        if (detector.isConnectingToInternet()) {
+            category.setVisibility(View.VISIBLE);
+        }
+
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
@@ -237,7 +239,6 @@ public class AddPostActivity extends AppCompatActivity {
         });
         // subcategory.setAdapter(categoryAdapter);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -398,7 +399,7 @@ public class AddPostActivity extends AppCompatActivity {
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         for (final Uri uri : image_uris) {
-            if (index <= 6) {
+            if (index <= 7) {
                 final View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
                 final ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
                 thumbnail.setOnClickListener(new View.OnClickListener() {

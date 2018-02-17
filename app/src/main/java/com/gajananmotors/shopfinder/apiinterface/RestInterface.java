@@ -2,6 +2,7 @@ package com.gajananmotors.shopfinder.apiinterface;
 
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.DeleteShopImagesModel;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
 import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.LinkShopModel;
@@ -164,7 +165,6 @@ public interface RestInterface {
             @Field("website") String website,
             @Field("shop_mob_no") String shop_mob_no
     );
-
     @Multipart
     @POST("index.php/mobile_api/upload_shop_images")
     Call<UploadShopImagesModel> uploadShopImages(
@@ -178,7 +178,13 @@ public interface RestInterface {
     @POST("index.php/mobile_api/view_single_shop")
     Call<LinkShopModel> linkShop(
             @Field("shop_id") int shop_id
-
     );
 
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/delete_shop_images")
+    Call<DeleteShopImagesModel> deleteShopImage(
+            @Field("shop_id") int shop_id,
+            @Field("shop_image") String shop_image,
+            @Field("colomn_name") String colomn_name
+    );
 }

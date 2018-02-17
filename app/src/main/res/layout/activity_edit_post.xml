@@ -17,6 +17,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/edit_post_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -54,27 +55,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-            <EditText
-                android:id="@+id/etAddress"
-                android:layout_width="0dp"
-                android:layout_weight="0.9"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+
+                <EditText
+                    android:id="@+id/etAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"
+                    android:background="@drawable/catregory_border"
+                    android:padding="5dp" />
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="-5dp"
                     android:layout_weight="0.1"
                     android:clickable="true"
                     android:onClick="getEditAddress"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="-5dp"
-                    android:layout_marginRight="5dp"
-                    android:src="@drawable/google_map"
-                    android:layout_marginLeft="4dp" />
+                    android:src="@drawable/google_map" />
             </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -216,13 +219,14 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/img_rcv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                    android:layout_marginTop="15dp"></android.support.v7.widget.RecyclerView>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"></android.support.v7.widget.RecyclerView>
             </ScrollView>
+
             <Button
                 android:id="@+id/btnUpdate"
                 style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
@@ -235,5 +239,9 @@
                 android:textAlignment="center"
                 android:textColor="#ffffff" />
         </LinearLayout>
+
+
     </ScrollView>
+
+
 </LinearLayout>

@@ -122,9 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerViewType = RecyclerViewType.GRID;
         setUpRecyclerView();
         populateRecyclerView();
-
-        
-        /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
+     /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
         // mLayoutManager_vertical = new GridLayoutManager(this, 3);
         recycler_view_vertical.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
@@ -198,17 +196,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 itemArrayList.add("Lokmany");
                 itemArrayList.add("Morya");
                 itemArrayList.add("SASUN");
-
             }
             //add the section and items to array list
             sectionModelArrayList.add(new HomeItems("Hospital " + i, itemArrayList));
         }
-
         SectionRecyclerViewAdapter adapter = new SectionRecyclerViewAdapter(this, recyclerViewType, sectionModelArrayList);
         recyclerView.setAdapter(adapter);
     }
-
-
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -267,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
-
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
         // recycler_view_vertical.setAdapter(gridAdapter);
@@ -285,8 +278,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
     @Override
     public void onBackPressed() {
         Snackbar snackbar = Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
@@ -297,8 +288,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         snackbar.show();
     }
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -354,9 +343,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view listview_map_activity_data clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_profile) {
-
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
@@ -370,11 +357,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 startActivity(new Intent(MainActivity.this, AddPostActivity.class));
             }
-
         } else if (id == R.id.nav_allposts) {
-
-            startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
-
+            Intent intent = new Intent(MainActivity.this, AllPostsActivity.class);
+            intent.putExtra("owner", "owner");
+            startActivity(intent);
+            //   startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
         } else if (id == R.id.nav_share) {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
@@ -394,7 +381,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -402,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
     @Override
     public void onClick(View v) {
         /*switch (v.getId()) {

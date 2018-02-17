@@ -18,9 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.ShopImagesAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -65,7 +66,10 @@ public class EditPostActivity extends AppCompatActivity {
     private double latitude, longitude;
     private GoogleApiClient mGoogleApiClient;
     private int int_cat_id, int_subcat_id, owner_id;
-
+    // private TextView txtnetwork_error_massege;
+    private LinearLayout edit_post_layout;
+    private ArrayList<String> images = new ArrayList<>();
+    private ShopImagesAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,8 @@ public class EditPostActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        txtnetwork_error_massege=findViewById(R.id.network_error_massege);
+        edit_post_layout = findViewById(R.id.edit_post_layout);
         etShopName = findViewById(R.id.etShopName);
         etAddress = findViewById(R.id.etAddress);
         etMobileNumber = findViewById(R.id.etMobileNumber);
@@ -86,15 +92,23 @@ public class EditPostActivity extends AppCompatActivity {
         img_rcv = findViewById(R.id.img_rcv);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         img_rcv.setLayoutManager(mLayoutManager);
-        ArrayList<String> images = viewShopList.getArrayList();
+        images = viewShopList.getArrayList();
         images.add(0, viewShopList.getStrShop_pic());
-        img_rcv.setAdapter(new ShopImagesAdapter(EditPostActivity.this, images, viewShopList.getShop_id()));
+        ShopImagesAdapter adapter = new ShopImagesAdapter(EditPostActivity.this, images, viewShopList.getShop_id());
+        img_rcv.setAdapter(adapter);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+       /* ConnectionDetector detector = new ConnectionDetector(this);
+        if (!detector.isConnectingToInternet()) {
+           txtnetwork_error_massege.setVisibility(View.VISIBLE);
+            edit_post_layout.setVisibility(View.GONE);
+        }*/
+
+        // txtnetwork_error_massege.setVisibility(View.GONE);
         etShopName.setText(viewShopList.getStrShop_name());
         etAddress.setText(viewShopList.getStrAddress());
         etMobileNumber.setText(viewShopList.getStrMobile());
@@ -117,6 +131,7 @@ public class EditPostActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(EditPostActivity.this, "Fail to Load Category", Toast.LENGTH_SHORT).show();
@@ -125,7 +140,7 @@ public class EditPostActivity extends AppCompatActivity {
         btncategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(categoryNames, true, "Select Category");
+                showDialog(categoryNames, true, "Choose Category");
             }
         });
         btnUpdate.setOnClickListener(new View.OnClickListener() {
@@ -139,8 +154,15 @@ public class EditPostActivity extends AppCompatActivity {
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+
     }
 
+    /*  public void refresh()
+      {
+          viewShopList = getIntent().getParcelableExtra("shop_list");
+          adapter= new ShopImagesAdapter(EditPostActivity.this, images, viewShopList.getShop_id());
+          img_rcv.setAdapter(adapter);
+      }*/
     public void update() {
         strPlaceSearch = area + "," + city + "," + state + "," + country;
         for (SubCategoryModel subCategoryModel : sub_category_list) {
@@ -222,7 +244,6 @@ public class EditPostActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
             }
@@ -230,12 +251,10 @@ public class EditPostActivity extends AppCompatActivity {
         btnsubCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(subCategoryNames, false, "Select SubCategory:");
+                showDialog(subCategoryNames, false, "Choose SubCategory:");
             }
         });
     }
-
-
     public void getEditAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -251,7 +270,6 @@ public class EditPostActivity extends AppCompatActivity {
             }
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
