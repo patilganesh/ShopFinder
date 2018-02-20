@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +44,8 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -72,12 +75,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RestInterface restInterface;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
     private Toolbar toolbar;
-    private SharedPreferences sharedpreferences;
     private ProgressBar category_progressbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
-    private String name = "user";
+    private String name="user";
+    private SharedPreferences sharedpreferences;
+    private String refreshedToken = "";
 
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
@@ -96,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         activityMain = MainActivity.this;
-     //   this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
@@ -107,10 +110,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.e("Refreshed token: ", refreshedToken);
+        Constant.device_token=refreshedToken;
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+//      setting values to sharedpreferences keys.
+        editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
+        editor.apply();
         nearBy = findViewById(R.id.ivNearby);
         nearBy.setOnClickListener(this);
         searchView = findViewById(R.id.floating_search_view);
-        //searchView.clearSearchFocus();
+        searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
@@ -276,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
-        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
+        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
 

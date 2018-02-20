@@ -106,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")){
             device_token=Constant.device_token;
         }
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000");
         //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");

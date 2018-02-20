@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
@@ -44,7 +43,6 @@ public class GallaryActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Intent i = getIntent();
-        String img = i.getExtras().getString("image");
         String shop_pic = i.getExtras().getString("shopCoverphoto");
 
         simpleGallery = findViewById(R.id.simpleGallery);

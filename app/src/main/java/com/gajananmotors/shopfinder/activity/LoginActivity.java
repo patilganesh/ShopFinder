@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             device_token = Constant.device_token;
         }
         //Log.e("deviceToken",device_token);
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "");
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN,"00000");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();

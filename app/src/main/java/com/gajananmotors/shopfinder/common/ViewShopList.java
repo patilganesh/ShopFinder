@@ -22,18 +22,17 @@ public class ViewShopList implements Parcelable {
     private String strWeburl;
     private String strMobile;
 
-    public String getStrShop_pic() {
-        return strShop_pic;
+    public String getStrservices() {
+        return strservices;
     }
 
-    public void setStrShop_pic(String strShop_pic) {
-        this.strShop_pic = strShop_pic;
+    public void setStrservices(String strservices) {
+        this.strservices = strservices;
     }
 
-    private String strShop_pic;
-    private ArrayList arrayList=new ArrayList<>();
-    public ViewShopList(){}
-    public ViewShopList(Parcel in) {
+    private String strservices;
+
+    protected ViewShopList(Parcel in) {
         shop_id = in.readInt();
         latitude = in.readDouble();
         longitude = in.readDouble();
@@ -43,7 +42,9 @@ public class ViewShopList implements Parcelable {
         strSub_category = in.readString();
         strWeburl = in.readString();
         strMobile = in.readString();
+        strShopTime = in.readString();
         strShop_pic = in.readString();
+        strservices = in.readString();
         in.readList(arrayList,null);
     }
 
@@ -59,6 +60,27 @@ public class ViewShopList implements Parcelable {
         }
     };
 
+    public String getStrShopTime() {
+        return strShopTime;
+    }
+
+    public void setStrShopTime(String strShopTime) {
+        this.strShopTime = strShopTime;
+    }
+
+    private String strShopTime;
+
+    public String getStrShop_pic() {
+        return strShop_pic;
+    }
+
+    public void setStrShop_pic(String strShop_pic) {
+        this.strShop_pic = strShop_pic;
+    }
+
+    private String strShop_pic;
+    private ArrayList arrayList=new ArrayList<>();
+    public ViewShopList(){}
     public int getShop_id() {
         return shop_id;
     }
@@ -139,6 +161,7 @@ public class ViewShopList implements Parcelable {
         this.arrayList = arrayList;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -155,7 +178,13 @@ public class ViewShopList implements Parcelable {
         dest.writeString(strSub_category);
         dest.writeString(strWeburl);
         dest.writeString(strMobile);
+        dest.writeString(strShopTime);
         dest.writeString(strShop_pic);
+        dest.writeString(strservices);
         dest.writeList(arrayList);
     }
+
+
+
+
 }
