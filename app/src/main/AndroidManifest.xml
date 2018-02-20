@@ -113,7 +113,9 @@
         </activity>
         <activity
             android:name=".activity.GallaryActivity"
-            android:label="@string/string_image_gallary" />
+            android:label="@string/string_image_gallary"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+     />
         <activity
             android:name=".activity.EditPostActivity"
             android:label="@string/string_update_post" />

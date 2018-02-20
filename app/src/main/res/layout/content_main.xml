@@ -24,7 +24,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical">
 
                 <android.support.design.widget.AppBarLayout
@@ -33,11 +32,7 @@
                     android:layout_height="wrap_content"
                     android:theme="@style/AppTheme.AppBarOverlay">
 
-                    <LinearLayout
-                        android:id="@+id/ll_search"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+
 
                         <FrameLayout
                             android:id="@+id/dim_background"
@@ -49,30 +44,21 @@
                                 android:id="@+id/floating_search_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_marginBottom="-5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginTop="-3dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:keyboardNavigationCluster="false"
+                                android:layout_marginBottom="-30dp"
                                 app:floatingSearch_close_search_on_keyboard_dismiss="true"
-                                app:floatingSearch_dismissOnOutsideTouch="true"
                                 app:floatingSearch_leftActionMode="showSearch"
                                 app:floatingSearch_searchHint="Search..."
-                                app:floatingSearch_showSearchKey="false"
-                                app:floatingSearch_suggestionsListAnimDuration="250"
-                                app:floatingSearch_viewSuggestionItemTextColor="@color/white" />
-                            <!--   <TextView
-                                   android:id="@+id/textView"
-                                   android:layout_width="wrap_content"
-                                   android:layout_height="wrap_content"
-                                   android:layout_gravity="center"
-                                   android:layout_margin="15dp"
-                                   android:text="Search Shops" />-->
-                        </FrameLayout>
-                    </LinearLayout>
+                                app:floatingSearch_suggestionsListAnimDuration="250" />
 
+                            <ImageView
+                                android:id="@+id/ivNearby"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:padding="5dp"
+                                android:scaleType="centerInside"
+                                android:layout_gravity="end"
+                                android:src="@mipmap/gmap1" />
+                        </FrameLayout>
 
                 </android.support.design.widget.AppBarLayout>
 
@@ -87,7 +73,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/activity_horizontal_top_margin"
-                        android:descendantFocusability="beforeDescendants"
                         android:fadingEdgeLength="1px" />
                 </LinearLayout>
 
@@ -99,8 +84,10 @@
                     android:layout_gravity="center"
                     android:theme="@style/CircularProgress"
                     android:visibility="gone" />
+
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
+
 </android.support.design.widget.CoordinatorLayout>

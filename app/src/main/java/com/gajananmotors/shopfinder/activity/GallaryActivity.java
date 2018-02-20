@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -34,15 +36,19 @@ public class GallaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar = findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+       // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Intent i = getIntent();
         String img = i.getExtras().getString("image");
         String shop_pic = i.getExtras().getString("shopCoverphoto");
 
         simpleGallery = findViewById(R.id.simpleGallery);
+
         text =  findViewById(R.id.tvText);
         shop_id = i.getIntExtra("shop_id", 0);
         selectedImageView = findViewById(R.id.selectedImageView);
@@ -79,12 +85,12 @@ public class GallaryActivity extends AppCompatActivity {
                 //  selectedImageView.setImageResource(images.get(position));
             }
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+      /*  toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
 
     }
 

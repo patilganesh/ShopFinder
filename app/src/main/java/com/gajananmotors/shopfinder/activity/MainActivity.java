@@ -23,6 +23,8 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +52,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
+import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -73,12 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
-    private String name="user";
+    private String name = "user";
 
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
     android.support.design.widget.CoordinatorLayout coordinate_layout;
+    private ImageView nearBy;
 
     public static void finishActivity(Context context) {
 
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         activityMain = MainActivity.this;
+     //   this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         drawer = findViewById(R.id.drawer_layout);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         category_progressbar = findViewById(R.id.category_progressbar);
@@ -101,9 +107,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
-
+        nearBy = findViewById(R.id.ivNearby);
+        nearBy.setOnClickListener(this);
         searchView = findViewById(R.id.floating_search_view);
-        searchView.clearSearchFocus();
+        //searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
@@ -180,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_vertical);
-       // recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -226,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         categoryImages.add(model.getImage());
                         categoryId.add(model.getCategory_id());
                     }
-                    setadapter(categoryNames, categoryImages, categoryId,name);
+                    setadapter(categoryNames, categoryImages, categoryId, name);
                 }
             }
 
@@ -269,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
-        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
+        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
 
@@ -373,7 +380,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_allposts) {
 
-            startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
+            Intent intent=new Intent(MainActivity.this,AllPostsActivity.class);
+            intent.putExtra("owner","owner");
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -405,15 +414,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onClick(View v) {
-        /*switch (v.getId()) {
-            case R.id.nearby:
+        switch (v.getId()) {
+            case R.id.ivNearby:
                 if (!isNetworkAvailable(getApplicationContext())) {
                     displayPromptForEnablingData(this);
                 } else {
                     Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(i);
                 }
-        }*/
+        }
     }
    /* @Override
     public boolean onQueryTextSubmit(String query) {
