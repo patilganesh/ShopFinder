@@ -615,6 +615,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
+
         if (location.matches("")) {
 
             Snackbar snackbar = Snackbar
