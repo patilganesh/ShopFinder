@@ -297,5 +297,4 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         finish();
 
     }
-
 }

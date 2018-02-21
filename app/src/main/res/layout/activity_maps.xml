@@ -35,7 +35,8 @@
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/seek"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+               />
 
 
         </LinearLayout>

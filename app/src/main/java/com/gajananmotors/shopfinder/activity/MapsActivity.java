@@ -105,6 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         DiscreteSeekBar seek = findViewById(R.id.seek);
+        seek.setMin(2);
         seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
