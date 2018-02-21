@@ -48,6 +48,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private SearchView searchView;
     private String name="";
+    private String search_text;
     private ProgressBar allPostProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +110,10 @@ public class AllPostsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        MenuItem search = menu.findItem(R.id.action_search);
+        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(search);
+        searchView.setIconifiedByDefault(true);
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -119,12 +121,20 @@ public class AllPostsActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (newText.length() > 0) {
+                    recyclerView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
                 newText = newText.toLowerCase();
+                search_text = newText;
                 ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
                 for (ShopsListModel s : shops_list) {
-                    if (s.getShop_name().toLowerCase().contains(newText)||s.getCategory_name().toLowerCase().contains(newText)||s.getArea().toLowerCase().contains(newText)||s.getSub_category_name().toLowerCase().contains(newText)||s.getCity().toLowerCase().contains(newText)||s.getShop_mob_no().toLowerCase().contains(newText)||s.getState().toLowerCase().contains(newText)||s.getCountry().toLowerCase().contains(newText)||s.getAddress().toLowerCase().contains(newText)||s.getShop_timing().toLowerCase().contains(newText)||s.getWebsite().toLowerCase().contains(newText))
-
-                    suggest_list.add(s);
+                    if (s.getShop_name().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getCity().toLowerCase().startsWith(newText) || s.getCategory_name().toLowerCase().startsWith(newText) || s.getShop_mob_no().toLowerCase().startsWith(newText))
+                        suggest_list.add(s);
+                    else if (s.getShop_name().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getCity().toLowerCase().endsWith(newText) || s.getCategory_name().toLowerCase().endsWith(newText) || s.getShop_mob_no().toLowerCase().endsWith(newText))
+                        suggest_list.add(s);
+                    else if (s.getShop_name().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText))
+                        suggest_list.add(s);
                 }
                 adapter.setFilter(suggest_list);
                 return true;
@@ -148,7 +158,7 @@ public class AllPostsActivity extends AppCompatActivity {
 
     private void setAdapter(String name) {
 
-        adapter = new ShopsListAdpater(this, viewPostLayout, shops_list,name);
+        adapter = new ShopsListAdpater(this, shops_list,name);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         adapter.notifyDataSetChanged();

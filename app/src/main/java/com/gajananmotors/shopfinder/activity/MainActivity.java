@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +54,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
+import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -80,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int index = 0;
     private SharedPreferences sharedpreferences;
     private String refreshedToken = "";
-
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
     android.support.design.widget.CoordinatorLayout coordinate_layout;
+    private ImageView nearBy;
 
     public static void finishActivity(Context context) {
 
@@ -115,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //      setting values to sharedpreferences keys.
         editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
         editor.apply();
+        nearBy = findViewById(R.id.ivNearby);
+        nearBy.setOnClickListener(this);
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
@@ -385,8 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             //   startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
         } else if (id == R.id.nav_share) {
-            Toast.makeText(getApplicationContext(),"Coming soon...",Toast.LENGTH_SHORT).show();
-           /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBodyText = "https://play.google.com/store?hl=en";
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
@@ -413,15 +419,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public void onClick(View v) {
-        /*switch (v.getId()) {
-            case R.id.nearby:
+        switch (v.getId()) {
+            case R.id.ivNearby:
                 if (!isNetworkAvailable(getApplicationContext())) {
                     displayPromptForEnablingData(this);
                 } else {
                     Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(i);
                 }
-        }*/
+        }
     }
   /* @Override
     public boolean onQueryTextSubmit(String query) {
