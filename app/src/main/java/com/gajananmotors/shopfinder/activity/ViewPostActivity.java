@@ -60,7 +60,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -310,5 +309,4 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         finish();
 
     }
-
 }
