@@ -59,8 +59,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -101,8 +99,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             shopDeleteLayout.setVisibility(View.GONE);
             shopCallLayout.setVisibility(View.VISIBLE);
             shopMsgLayout.setVisibility(View.VISIBLE);
-
-
         if (!name.isEmpty()) {
             viewShopList = getIntent().getParcelableExtra("shop_list");
             if (name.equals("owner")) {
@@ -135,13 +131,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     .fit()
                     .placeholder(R.drawable.background_splashscreen)
                     .into(shopCoverphoto);
-
         }
        /* else*//*{
            Uri data = i.getData();
             LinkShopServices(shop_id);
         }*/
-
     }
   private void LinkShopServices(int shop_id) {
         Retrofit retrofit;
@@ -189,8 +183,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -255,9 +247,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.shopEditLayout:
                 Intent intent = new Intent(this, EditPostActivity.class);
-                intent.putStringArrayListExtra("images", allimages);
-                intent.putExtra("shopCoverphoto", shopCoverpic);
-                intent.putExtra("shop_id", shop_id);
+                intent.putExtra("shop_list", viewShopList);
                 startActivity(intent);
                 break;
             case R.id.shopShareLayout:
@@ -267,7 +257,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 String shareBodyText = "http://www.findashop.in/index.php/mobile_api/upload_shop_images"+shop_id;
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
-                startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
+                startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));*/
                 break;
         }
     }

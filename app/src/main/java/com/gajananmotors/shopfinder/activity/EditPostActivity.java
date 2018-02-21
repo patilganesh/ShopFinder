@@ -77,7 +77,7 @@ public class EditPostActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        txtnetwork_error_massege=findViewById(R.id.network_error_massege);
+//      txtnetwork_error_massege=findViewById(R.id.network_error_massege);
         edit_post_layout = findViewById(R.id.edit_post_layout);
         etShopName = findViewById(R.id.etShopName);
         etAddress = findViewById(R.id.etAddress);
@@ -107,15 +107,14 @@ public class EditPostActivity extends AppCompatActivity {
            txtnetwork_error_massege.setVisibility(View.VISIBLE);
             edit_post_layout.setVisibility(View.GONE);
         }*/
-
         // txtnetwork_error_massege.setVisibility(View.GONE);
         etShopName.setText(viewShopList.getStrShop_name());
         etAddress.setText(viewShopList.getStrAddress());
         etMobileNumber.setText(viewShopList.getStrMobile());
         btncategory.setText(viewShopList.getStrCategory());
         btnsubCategory.setText(viewShopList.getStrSub_category());
-        etServicesOffered.setText(viewShopList.getStrShop_services());
-        etShopOpeningHours.setText(viewShopList.getStrShop_time());
+        etServicesOffered.setText(viewShopList.getStrservices());
+        etShopOpeningHours.setText(viewShopList.getStrShopTime());
         etWebsite.setText(viewShopList.getStrWeburl());
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -131,7 +130,6 @@ public class EditPostActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(EditPostActivity.this, "Fail to Load Category", Toast.LENGTH_SHORT).show();

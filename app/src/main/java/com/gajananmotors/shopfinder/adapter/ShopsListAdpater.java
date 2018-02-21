@@ -35,25 +35,18 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     private String name;
 
 
-    public ShopsListAdpater(AllPostsActivity itemDetailsActivity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, String name) {
+    public ShopsListAdpater(AllPostsActivity itemDetailsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
         this.activity = itemDetailsActivity;
-        this.viewPostLayout = viewPostLayout;
         this.name=name;
-
     }
 
-    public ShopsListAdpater(ItemDetailsActivity activity, LinearLayout viewPostLayout, ArrayList<ShopsListModel> shops_list, String name) {
+    public ShopsListAdpater(ItemDetailsActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
 
         this.activity = activity;
-        this.viewPostLayout = viewPostLayout;
         this.list = shops_list;
         this.name=name;
     }
-
-
-
-
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -69,14 +62,11 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         holder.timing.setText(list.get(position).getShop_timing());
         holder.type.setText(list.get(position).getShop_mob_no());
         holder.weburl.setText(list.get(position).getWebsite());
-
         Picasso.with(activity)
                 .load("http://findashop.in/images/shop_profile/" + list.get(position).getShop_id() + "/" + list.get(position).getShop_pic())
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(holder.image);
-
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,27 +84,34 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
                 viewShopList.setStrservices(list.get(position).getServices());
                 images.clear();
                 index = 0;
-                if (list.get(position).getImage1()!=null) {
+                if (list.get(position).getImage1() != null) {
                     images.add(index++, list.get(position).getImage1());
                 }
-                 if (list.get(position).getImage2()!=null) {
+                if (list.get(position).getImage2() != null) {
                     images.add(index++, list.get(position).getImage2());
-                }  if (list.get(position).getImage3()!=null) {
+                }
+                if (list.get(position).getImage3() != null) {
                     images.add(index++, list.get(position).getImage3());
-                }  if (list.get(position).getImage4()!=null) {
+                }
+                if (list.get(position).getImage4() != null) {
                     images.add(index++, list.get(position).getImage4());
-                } if (list.get(position).getImage5()!=null) {
+                }
+                if (list.get(position).getImage5() != null) {
                     images.add(index++, list.get(position).getImage5());
-                }  if (list.get(position).getImage6()!=null) {
+                }
+                if (list.get(position).getImage6() != null) {
                     images.add(index++, list.get(position).getImage6());
                 }
                 viewShopList.setArrayList(images);
                 viewShopList.setStrShop_pic(list.get(position).getShop_pic());
                 transition();
-               // activity.finish();
-               Log.e("updatedsize", String.valueOf(images.size()));
+                //activity.finish();
+                Log.e("updatedsize", String.valueOf(images.size()));
             }
-        });}
+        });
+
+
+    }
     private void transition() {
         Log.d("Allpost", "transition");
         Intent intent = new Intent(activity, ViewPostActivity.class);

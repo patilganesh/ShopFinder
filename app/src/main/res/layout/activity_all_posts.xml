@@ -7,17 +7,9 @@
     tools:context="com.gajananmotors.shopfinder.activity.AllPostsActivity">
 
     <include layout="@layout/toolbar" />
-
-    <LinearLayout
-        android:id="@+id/viewPostLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview"
@@ -29,8 +21,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="visible"
-                android:layout_alignParentBottom="true" />
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/txtowneremptylist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="@color/red"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </RelativeLayout>
-    </LinearLayout>
+
 </LinearLayout>

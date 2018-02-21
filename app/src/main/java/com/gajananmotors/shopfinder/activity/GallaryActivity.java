@@ -80,9 +80,7 @@ public class GallaryActivity extends AppCompatActivity {
                             public void onSuccess() {
                                 //Success image already loaded into the view
                                 gallery_progressbar.setVisibility(View.GONE);
-
                             }
-
                             @Override
                             public void onError() {
                                 //Error placeholder image already loaded into the view, do further handling of this situation here
@@ -98,7 +96,6 @@ public class GallaryActivity extends AppCompatActivity {
                         .fit()
                         .placeholder(R.drawable.background_splashscreen)
                         .into(selectedImageView);
-
                 //  selectedImageView.setImageResource(images.get(position));
             }
         });
@@ -108,7 +105,6 @@ public class GallaryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
     }
 
     @Override

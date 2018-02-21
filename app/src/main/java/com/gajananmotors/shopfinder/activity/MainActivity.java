@@ -48,6 +48,7 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int index = 0;
     private SharedPreferences sharedpreferences;
     private String refreshedToken = "";
+    private boolean result = false;
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
@@ -140,18 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recyclerViewType = RecyclerViewType.GRID;
-        setUpRecyclerView();
-        populateRecyclerView();
-
-        
-        /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        // mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        recycler_view_vertical.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        // layoutManager.setOrientation(LinearLayout.VERTICAL);
-        recycler_view_vertical.setNestedScrollingEnabled(false);
-        //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
-        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);*/
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -196,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
     }
-
-
     private void setUpRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view_vertical);
         recyclerView.setNestedScrollingEnabled(false);
@@ -216,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         SectionRecyclerViewAdapter adapter = new SectionRecyclerViewAdapter(this, recyclerViewType, sectionModelArrayList);
         recyclerView.setAdapter(adapter);
+        category_progressbar.setVisibility(View.GONE);
     }
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
@@ -226,13 +215,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {
-                    category_progressbar.setVisibility(View.GONE);
+
                     CategoryListModel categoryListModel = response.body();
                     category_Model_list = categoryListModel.getCategories();
-                    setadapter(categoryNames, categoryImages, categoryId, name);
-                    for (int i = 0; i < category_Model_list.size(); i++)
-                        getSub(category_Model_list.get(i).getCategory_id());
+                    //   setadapter(categoryNames, categoryImages, categoryId, name);
+                    result = true;
                 }
+                if (result)
+                    getSub(category_Model_list.get(index).getCategory_id());
             }
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
@@ -241,8 +231,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    public void getSub(int int_cat_id) {
+    public void getSub(final int int_cat_id) {
+
         Call<SubCategoryListModel> call = restInterface.getSubCategoryList(int_cat_id);
+
         call.enqueue(new Callback<SubCategoryListModel>() {
             @Override
             public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
@@ -251,18 +243,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     sub_category_list = list.getSubcategory();
                     indi_sub_category_list.add(sub_category_list);
                     index++;
+                    if (index < category_Model_list.size()) {
+                        getSub(category_Model_list.get(index).getCategory_id());
+                    }
                 }
                 if (index == category_Model_list.size()) {
+
+                    //   Log.i("size", "Size: "+indi_sub_category_list.size());
                     setUpRecyclerView();
+
                 }
             }
 
             @Override
             public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
+                // Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Index Error:" + index, Toast.LENGTH_LONG).show();
             }
         });
-    }
 
+    }
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -296,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
     boolean doubleBackToExitPressedOnce = false;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
@@ -307,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     public void onBackPressed() {
         Snackbar snackbar = Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
@@ -392,12 +392,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             //   startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
         } else if (id == R.id.nav_share) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            Toast.makeText(getApplicationContext(), "Coming soon...", Toast.LENGTH_SHORT).show();
+           /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBodyText = "https://play.google.com/store?hl=en";
             sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
-            startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
+            startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));*/
         } else if (id == R.id.nav_logout) {
 
             sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);

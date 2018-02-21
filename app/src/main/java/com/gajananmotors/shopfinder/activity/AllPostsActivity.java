@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
@@ -40,21 +41,22 @@ public class AllPostsActivity extends AppCompatActivity {
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private RecyclerView recyclerView;
-    private LinearLayout viewPostLayout;
     private Retrofit retrofit;
     private RestInterface restInterface;
     private SharedPreferences sharedPreferences;
-    private boolean b=true;
+    private boolean b = true;
     private Toolbar toolbar;
     private SearchView searchView;
-    private String name="";
+    private String name = "";
     private String search_text;
     private ProgressBar allPostProgressBar;
+    private TextView txtowneremptylist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_posts);
         allPostProgressBar = findViewById(R.id.allPostProgressBar);
+        txtowneremptylist = findViewById(R.id.txtowneremptylist);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,11 +67,9 @@ public class AllPostsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         Intent i = getIntent();
         name= i.getStringExtra("owner");
 
-        viewPostLayout = findViewById(R.id.viewPostLayout);
         recyclerView = findViewById(R.id.recyclerview);
         sharedPreferences = getSharedPreferences(Constant.MyPREFERENCES, MODE_PRIVATE);
         retrofit = APIClient.getClient();
@@ -77,26 +77,21 @@ public class AllPostsActivity extends AppCompatActivity {
         allPostProgressBar.setVisibility(View.VISIBLE);
         allPostProgressBar.setIndeterminate(true);
         allPostProgressBar.setProgress(500);
-      //  Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID,0));
         Call<ShopsArrayListModel> call = restInterface.getShoplist(sharedPreferences.getInt(Constant.OWNER_ID, 0));
         shops_list.clear();
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
                 if (response.isSuccessful()) {
-                    allPostProgressBar.setVisibility(View.GONE);
+
                     ShopsArrayListModel list = response.body();
                     ArrayList<ShopsListModel> shopsListModels = list.getShopList();
                     for (ShopsListModel model : shopsListModels) {
                         if (model.getStatus() == 1) {
                             shops_list.add(model);
-
                         }
                     }
-
                     setAdapter(name);
-
-
                 }
             }
 
@@ -129,6 +124,9 @@ public class AllPostsActivity extends AppCompatActivity {
                 search_text = newText;
                 ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
                 for (ShopsListModel s : shops_list) {
+                    if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText))
+
+                        suggest_list.add(s);
                     if (s.getShop_name().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getCity().toLowerCase().startsWith(newText) || s.getCategory_name().toLowerCase().startsWith(newText) || s.getShop_mob_no().toLowerCase().startsWith(newText))
                         suggest_list.add(s);
                     else if (s.getShop_name().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getCity().toLowerCase().endsWith(newText) || s.getCategory_name().toLowerCase().endsWith(newText) || s.getShop_mob_no().toLowerCase().endsWith(newText))
@@ -140,7 +138,7 @@ public class AllPostsActivity extends AppCompatActivity {
                 return true;
             }
         });
-                return true;
+        return true;
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -153,18 +151,18 @@ public class AllPostsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-
     }
-
     private void setAdapter(String name) {
-
-        adapter = new ShopsListAdpater(this, shops_list,name);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
-
-
+        if (shops_list.size() != 0) {
+            adapter = new ShopsListAdpater(this, shops_list, name);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setLayoutManager(mLayoutManager);
+            adapter.notifyDataSetChanged();
+            recyclerView.setAdapter(adapter);
+            allPostProgressBar.setVisibility(View.GONE);
+        } else {
+            txtowneremptylist.setText("No shops found!");
+            allPostProgressBar.setVisibility(View.GONE);
+        }
     }
-
 }
