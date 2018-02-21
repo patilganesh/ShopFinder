@@ -66,21 +66,7 @@
                         android:onClick="getAddress"
                         android:src="@drawable/google_map" />
                 </LinearLayout>
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:hintTextAppearance="@style/MyAppearance">
-                    <EditText
-                        android:id="@+id/etBusinessServices"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Services Offered:"
-                        android:inputType="text"
-                        android:editable="false"
-                        android:textSize="14sp" />
 
-                </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -187,6 +173,22 @@
                         android:visibility="invisible" />
                 </RelativeLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+                    <EditText
+                        android:id="@+id/etBusinessServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Services Offered:"
+                        android:inputType="text"
+                        android:layout_gravity="center_vertical"
+                        android:editable="false"
+                        android:textSize="14sp" />
+
+                </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

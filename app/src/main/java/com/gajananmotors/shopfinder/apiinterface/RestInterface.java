@@ -6,6 +6,8 @@ import com.gajananmotors.shopfinder.model.DeleteShopModel;
 import com.gajananmotors.shopfinder.model.DeleteUserModel;
 import com.gajananmotors.shopfinder.model.LinkShopModel;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
+import com.gajananmotors.shopfinder.model.ShopServicesListModel;
+import com.gajananmotors.shopfinder.model.ShopServicesModel;
 import com.gajananmotors.shopfinder.model.ShopsArrayListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.UpdateUserModel;
@@ -177,6 +179,20 @@ public interface RestInterface {
     @POST("index.php/mobile_api/view_single_shop")
     Call<LinkShopModel> linkShop(
             @Field("shop_id") int shop_id
+
+    );
+
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/get_services")
+    Call<ShopServicesListModel> shopServices(
+            @Field("sub_category_id") int subCategory_id
+    );
+
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/insert_services")
+    Call<ShopServicesListModel> addshopServices(
+            @Field("sub_category_id") int subCategory_id,
+            @Field("name") String name
 
     );
 

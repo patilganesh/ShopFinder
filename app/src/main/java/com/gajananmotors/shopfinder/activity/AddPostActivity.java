@@ -20,6 +20,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -60,6 +61,8 @@ import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.ShopServicesListModel;
+import com.gajananmotors.shopfinder.model.ShopServicesModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
@@ -99,6 +102,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
+    private ArrayList<ShopServicesModel> shopServicesModels = new ArrayList<>();
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
@@ -122,6 +126,8 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm;
     private ProgressBar subcategory_progressbar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +141,7 @@ public class AddPostActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
+      //  shopServices();
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -186,12 +193,14 @@ public class AddPostActivity extends AppCompatActivity {
                 getImages(new Config());
             }
         });
-        initialize();
+
+       // initialize();
         etBusinessServices.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                initiatePopUp(shopServicesList, etBusinessServices);
+                //initiatePopUp(shopServicesModels, etBusinessServices);
+                shopServices();
             }
         });
         mGoogleApiClient = new GoogleApiClient
@@ -445,7 +454,6 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
-        //TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
@@ -661,13 +669,13 @@ public class AddPostActivity extends AppCompatActivity {
 
     private void initialize() {
         //data source for drop-down list
-        shopServicesList = new ArrayList<String>();
-        shopServicesList.add("Punjabi");
+      //  shopServicesList = new ArrayList<String>();
+      /*  shopServicesList.add("Punjabi");
         shopServicesList.add("Pure Vegetarian");
         shopServicesList.add("Chinese");
         shopServicesList.add("Parking Available");
-        shopServicesList.add("Home Delivery");
-        checkSelected = new boolean[shopServicesList.size()];
+        shopServicesList.add("Home Delivery");*/
+        checkSelected = new boolean[shopServicesModels.size()];
         //initialize all values of list to 'unselected' initially
         for (int i = 0; i < checkSelected.length; i++) {
             checkSelected[i] = false;
@@ -680,38 +688,114 @@ public class AddPostActivity extends AppCompatActivity {
 
 
 
-        etBusinessServices.setOnClickListener(new View.OnClickListener() {
 
+    }
+
+    private void shopServices() {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<ShopServicesListModel> call = restInterface.shopServices(int_subcat_id);
+        call.enqueue(new Callback<ShopServicesListModel>() {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if (!expanded) {
-                    //display all selected values
-                    String selected = "";
-                    int flag = 0;
-                    for (int i = 0; i < shopServicesList.size(); i++) {
-                        if (checkSelected[i] == true) {
-                            selected += shopServicesList.get(i);
-                            selected += ", ";
-                            flag = 1;
+            public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
+                if(response.isSuccessful()){
+                    ShopServicesListModel listModel=response.body();
+                    shopServicesModels = listModel.getShopServicesModels();
+                    if(shopServicesModels.size()>0) {
+                        initialize();
+                        initiatePopUp(shopServicesModels, etBusinessServices);
+                        if (!expanded) {
+                            //display all selected values
+                            String selected = "";
+                            int flag = 0;
+                            for (int i = 0; i < shopServicesModels.size(); i++) {
+                                if (checkSelected[i] == true) {
+                                    selected += shopServicesModels.get(i).getName();
+                                    selected += ", ";
+                                    flag = 1;
+                                }
+                            }
+                            if (flag == 1)
+                                etBusinessServices.setText(selected);
+                            expanded = true;
+                        } else {
+                            //display shortened representation of selected values
+                            etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
+                            expanded = false;
                         }
                     }
-                    if (flag == 1)
-                        etBusinessServices.setText(selected);
-                    expanded = true;
-                } else {
-                    //display shortened representation of selected values
-                    etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
-                    expanded = false;
                 }
             }
+
+            @Override
+            public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
+
+            }
+
+
         });
+
+    }
+        public void addServices() {
+         LayoutInflater inflater = LayoutInflater.from(this);
+         View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
+         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+         AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
+         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
+
+         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+         alert.setView(confirmDialog);
+         alert.setCancelable(true);
+         final AlertDialog alertDialog = alert.create();
+         alertDialog.show();
+         buttonConfirm.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+
+                String service_name= etAddservices.getText().toString().trim();
+                 addshopServices(service_name);
+                 alertDialog.dismiss();
+                 }
+
+         }); buttonCancel.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 alertDialog.dismiss();
+
+
+
+                 }
+
+         });
+     }
+
+    private void addshopServices(String service_name) {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<ShopServicesListModel> call = restInterface.addshopServices(int_subcat_id,service_name);
+        call.enqueue(new Callback<ShopServicesListModel>() {
+            @Override
+            public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
+                if(response.isSuccessful()){
+                    ShopServicesListModel listModel=response.body();
+                    shopServicesModels = listModel.getShopServicesModels();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
+
+            }
+
+
+        });
+
     }
 
     /*
      * Function to set up the pop-up window which acts as drop-down list
      * */
-    private void initiatePopUp(ArrayList<String> items, TextView tv) {
+    private void initiatePopUp(ArrayList<ShopServicesModel> items, TextView tv) {
         LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 

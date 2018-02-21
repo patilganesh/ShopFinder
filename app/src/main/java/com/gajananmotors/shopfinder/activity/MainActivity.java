@@ -105,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.e("Refreshed token: ", refreshedToken);
+        Log.e("Refreshed token:", refreshedToken);
         Constant.device_token=refreshedToken;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-//      setting values to sharedpreferences keys.
+
         editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
         editor.apply();
         searchView = findViewById(R.id.floating_search_view);

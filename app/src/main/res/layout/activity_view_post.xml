@@ -394,31 +394,35 @@
                                 android:textColor="@color/TextcolorsBlack"
                                 android:textSize="15dp" />
                         </LinearLayout>
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
                         <LinearLayout
                             android:id="@+id/linservices"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="10dp"
-                            android:visibility="gone"
+                            android:visibility="visible"
+                            android:orientation="horizontal"
                             android:weightSum="1">
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.3"
-                                android:text="Services" />
+                                android:layout_weight="0.2"
+                                android:text="Services:" />
 
                             <TextView
                                 android:id="@+id/tvServices"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.7"
-                                android:gravity="end"
-                                android:text=""
+                                android:layout_weight="0.8"
+                                android:gravity="start"
+                                android:text="mobile"
                                 android:textColor="@color/TextcolorsBlack"
                                 android:textSize="15dp" />
                         </LinearLayout>
+</ScrollView>
                         <LinearLayout
                             android:id="@+id/lin1"
                             android:layout_width="match_parent"
