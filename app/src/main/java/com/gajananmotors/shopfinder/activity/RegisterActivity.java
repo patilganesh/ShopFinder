@@ -397,6 +397,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onBackPressed() {
   super.onBackPressed();
+        finish();
 
     }
     private void validation() {

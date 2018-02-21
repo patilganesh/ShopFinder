@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="100dp"
+        android:layout_height="120dp"
+        android:orientation="horizontal">
+
+        <com.gajananmotors.shopfinder.helper.CircleImageView
+            android:id="@+id/shop_img"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/new_shop_image" />
+
+        <ImageView
+            android:id="@+id/shop_img_edit"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/edit" />
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

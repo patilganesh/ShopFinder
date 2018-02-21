@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGraylight"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="com.gajananmotors.shopfinder.activity.EditPostActivity">
-    <include layout="@layout/toolbar" />
 
+    <include layout="@layout/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
+            android:id="@+id/edit_post_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -46,33 +51,32 @@
                 android:text="Address"
                 android:textColor="#000000" />
 
-            <EditText
-                android:id="@+id/etAddress"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Services Offered"
-                android:textColor="#000000" />
+                <EditText
+                    android:id="@+id/etAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="0.9"
+                    android:background="@drawable/catregory_border"
+                    android:padding="5dp" />
 
-            <EditText
-                android:id="@+id/etServicesOffered"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="-5dp"
+                    android:layout_weight="0.1"
+                    android:clickable="true"
+                    android:onClick="getEditAddress"
+                    android:src="@drawable/google_map" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -92,26 +96,24 @@
                 android:layout_marginRight="20dp"
                 android:background="@drawable/catregory_border"
                 android:padding="5dp" />
+            <!-- <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginBottom="2dp"
+                 android:layout_marginLeft="20dp"
+                 android:layout_marginRight="20dp"
+                 android:layout_marginTop="15dp"
+                 android:text="Email"
+                 android:textColor="#000000" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Email"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
-
+             <EditText
+                 android:id="@+id/etEmail"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="20dp"
+                 android:layout_marginRight="20dp"
+                 android:background="@drawable/catregory_border"
+                 android:padding="5dp" />-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,14 +124,16 @@
                 android:text="Category"
                 android:textColor="#000000" />
 
-            <EditText
+            <Button
                 android:id="@+id/etCategory"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+                android:drawableRight="@drawable/navigation_arrow" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -141,8 +145,29 @@
                 android:text="Sub Category"
                 android:textColor="#000000" />
 
+            <Button
+                android:id="@+id/etSubCategory"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/catregory_border"
+                android:drawableRight="@drawable/navigation_arrow" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp"
+                android:text="Services Offered"
+                android:textColor="#000000" />
+
             <EditText
-                android:id="@+id/etSubcategory"
+                android:id="@+id/etServicesOffered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -188,52 +213,23 @@
                 android:background="@drawable/catregory_border"
                 android:padding="5dp" />
 
-            <Button
-                android:id="@+id/btn_get_images"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
-                android:background="@color/colorPrimaryDark"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:text="Select Photo"
-                android:textColor="#ffffff" />
-
-            <TextView
-                android:id="@+id/tvHeading"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Select anyone image for ShopProfile"
-                android:textColor="@color/colorBlack"
-                android:visibility="gone" />
+                android:layout_height="wrap_content">
 
-            <HorizontalScrollView
-                android:id="@+id/hori_scroll_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fillViewport="false"
-                android:foregroundGravity="left"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:id="@+id/selected_photos_container"
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/img_rcv"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="20dp"
-                    android:animateLayoutChanges="true"
-                    android:gravity="left"
-                    android:orientation="horizontal"
-                    android:visibility="visible"></LinearLayout>
-            </HorizontalScrollView>
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"></android.support.v7.widget.RecyclerView>
+            </ScrollView>
 
             <Button
                 android:id="@+id/btnUpdate"
+                style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -241,8 +237,11 @@
                 android:background="@color/colorPrimaryDark"
                 android:text="Update"
                 android:textAlignment="center"
-                android:textColor="#ffffff"
-                style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"/>
+                android:textColor="#ffffff" />
         </LinearLayout>
+
+
     </ScrollView>
+
+
 </LinearLayout>

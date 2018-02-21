@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         MultiDex.install(this);
         setContentView(R.layout.activity_splash);
         txtscreen = findViewById(R.id.txtscreen);
-     
+
         final Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.move);
         Thread thread = new Thread() {

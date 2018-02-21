@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -75,16 +73,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -100,6 +93,8 @@ public class AddPostActivity extends AppCompatActivity {
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<String> image_path = new ArrayList<>();
+    private ArrayList<String> new_image_path = new ArrayList<>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
     private ArrayList<ShopServicesModel> shopServicesModels = new ArrayList<>();
@@ -126,8 +121,6 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm;
     private ProgressBar subcategory_progressbar;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +134,6 @@ public class AddPostActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
-      //  shopServices();
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -193,8 +185,7 @@ public class AddPostActivity extends AppCompatActivity {
                 getImages(new Config());
             }
         });
-
-       // initialize();
+        initialize();
         etBusinessServices.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -208,15 +199,21 @@ public class AddPostActivity extends AppCompatActivity {
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+        ConnectionDetector detector = new ConnectionDetector(this);
+        if (detector.isConnectingToInternet()) {
+            category.setVisibility(View.VISIBLE);
+        }
+
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         category.setAdapter(categoryAdapter);
+
         category.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -240,7 +237,7 @@ public class AddPostActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
                         if (response.isSuccessful()) {
-                            subcategory_progressbar.setVisibility(View.INVISIBLE);
+                            subcategory.setVisibility(View.VISIBLE);
                             SubCategoryListModel list = response.body();
                             sub_category_list = list.getSubcategory();
                             getSubCategoryData();
@@ -256,13 +253,13 @@ public class AddPostActivity extends AppCompatActivity {
         // subcategory.setAdapter(categoryAdapter);
     }
 
-  /*  @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setIconifiedByDefault(true);
-       *//* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+       /* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -288,10 +285,10 @@ public class AddPostActivity extends AppCompatActivity {
                 adapter.setFilter(suggest_list);
                 return true;
             }
-        });*//*
+        });*/
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
-    }*/
+    }
 
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
@@ -402,7 +399,7 @@ public class AddPostActivity extends AppCompatActivity {
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         for (final Uri uri : image_uris) {
-            if (index <= 6) {
+            if (index <= 7) {
                 final View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
                 final ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
                 thumbnail.setOnClickListener(new View.OnClickListener() {
@@ -454,6 +451,7 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
+        //TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
@@ -489,6 +487,12 @@ public class AddPostActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = null;
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
+        for (int i = 0; i < image_uris.size(); i++) {
+            String path = image_uris.get(i).getPath();
+            if (!path.equalsIgnoreCase(getImages)) {
+                image_path.add(path);
+            }
+        }
         if (!getImages.equals("")) {
             File filePath = new File(getImages);
             try {
@@ -532,45 +536,35 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
+
+    int index2 = 1;
     public void uploadShopImages(int index) {
-        if (image_uris.size() > index) {
-            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-            byte[] BYTE;
-            FileOutputStream fos = null;
-            //int size=image_uris.size();
-            File file_path = new File(image_uris.get(index).getPath().toString());
-            Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
-            bitmap.compress(Bitmap.CompressFormat.JPEG,40,bytearrayoutputstream);
-            BYTE=bytearrayoutputstream.toByteArray();
-            try {
-                fos = new FileOutputStream(file_path.getAbsolutePath());
-                fos.write(BYTE);
-                fos.flush();
-                fos.close();
-            } catch (Exception e) {
-            }
+        if (image_path.size() > index) {
+            File file_path = new File(image_path.get(index));
             MultipartBody.Part fileToUpload = null;
             if (file_path != null) {
                 try {
                     RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
-                    fileToUpload = MultipartBody.Part.createFormData("image" + (index + 1), file_path.getName(), mFile);
+                    fileToUpload = MultipartBody.Part.createFormData("image" + (index2), file_path.getName(), mFile);
+                    ++index2;
                 } catch (Exception e) {
                     Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
             Retrofit retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
-                    shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
             call.enqueue(new Callback<UploadShopImagesModel>() {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
                     if (response.isSuccessful()) {
+
                         UploadShopImagesModel uploadShopImagesModel = response.body();
                         if (uploadShopImagesModel.getResult() == 1)
                             uploadShopImages(uploadShopImagesModel.getCount());
                     }
                 }
+
                 @Override
                 public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
                     Toast.makeText(AddPostActivity.this, "Error: " + t.toString(), Toast.LENGTH_SHORT).show();
@@ -669,8 +663,8 @@ public class AddPostActivity extends AppCompatActivity {
 
     private void initialize() {
         //data source for drop-down list
-      //  shopServicesList = new ArrayList<String>();
-      /*  shopServicesList.add("Punjabi");
+       /* shopServicesList = new ArrayList<String>();
+        shopServicesList.add("Punjabi");
         shopServicesList.add("Pure Vegetarian");
         shopServicesList.add("Chinese");
         shopServicesList.add("Parking Available");
@@ -688,9 +682,11 @@ public class AddPostActivity extends AppCompatActivity {
 
 
 
+       /* etBusinessServices.setOnClickListener(new View.OnClickListener() {
 
     }
-
+*/
+    }
     private void shopServices() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -834,6 +830,7 @@ public class AddPostActivity extends AppCompatActivity {
         list.setAdapter(adapter);
 
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {

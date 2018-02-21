@@ -24,10 +24,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
@@ -43,8 +44,11 @@ import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.gajananmotors.shopfinder.model.SubCategoryListModel;
+import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -52,6 +56,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
+import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -59,10 +65,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private static String search_text;
-
     private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
+    private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
+    private ArrayList<ArrayList<SubCategoryModel>> indi_sub_category_list = new ArrayList<ArrayList<SubCategoryModel>>();
+    // private ArrayList<SubCategoryListModel>[] subCategory_data=new ArrayList<>()[5];
     private ArrayList<String> categoryNames = new ArrayList<>();
     private ArrayList<String> categoryImages = new ArrayList<>();
     private ArrayList<Integer> categoryId = new ArrayList<>();
@@ -75,13 +83,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private FloatingActionButton fab;
     private String name="user";
+    private int index = 0;
     private SharedPreferences sharedpreferences;
     private String refreshedToken = "";
-
+    private boolean result = false;
     public static Activity activityMain;
     private com.arlib.floatingsearchview.FloatingSearchView searchView;
     private RecyclerViewType recyclerViewType;
     android.support.design.widget.CoordinatorLayout coordinate_layout;
+    private ImageView nearBy;
 
     public static void finishActivity(Context context) {
 
@@ -112,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
         editor.apply();
+        nearBy = findViewById(R.id.ivNearby);
+        nearBy.setOnClickListener(this);
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
@@ -130,18 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recyclerViewType = RecyclerViewType.GRID;
-        setUpRecyclerView();
-        populateRecyclerView();
-
-        
-        /*   recycler_view_vertical = findViewById(R.id.recycler_view_vertical);
-        // mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        recycler_view_vertical.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager_vertical = new GridLayoutManager(this, 3);
-        // layoutManager.setOrientation(LinearLayout.VERTICAL);
-        recycler_view_vertical.setNestedScrollingEnabled(false);
-        //  recycler_view_vertical.setItemAnimator(new DefaultItemAnimator());
-        recycler_view_vertical.setLayoutManager(mLayoutManager_vertical);*/
         String img = sharedpreferences.getString(Constant.OWNER_PROFILE, "");
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.CAMERA, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -186,39 +186,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
     }
-
-
     private void setUpRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_vertical);
-       // recyclerView.setNestedScrollingEnabled(false);
+        recyclerView = findViewById(R.id.recycler_view_vertical);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        populateRecyclerView();
     }
-
     //populate recycler view
     private void populateRecyclerView() {
         ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
         //for loop for sections
-        for (int i = 1; i <= 5; i++) {
-            ArrayList<String> itemArrayList = new ArrayList<>();
-
-            //for loop for items
-            for (int j = 1; j <= 10; j++) {
-                itemArrayList.add("Lokmany");
-                itemArrayList.add("Morya");
-                itemArrayList.add("SASUN");
-
-            }
+        for (int i = 0; i < category_Model_list.size(); i++) {
             //add the section and items to array list
-            sectionModelArrayList.add(new HomeItems("Hospital " + i, itemArrayList));
+            sectionModelArrayList.add(new HomeItems(category_Model_list.get(i).getCategory_id(), category_Model_list.get(i).getName(), indi_sub_category_list.get(i)));
         }
-
         SectionRecyclerViewAdapter adapter = new SectionRecyclerViewAdapter(this, recyclerViewType, sectionModelArrayList);
         recyclerView.setAdapter(adapter);
+        category_progressbar.setVisibility(View.GONE);
     }
-
-
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -228,18 +215,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<CategoryListModel> call, Response<CategoryListModel> response) {
                 if (response.isSuccessful()) {
-                    category_progressbar.setVisibility(View.GONE);
+
                     CategoryListModel categoryListModel = response.body();
                     category_Model_list = categoryListModel.getCategories();
-                    for (CategoryModel model : category_Model_list) {
-                        categoryNames.add(model.getName());
-                        categoryImages.add(model.getImage());
-                        categoryId.add(model.getCategory_id());
-                    }
-                    setadapter(categoryNames, categoryImages, categoryId,name);
+                    //   setadapter(categoryNames, categoryImages, categoryId, name);
+                    result = true;
                 }
+                if (result)
+                    getSub(category_Model_list.get(index).getCategory_id());
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
@@ -247,9 +231,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    public void getSub(final int int_cat_id) {
+
+        Call<SubCategoryListModel> call = restInterface.getSubCategoryList(int_cat_id);
+
+        call.enqueue(new Callback<SubCategoryListModel>() {
+            @Override
+            public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
+                if (response.isSuccessful()) {
+                    SubCategoryListModel list = response.body();
+                    sub_category_list = list.getSubcategory();
+                    indi_sub_category_list.add(sub_category_list);
+                    index++;
+                    if (index < category_Model_list.size()) {
+                        getSub(category_Model_list.get(index).getCategory_id());
+                    }
+                }
+                if (index == category_Model_list.size()) {
+
+                    //   Log.i("size", "Size: "+indi_sub_category_list.size());
+                    setUpRecyclerView();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
+                // Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Index Error:" + index, Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
-
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 MainActivity.this);
         if (!detector.isConnectingToInternet()) {
@@ -269,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
-
                 }
             });
             alertDialog.show();
@@ -277,14 +291,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
-
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
-
     boolean doubleBackToExitPressedOnce = false;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
@@ -296,7 +307,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onKeyDown(keyCode, event);
     }
 
-
     @Override
     public void onBackPressed() {
         Snackbar snackbar = Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
@@ -307,8 +317,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         snackbar.show();
     }
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -364,9 +372,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view listview_map_activity_data clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_profile) {
-
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
@@ -380,14 +386,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 startActivity(new Intent(MainActivity.this, AddPostActivity.class));
             }
-
         } else if (id == R.id.nav_allposts) {
-            Intent intent=new Intent(MainActivity.this,AllPostsActivity.class);
-            intent.putExtra("owner","owner");
+            Intent intent = new Intent(MainActivity.this, AllPostsActivity.class);
+            intent.putExtra("owner", "owner");
             startActivity(intent);
-
+            //   startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
         } else if (id == R.id.nav_share) {
-            Toast.makeText(getApplicationContext(),"Coming soon...",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Coming soon...", Toast.LENGTH_SHORT).show();
            /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBodyText = "https://play.google.com/store?hl=en";
@@ -406,7 +411,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -414,20 +418,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
     @Override
     public void onClick(View v) {
-        /*switch (v.getId()) {
-            case R.id.nearby:
+        switch (v.getId()) {
+            case R.id.ivNearby:
                 if (!isNetworkAvailable(getApplicationContext())) {
                     displayPromptForEnablingData(this);
                 } else {
                     Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(i);
                 }
-        }*/
+        }
     }
-   /* @Override
+  /* @Override
     public boolean onQueryTextSubmit(String query) {
 
         Toast.makeText(this, "On Submit......", Toast.LENGTH_SHORT).show();

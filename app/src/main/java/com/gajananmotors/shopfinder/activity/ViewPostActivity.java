@@ -59,8 +59,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         viewPostLayout = findViewById(R.id.viewPostLayout);
         shopDirectionLayout = findViewById(R.id.shopDirectionLayout);
         shopDirectionLayout.setOnClickListener(this);
@@ -101,8 +99,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             shopDeleteLayout.setVisibility(View.GONE);
             shopCallLayout.setVisibility(View.VISIBLE);
             shopMsgLayout.setVisibility(View.VISIBLE);
-
-
         if (!name.isEmpty()) {
             viewShopList = getIntent().getParcelableExtra("shop_list");
             if (name.equals("owner")) {
@@ -135,18 +131,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     .fit()
                     .placeholder(R.drawable.background_splashscreen)
                     .into(shopCoverphoto);
-
         }
        /* else*//*{
            Uri data = i.getData();
             LinkShopServices(shop_id);
         }*/
-
     }
-
-
-
-    private void LinkShopServices(int shop_id) {
+  private void LinkShopServices(int shop_id) {
         Retrofit retrofit;
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -192,8 +183,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -258,9 +247,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.shopEditLayout:
                 Intent intent = new Intent(this, EditPostActivity.class);
-                intent.putStringArrayListExtra("images", allimages);
-                intent.putExtra("shopCoverphoto", shopCoverpic);
-                intent.putExtra("shop_id", shop_id);
+                intent.putExtra("shop_list", viewShopList);
                 startActivity(intent);
                 break;
             case R.id.shopShareLayout:
@@ -310,5 +297,4 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         finish();
 
     }
-
 }

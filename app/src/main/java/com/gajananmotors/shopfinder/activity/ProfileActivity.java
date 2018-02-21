@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -121,7 +122,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(imgProfile);
         }
-        Log.d("profile",sharedpreferences.getString(Constant.OWNER_PROFILE, ""));
         btnEdit.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
     }
@@ -373,6 +373,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     mImageCaptureUri = Uri.fromFile(f);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
+                    //cameraIntent();
 
 
                 } else if (items[item].equals("Choose from Gallery")) {
@@ -406,9 +407,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     Picasso.with(ProfileActivity.this).load(outPutFile).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
+
                         }
                         @Override
                         public void onError() {
+
                         }
                     });
                 } else {
