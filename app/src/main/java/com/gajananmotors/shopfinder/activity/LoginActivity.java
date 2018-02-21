@@ -16,17 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.Profile;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
@@ -75,7 +64,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         login_progressbar = findViewById(R.id.login_progressbar);
         //getSupportActionBar().hide();
@@ -189,9 +177,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     owner_id = user.getOwner_id();
                     status = user.getStatus();
                     if (user.getResult() == 1 && status == 1) {
-                        Toast.makeText(LoginActivity.this, "Owner Id:" + user.getOwner_id() + "Name:" + owner_name
-                                        + "\nEmail:" + owner_email + "\nMobile:" + ownner_mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + owner_image
-                                , Toast.LENGTH_LONG).show();
+
 
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         // setting values to sharedpreferences keys.
@@ -216,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             @Override
             public void onFailure(Call<LoginUserModel> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Network connection is very low! ", Toast.LENGTH_LONG).show();
             }
         });
     }
