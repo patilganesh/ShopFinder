@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 
 import com.gajananmotors.shopfinder.R;
@@ -26,19 +28,22 @@ import java.util.ArrayList;
  * Created by Ashwin on 1/1/2018.
  */
 
-public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
+public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  implements Filterable{
     Activity activity;
     ArrayList<ShopsListModel> list = new ArrayList<>();
+
     private LinearLayout viewPostLayout;
     private ArrayList<String> images = new ArrayList<>();
     private int shop_id;
     private int index=0;
     ViewShopList viewShopList = new ViewShopList();
     private String name;
+    private ArrayList<ShopsListModel> mFilteredList;
 
 
-    public ShopsListAdpater(AllPostsActivity itemDetailsActivity, ArrayList<ShopsListModel> shops_list, String name) {
+    public ShopsListAdpater(MapsActivity itemDetailsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
+        mFilteredList = shops_list;
         this.activity = itemDetailsActivity;
         this.name=name;
     }
@@ -47,20 +52,27 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
 
         this.activity = activity;
         this.list = shops_list;
+        mFilteredList = shops_list;
         this.name=name;
     }
 
     public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
 
-        this.activity = activity;
-        this.list = shops_list;
-        this.name = name;
     }
 
     public ShopsListAdpater(MapsActivity mapsActivity, ArrayList<ShopsListModel> shops_list) {
         this.activity = mapsActivity;
         this.list = shops_list;
+        mFilteredList = shops_list;
     }
+
+    public ShopsListAdpater(AllPostsActivity allPostsActivity, ArrayList<ShopsListModel> shops_list, String name) {
+        this.list = shops_list;
+        mFilteredList = shops_list;
+        this.activity = allPostsActivity;
+        this.name=name;
+    }
+
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -70,12 +82,12 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
 
     @Override
     public void onBindViewHolder(final ShopsListHolder holder, final int position) {
-        holder.name.setText(list.get(position).getShop_name());
-        holder.address.setText(list.get(position).getAddress());
-        holder.distance.setText(list.get(position).getCity() + "/" + list.get(position).getState() + "/" + list.get(position).getCountry());
-        holder.timing.setText(list.get(position).getShop_timing());
-        holder.type.setText(list.get(position).getShop_mob_no());
-        holder.weburl.setText(list.get(position).getWebsite());
+        holder.name.setText(mFilteredList.get(position).getShop_name());
+        holder.address.setText(mFilteredList.get(position).getAddress());
+        holder.distance.setText(mFilteredList.get(position).getCity() + "/" + mFilteredList.get(position).getState() + "/" + mFilteredList.get(position).getCountry());
+        holder.timing.setText(mFilteredList.get(position).getShop_timing());
+        holder.type.setText(mFilteredList.get(position).getShop_mob_no());
+        holder.weburl.setText(mFilteredList.get(position).getWebsite());
         Picasso.with(activity)
                 .load("http://findashop.in/images/shop_profile/" + list.get(position).getShop_id() + "/" + list.get(position).getShop_pic())
                 .fit()
@@ -135,12 +147,72 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
     }
     @Override
     public int getItemCount() {
-        return list.size();
+        if(mFilteredList==null){
+            return list.size();
+        }else{
+
+            return mFilteredList.size();
+        }
     }
 
     public void setFilter(ArrayList<ShopsListModel> newList) {
         list = new ArrayList<>();
         list.addAll(newList);
         notifyDataSetChanged();
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String newText = charSequence.toString();
+
+                if (newText.isEmpty()) {
+
+                    mFilteredList= list;
+                } else {
+
+                    ArrayList<ShopsListModel> filteredList = new ArrayList<>();
+
+                    for (ShopsListModel s : list) {
+
+                        if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText)){
+                            filteredList.add(s);
+                        }
+
+
+//                        if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText))
+//
+//                            filteredList.add(s);
+//                        if (s.getShop_name().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getCity().toLowerCase().startsWith(newText) || s.getCategory_name().toLowerCase().startsWith(newText) || s.getShop_mob_no().toLowerCase().startsWith(newText))
+//                            filteredList.add(s);
+//                        else if (s.getShop_name().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getCity().toLowerCase().endsWith(newText) || s.getCategory_name().toLowerCase().endsWith(newText) || s.getShop_mob_no().toLowerCase().endsWith(newText))
+//                            filteredList.add(s);
+//                        else if (s.getShop_name().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText))
+//                            filteredList.add(s);
+                    }
+                    mFilteredList= filteredList;
+                }
+
+                //mFilteredList = list;
+
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mFilteredList;
+                return filterResults;
+
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mFilteredList= (ArrayList<ShopsListModel>) results.values;
+                notifyDataSetChanged();
+            }
+
+
+        };
     }
 }

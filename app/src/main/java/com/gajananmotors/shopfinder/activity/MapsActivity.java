@@ -119,6 +119,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Intent intent = getIntent();
         nearbyPlace = intent.getStringExtra("search_keyword");
+        Log.d("mapActivty","search_keyword"+nearbyPlace);
         DiscreteSeekBar seek = findViewById(R.id.seek);
         seek.setMin(2);
         seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
@@ -134,7 +135,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 distance = seekBar.getProgress();
-                getSearchList();
+                Log.d("mapActivty","onStopTrackingTouch Called");
+
+                getSearchList(distance);
             }
         });
         mapFragment.getMapAsync(this);
@@ -193,9 +196,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
     }
 
-    public void getSearchList() {
+    public void getSearchList(int distance) {
+        Log.d("mapActivty","getSearchList Called");
+
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
+        Log.d("mapActivty","parameter"+nearbyPlace+"lat"+latitude+longitude+"distnc"+distance);
         Call<ShopsArrayListModel> call = restInterface.getNearByShops(nearbyPlace, latitude, longitude, distance);
         nearby_search_list_progressbar.setVisibility(View.VISIBLE);
         nearby_search_list_progressbar.setIndeterminate(true);
@@ -206,20 +212,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
                     ArrayList<ShopsListModel> shopsListModels = list.getShopList();
+
+                    Log.d("mapActivty","shopsListModels"+shopsListModels.toString());
                     for (ShopsListModel model : shopsListModels) {
                         if (model.getStatus() == 1) {
                             shops_list.add(model);
                         }
                     }
                     setAdapter(shops_list);
+                    ShowNearbyPlaces(shops_list);
                 }
             }
 
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
+                Toast.makeText(MapsActivity.this, "Service Call Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    private void ShowNearbyPlaces(ArrayList<ShopsListModel> nearbyPlacesList) {
+        addressList = new ArrayList<>();
+        nameList = new ArrayList<>();
+        Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
+        mMap.clear();
+
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+
+        for (int i = 0; i < nearbyPlacesList.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions();
+           // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+            double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
+            double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
+            String placeName = nearbyPlacesList.get(i).getShop_name();
+            String vicinity = nearbyPlacesList.get(i).getAddress();
+            LatLng latLng = new LatLng(lat, lng);
+            markerOptions.position(latLng);
+            markerOptions.title(placeName + " : " + vicinity);
+            mMap.addMarker(markerOptions);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        }
     }
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -484,7 +521,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void setAdapter(ArrayList<ShopsListModel> shops_list) {
         if (shops_list.size() != 0) {
-            adapter = new ShopsListAdpater(this, shops_list);
+            String name=getIntent().getStringExtra("owner");
+            adapter = new ShopsListAdpater(this, shops_list,name);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             searchnearbyrecyclerview.setLayoutManager(mLayoutManager);
             //  adapter.notifyDataSetChanged();
