@@ -52,6 +52,7 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -166,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
       /* nearby = findViewById(R.id.nearby);
-         nearby.setOnClickListener(this);*/
+      nearby.setOnClickListener(this);*/
         // below code is for feature refernce,please dont delete this code.
         /*recyclerView = findViewById(R.id.rcv);
         shops_list.add(new ShopsListModel("Gajana Motors Pvt.Ltd.", "500.00 m", "Vinayak Residencey,near DMart,Baner", "Opens 24 Hours", "http:/www.informedevice.com", "Hotel", "9856237845"));
@@ -225,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
         category_progressbar.setVisibility(View.GONE);
     }
-
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -244,14 +245,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (result)
                     getSub(category_Model_list.get(index).getCategory_id());
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     public void getSub(final int int_cat_id) {
 
@@ -270,9 +269,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 if (index == category_Model_list.size()) {
+
+                    //   Log.i("size", "Size: "+indi_sub_category_list.size());
                     setUpRecyclerView();
+
                 }
             }
+
             @Override
             public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                 // Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
@@ -281,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
-
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -310,14 +312,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
-
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
-
     boolean doubleBackToExitPressedOnce = false;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
@@ -339,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         snackbar.show();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -378,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -435,7 +434,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -443,7 +441,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -476,5 +473,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.setFilter(suggest_list);
         return true;
     }*/
-
 }

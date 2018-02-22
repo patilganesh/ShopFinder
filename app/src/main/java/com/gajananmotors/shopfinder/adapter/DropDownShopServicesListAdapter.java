@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.AddPostActivity;
+import com.gajananmotors.shopfinder.model.ShopServicesModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class DropDownShopServicesListAdapter extends BaseAdapter {
 
-    private ArrayList<String> mListItems;
+    private ArrayList<ShopServicesModel> mListItems;
     private LayoutInflater mInflater;
     private TextView mSelectedItems;
     private static int selectedCount = 0;
@@ -39,7 +40,7 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
         DropDownShopServicesListAdapter.selected = selected;
     }
 
-    public DropDownShopServicesListAdapter(Context context, ArrayList<String> items,
+    public DropDownShopServicesListAdapter(Context context, ArrayList<ShopServicesModel> items,
                                            TextView tv) {
         mListItems = new ArrayList<>();
         mListItems.addAll(items);
@@ -79,7 +80,7 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.tv.setText(mListItems.get(position));
+        holder.tv.setText(mListItems.get(position).getName());
 
         final int position1 = position;
 
@@ -120,7 +121,7 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
 
             for (int i = 0; i < AddPostActivity.checkSelected.length; i++) {
                 if (AddPostActivity.checkSelected[i] == true) {
-                    firstSelected = mListItems.get(i);
+                    firstSelected = mListItems.get(i).getName();
                     selectedList.add(firstSelected);
                 }
             }
