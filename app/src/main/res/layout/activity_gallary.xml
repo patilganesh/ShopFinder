@@ -8,6 +8,9 @@
     android:gravity="center"
     tools:context="com.gajananmotors.shopfinder.activity.GallaryActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/selectedImageView"
         android:layout_width="match_parent"
@@ -15,11 +18,27 @@
         android:layout_margin="5dp"
         android:scaleType="fitXY" />
 
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gallery_progressbar"
+            android:visibility="visible"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
     <Gallery
         android:id="@+id/simpleGallery"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        />
+        android:unselectedAlpha="0.80" />
 
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/red"
+        android:visibility="gone" />
 </LinearLayout>

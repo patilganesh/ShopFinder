@@ -61,32 +61,28 @@
 
                 </android.support.design.widget.AppBarLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ffffff"
-                    android:orientation="vertical">
-
+                    android:layout_height="match_parent">
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recycler_view_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/activity_horizontal_top_margin"
+                        android:descendantFocusability="beforeDescendants"
                         android:fadingEdgeLength="1px" />
-                </LinearLayout>
-
 
                 <ProgressBar
                     android:id="@+id/category_progressbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
+                    android:layout_centerInParent="true"
                     android:theme="@style/CircularProgress"
                     android:visibility="gone" />
+                </RelativeLayout>
 
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>

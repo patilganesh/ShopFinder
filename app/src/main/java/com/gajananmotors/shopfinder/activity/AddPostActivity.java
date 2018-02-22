@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -60,6 +59,8 @@ import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
+import com.gajananmotors.shopfinder.model.ShopServicesListModel;
+import com.gajananmotors.shopfinder.model.ShopServicesModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
@@ -72,16 +73,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -97,8 +93,11 @@ public class AddPostActivity extends AppCompatActivity {
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
     private ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<String> image_path = new ArrayList<>();
+    private ArrayList<String> new_image_path = new ArrayList<>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
+    private ArrayList<ShopServicesModel> shopServicesModels = new ArrayList<>();
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
     private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
@@ -191,7 +190,8 @@ public class AddPostActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                initiatePopUp(shopServicesList, etBusinessServices);
+                //initiatePopUp(shopServicesModels, etBusinessServices);
+                shopServices();
             }
         });
         mGoogleApiClient = new GoogleApiClient
@@ -199,15 +199,21 @@ public class AddPostActivity extends AppCompatActivity {
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+        ConnectionDetector detector = new ConnectionDetector(this);
+        if (detector.isConnectingToInternet()) {
+            category.setVisibility(View.VISIBLE);
+        }
+
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         category.setAdapter(categoryAdapter);
+
         category.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -231,7 +237,7 @@ public class AddPostActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
                         if (response.isSuccessful()) {
-                            subcategory_progressbar.setVisibility(View.INVISIBLE);
+                            subcategory.setVisibility(View.VISIBLE);
                             SubCategoryListModel list = response.body();
                             sub_category_list = list.getSubcategory();
                             getSubCategoryData();
@@ -247,13 +253,13 @@ public class AddPostActivity extends AppCompatActivity {
         // subcategory.setAdapter(categoryAdapter);
     }
 
-  /*  @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setIconifiedByDefault(true);
-       *//* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+       /* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -279,10 +285,10 @@ public class AddPostActivity extends AppCompatActivity {
                 adapter.setFilter(suggest_list);
                 return true;
             }
-        });*//*
+        });*/
         //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
-    }*/
+    }
 
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
@@ -393,7 +399,7 @@ public class AddPostActivity extends AppCompatActivity {
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         for (final Uri uri : image_uris) {
-            if (index <= 6) {
+            if (index <= 7) {
                 final View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
                 final ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
                 thumbnail.setOnClickListener(new View.OnClickListener() {
@@ -481,6 +487,12 @@ public class AddPostActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = null;
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
+        for (int i = 0; i < image_uris.size(); i++) {
+            String path = image_uris.get(i).getPath();
+            if (!path.equalsIgnoreCase(getImages)) {
+                image_path.add(path);
+            }
+        }
         if (!getImages.equals("")) {
             File filePath = new File(getImages);
             try {
@@ -524,45 +536,35 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
+
+    int index2 = 1;
     public void uploadShopImages(int index) {
-        if (image_uris.size() > index) {
-            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-            byte[] BYTE;
-            FileOutputStream fos = null;
-            //int size=image_uris.size();
-            File file_path = new File(image_uris.get(index).getPath().toString());
-            Bitmap bitmap = BitmapFactory.decodeFile(file_path.getAbsolutePath());
-            bitmap.compress(Bitmap.CompressFormat.JPEG,40,bytearrayoutputstream);
-            BYTE=bytearrayoutputstream.toByteArray();
-            try {
-                fos = new FileOutputStream(file_path.getAbsolutePath());
-                fos.write(BYTE);
-                fos.flush();
-                fos.close();
-            } catch (Exception e) {
-            }
+        if (image_path.size() > index) {
+            File file_path = new File(image_path.get(index));
             MultipartBody.Part fileToUpload = null;
             if (file_path != null) {
                 try {
                     RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
-                    fileToUpload = MultipartBody.Part.createFormData("image" + (index + 1), file_path.getName(), mFile);
+                    fileToUpload = MultipartBody.Part.createFormData("image" + (index2), file_path.getName(), mFile);
+                    ++index2;
                 } catch (Exception e) {
                     Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
             Retrofit retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(
-                    shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
             call.enqueue(new Callback<UploadShopImagesModel>() {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
                     if (response.isSuccessful()) {
+
                         UploadShopImagesModel uploadShopImagesModel = response.body();
                         if (uploadShopImagesModel.getResult() == 1)
                             uploadShopImages(uploadShopImagesModel.getCount());
                     }
                 }
+
                 @Override
                 public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
                     Toast.makeText(AddPostActivity.this, "Error: " + t.toString(), Toast.LENGTH_SHORT).show();
@@ -613,6 +615,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
+
         if (location.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -661,13 +664,13 @@ public class AddPostActivity extends AppCompatActivity {
 
     private void initialize() {
         //data source for drop-down list
-        shopServicesList = new ArrayList<String>();
+       /* shopServicesList = new ArrayList<String>();
         shopServicesList.add("Punjabi");
         shopServicesList.add("Pure Vegetarian");
         shopServicesList.add("Chinese");
         shopServicesList.add("Parking Available");
-        shopServicesList.add("Home Delivery");
-        checkSelected = new boolean[shopServicesList.size()];
+        shopServicesList.add("Home Delivery");*/
+        checkSelected = new boolean[shopServicesModels.size()];
         //initialize all values of list to 'unselected' initially
         for (int i = 0; i < checkSelected.length; i++) {
             checkSelected[i] = false;
@@ -680,38 +683,116 @@ public class AddPostActivity extends AppCompatActivity {
 
 
 
-        etBusinessServices.setOnClickListener(new View.OnClickListener() {
+       /* etBusinessServices.setOnClickListener(new View.OnClickListener() {
 
+    }
+*/
+    }
+    private void shopServices() {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<ShopServicesListModel> call = restInterface.shopServices(int_subcat_id);
+        call.enqueue(new Callback<ShopServicesListModel>() {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if (!expanded) {
-                    //display all selected values
-                    String selected = "";
-                    int flag = 0;
-                    for (int i = 0; i < shopServicesList.size(); i++) {
-                        if (checkSelected[i] == true) {
-                            selected += shopServicesList.get(i);
-                            selected += ", ";
-                            flag = 1;
+            public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
+                if(response.isSuccessful()){
+                    ShopServicesListModel listModel=response.body();
+                    shopServicesModels = listModel.getShopServicesModels();
+                    if(shopServicesModels.size()>0) {
+                        initialize();
+                        initiatePopUp(shopServicesModels, etBusinessServices);
+                        if (!expanded) {
+                            //display all selected values
+                            String selected = "";
+                            int flag = 0;
+                            for (int i = 0; i < shopServicesModels.size(); i++) {
+                                if (checkSelected[i] == true) {
+                                    selected += shopServicesModels.get(i).getName();
+                                    selected += ", ";
+                                    flag = 1;
+                                }
+                            }
+                            if (flag == 1)
+                                etBusinessServices.setText(selected);
+                            expanded = true;
+                        } else {
+                            //display shortened representation of selected values
+                            etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
+                            expanded = false;
                         }
                     }
-                    if (flag == 1)
-                        etBusinessServices.setText(selected);
-                    expanded = true;
-                } else {
-                    //display shortened representation of selected values
-                    etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
-                    expanded = false;
                 }
             }
+
+            @Override
+            public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
+
+            }
+
+
         });
+
+    }
+        public void addServices() {
+         LayoutInflater inflater = LayoutInflater.from(this);
+         View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
+         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+         AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
+         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
+
+         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+         alert.setView(confirmDialog);
+         alert.setCancelable(true);
+         final AlertDialog alertDialog = alert.create();
+         alertDialog.show();
+         buttonConfirm.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+
+                String service_name= etAddservices.getText().toString().trim();
+                 addshopServices(service_name);
+                 alertDialog.dismiss();
+                 }
+
+         }); buttonCancel.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 alertDialog.dismiss();
+
+
+
+                 }
+
+         });
+     }
+
+    private void addshopServices(String service_name) {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<ShopServicesListModel> call = restInterface.addshopServices(int_subcat_id,service_name);
+        call.enqueue(new Callback<ShopServicesListModel>() {
+            @Override
+            public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
+                if(response.isSuccessful()){
+                    ShopServicesListModel listModel=response.body();
+                    shopServicesModels = listModel.getShopServicesModels();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
+
+            }
+
+
+        });
+
     }
 
     /*
      * Function to set up the pop-up window which acts as drop-down list
      * */
-    private void initiatePopUp(ArrayList<String> items, TextView tv) {
+    private void initiatePopUp(ArrayList<ShopServicesModel> items, TextView tv) {
         LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
@@ -750,6 +831,7 @@ public class AddPostActivity extends AppCompatActivity {
         list.setAdapter(adapter);
 
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {

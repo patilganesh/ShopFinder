@@ -21,6 +21,7 @@ public class ViewShopList implements Parcelable {
     private String strSub_category;
     private String strWeburl;
     private String strMobile;
+    private String strservices;
 
     public String getStrservices() {
         return strservices;
@@ -30,7 +31,6 @@ public class ViewShopList implements Parcelable {
         this.strservices = strservices;
     }
 
-    private String strservices;
 
     protected ViewShopList(Parcel in) {
         shop_id = in.readInt();
@@ -183,7 +183,6 @@ public class ViewShopList implements Parcelable {
         dest.writeString(strservices);
         dest.writeList(arrayList);
     }
-
 
 
 

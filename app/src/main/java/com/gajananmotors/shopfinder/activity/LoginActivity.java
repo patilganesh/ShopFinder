@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,13 +16,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
+import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -33,13 +34,15 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Constant.MyPREFERENCES;
-
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private EditText etUserName, etPassword;
     private com.hbb20.CountryCodePicker ccp;
@@ -55,21 +58,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SharedPreferences sharedpreferences;
     private String device_token = "";
     private int owner_id, status;
-    private String usertype="google";
+    private String usertype = "google";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         login_progressbar = findViewById(R.id.login_progressbar);
+        //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()) {
             device_token = Constant.device_token;
         }
         //Log.e("deviceToken",device_token);
-        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN,"00000");
+        device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -174,9 +177,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     owner_id = user.getOwner_id();
                     status = user.getStatus();
                     if (user.getResult() == 1 && status == 1) {
-                        Toast.makeText(LoginActivity.this, "Owner Id:" + user.getOwner_id() + "Name:" + owner_name
-                                        + "\nEmail:" + owner_email + "\nMobile:" + ownner_mobile + "\nImage:" + "http://www.findashop.in/images/owner_profile/" + owner_image
-                                , Toast.LENGTH_LONG).show();
+
 
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         // setting values to sharedpreferences keys.
@@ -188,9 +189,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNER_PROFILE, owner_image);
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
-                        /*if (MainActivity.activityMain != null) {
-                            MainActivity.activityMain.finish();
-                        }*/
                         finish();
                         login_progressbar.setVisibility(View.GONE);
                     } else {
@@ -204,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             @Override
             public void onFailure(Call<LoginUserModel> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "On Failure ", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Network connection is very low! ", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -250,7 +248,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -275,7 +272,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-       if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             Log.d(TAG, "handleSignInResult:" + result.isSuccess());
             if (result.isSuccess()) {
@@ -365,9 +362,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
-
-
 }
+
+
 
 
 

@@ -118,8 +118,6 @@ public class ShopsListModel {
         this.setServices(services);
 
     }
-
-
     public int getShop_id() {
         return shop_id;
     }
