@@ -696,6 +696,7 @@ public class AddPostActivity extends AppCompatActivity {
                         initialize();
                         initiatePopUp(shopServicesModels, etBusinessServices);
                         if (!expanded) {
+
                             //display all selected values
                             String selected = "";
                             int flag = 0;
