@@ -17,8 +17,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,25 +38,33 @@
 
 
         </LinearLayout>
-        <Button
-            android:id="@+id/btnHospital"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="Nearby Hospitals" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/mr_recycler_view"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/add_vehicle"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:fadeScrollbars="true"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/searchnearbyrecyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ProgressBar
+                android:id="@+id/nearby_search_list_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txtemptylistnearbysearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="@color/red"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

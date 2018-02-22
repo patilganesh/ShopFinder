@@ -128,13 +128,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
-                ivSearch.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onFocusCleared() {
                 toolbar.setVisibility(View.VISIBLE);
                 ivSearch.setVisibility(View.GONE);
+                nearBy.setVisibility(View.GONE);
             }
         });
         retrofit = APIClient.getClient();
@@ -165,9 +165,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
       /* nearby = findViewById(R.id.nearby);
-      nearby.setOnClickListener(this);*/
+         nearby.setOnClickListener(this);*/
         // below code is for feature refernce,please dont delete this code.
         /*recyclerView = findViewById(R.id.rcv);
         shops_list.add(new ShopsListModel("Gajana Motors Pvt.Ltd.", "500.00 m", "Vinayak Residencey,near DMart,Baner", "Opens 24 Hours", "http:/www.informedevice.com", "Hotel", "9856237845"));
@@ -188,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onSearchTextChanged(String oldQuery, String newQuery) {
                 search_keyword = newQuery;
                 nearBy.setVisibility(View.VISIBLE);
-
+                ivSearch.setVisibility(View.VISIBLE);
             }
         });
         ivSearch.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
     public void getSearchService(String search_keyword) {
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         intent.putExtra("search_keyword", search_keyword);
@@ -273,10 +271,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 if (index == category_Model_list.size()) {
                     setUpRecyclerView();
-
                 }
             }
-
             @Override
             public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                 // Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
@@ -404,8 +400,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_aboutus) {
 
         } else if (id == R.id.nav_nearby) {
-
-            startActivity(new Intent(MainActivity.this, MapsActivity.class));
+            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+            intent.putExtra("search_keyword", search_keyword);
+            startActivity(intent);
 
         } else if (id == R.id.nav_addpost) {
             if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {

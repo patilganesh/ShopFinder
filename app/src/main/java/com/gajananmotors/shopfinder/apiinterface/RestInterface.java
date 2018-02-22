@@ -192,4 +192,13 @@ public interface RestInterface {
     Call<ShopsArrayListModel> getSearchByKeyword(
             @Field("search_string") String search_string
     );
+
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/search_shop")
+    Call<ShopsArrayListModel> getNearByShops(
+            @Field("search_keyword") String search_keyword,
+            @Field("lat") double lat,
+            @Field("long") double longi,
+            @Field("radius") int radius
+    );
 }
