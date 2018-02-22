@@ -35,8 +35,8 @@
 
                     <com.gajananmotors.shopfinder.helper.CircleImageView
                         android:id="@+id/imgShop_dialog"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:layout_gravity="center"
                         android:src="@color/black"
                         android:transitionName="circleImageView_seeker_item"
@@ -60,76 +60,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
                     android:weightSum="1">
 
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:src="@mipmap/call1" />
+                        android:padding="10dp"
+                        android:src="@drawable/ic_perm_phone_msg_black_24dp" />
 
                     <TextView
                         android:id="@+id/tvMobile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackground"
-                        android:textAlignment="center"
-                        android:padding="10dp"
-                        android:text="MOCILE" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginRight="10dp"
-                    android:weightSum="1">
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.2"
-                        android:src="@mipmap/category" />
-
-                    <TextView
-                        android:id="@+id/tvCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                   android:textAlignment="center"
-                        android:padding="10dp"
-                        android:text="CATEGORY/SUB CATEGORY"
-                   />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginRight="10dp"
-                    android:weightSum="1">
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.2"
-                        android:src="@mipmap/location_on" />
-
-                    <TextView
-                        android:id="@+id/tvAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
                         android:textAlignment="textStart"
-                        android:padding="5dp"
-                        android:text="ADDRESS"
+                        android:padding="10dp"
+                        android:text="MOCILE"
                         android:gravity="start" />
 
                 </LinearLayout>
@@ -137,7 +87,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginRight="10dp"
                     android:weightSum="1">
@@ -146,17 +97,72 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:src="@mipmap/locatio" />
+                        android:padding="10dp"
+                        android:src="@drawable/ic_nfc_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/tvCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:textAlignment="textStart"
+                        android:padding="10dp"
+                        android:text="CATEGORY/SUB CATEGORY"
+                        android:gravity="start" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    android:weightSum="1">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.2"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_home_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="start"
+                        android:padding="5dp"
+                        android:text="ADDRESS"
+                        android:textAlignment="textStart" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    android:weightSum="1">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.2"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_explore_black_24dp" />
 
                     <TextView
                         android:id="@+id/tvArea"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackground"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:padding="10dp"
                         android:text="CITY/STATE"
-                        />
+                        android:gravity="start" />
 
                 </LinearLayout>
 

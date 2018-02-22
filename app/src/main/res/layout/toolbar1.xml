@@ -7,7 +7,7 @@
     android:layout_below="@+id/view_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@color/black_dark"
     android:minHeight="?attr/actionBarSize"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

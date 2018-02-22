@@ -17,7 +17,6 @@ import com.gajananmotors.shopfinder.activity.EditPostActivity;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
-import com.gajananmotors.shopfinder.model.DeleteShopImagesModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
                             column_name = "shop_pic";
                         else
                             column_name = "image" + (position);
-                        deleteImages(image_name, shop_id, column_name);
+                        //deleteImages(image_name, shop_id, column_name);
                     }
                 });
                 alertDialog.show();
@@ -95,7 +94,7 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
         }
     }
 
-    public void deleteImages(String image_name, int shop_id, String column_name) {
+  /*  public void deleteImages(String image_name, int shop_id, String column_name) {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<DeleteShopImagesModel> call = restInterface.deleteShopImage(shop_id, image_name, column_name);
@@ -116,5 +115,5 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
                 Toast.makeText(activity, "Error in Image Deletetion!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 }
