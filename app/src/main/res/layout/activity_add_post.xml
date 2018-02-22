@@ -66,20 +66,7 @@
                         android:onClick="getAddress"
                         android:src="@drawable/google_map" />
                 </LinearLayout>
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:hintTextAppearance="@style/MyAppearance">
-                    <EditText
-                        android:id="@+id/etBusinessServices"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Services Offered:"
-                        android:inputType="text"
-                        android:editable="false"
-                        android:textSize="14sp" />
-                </android.support.design.widget.TextInputLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -163,15 +150,31 @@
                     app:met_floatingLabel="normal"
                     android:visibility="gone" />
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spnBusinessSubcategory"
+                        android:id="@+id/spnBusinessSubcategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:hint="Sub Category:"
+                        android:textSize="14sp"
+                    android:visibility="gone"
+                        app:hintTextAppearance="@style/MyAppearance"
+                        app:met_floatingLabel="normal" />
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:hint="Sub Category:"
-                    android:textSize="14sp"
-                    android:visibility="gone"
-                    app:hintTextAppearance="@style/MyAppearance"
-                    app:met_floatingLabel="normal" />
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/etBusinessServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Services Offered:"
+                        android:inputType="text"
+                        android:editable="false"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
