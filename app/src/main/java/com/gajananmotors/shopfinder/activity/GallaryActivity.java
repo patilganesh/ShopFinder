@@ -33,7 +33,6 @@ public class GallaryActivity extends AppCompatActivity {
     Gallery simpleGallery;
     CustomAdapterForGallary customGalleryAdapter;
     ImageView selectedImageView;
-    private ProgressBar gallery_progressbar;
     TextView text;
     // array of images
     int shop_id;
@@ -42,14 +41,12 @@ public class GallaryActivity extends AppCompatActivity {
     private RecyclerView recycleView;
     private LinearLayoutManager mLayoutManager;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
-        gallery_progressbar = findViewById(R.id.gallery_progressbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,8 +54,6 @@ public class GallaryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -80,9 +75,6 @@ public class GallaryActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         Intent i = getIntent();
         String shop_pic = i.getExtras().getString("shopCoverphoto");
-
-        simpleGallery = findViewById(R.id.simpleGallery);
-
         text =  findViewById(R.id.tvText);
         shop_id = i.getIntExtra("shop_id", 0);
         selectedImageView = findViewById(R.id.selectedImageView);
@@ -102,9 +94,7 @@ public class GallaryActivity extends AppCompatActivity {
         //  simpleGallery.setAdapter(customGalleryAdapter);
         //simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(GallaryActivity.this);
-        gallery_progressbar.setVisibility(View.VISIBLE);
-        gallery_progressbar.setIndeterminate(true);
-        gallery_progressbar.setProgress(500);
+
         Picasso.with(GallaryActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()
@@ -130,9 +120,7 @@ public class GallaryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });*/
-
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
