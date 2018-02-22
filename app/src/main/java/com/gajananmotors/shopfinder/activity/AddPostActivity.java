@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -43,7 +42,6 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
@@ -69,13 +67,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -90,7 +86,7 @@ public class AddPostActivity extends AppCompatActivity {
     private Place place;
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
-    private ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<Uri> image_uris = new ArrayList();
     private ArrayList<String> image_path = new ArrayList<>();
     private ArrayList<String> new_image_path = new ArrayList<>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
@@ -131,6 +127,7 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
+      //StringCallback stringCallback = new StringCallback() {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
 
@@ -230,7 +227,6 @@ public class AddPostActivity extends AppCompatActivity {
                     }
                 }
                 Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
-
                 sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
                     @Override
                     public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
@@ -241,7 +237,6 @@ public class AddPostActivity extends AppCompatActivity {
                             getSubCategoryData();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                     }
@@ -250,7 +245,6 @@ public class AddPostActivity extends AppCompatActivity {
         });
         // subcategory.setAdapter(categoryAdapter);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -449,8 +443,6 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
-        //TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
-        TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Confirm");
         alert.setView(confirmDialog);
@@ -738,38 +730,38 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
-        public void addServices() {
-         LayoutInflater inflater = LayoutInflater.from(this);
-         View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
-         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-         AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
-         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
+    public void addServices() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
+        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+        AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
+        final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
 
-         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-         alert.setView(confirmDialog);
-         alert.setCancelable(true);
-         final AlertDialog alertDialog = alert.create();
-         alertDialog.show();
-         buttonConfirm.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(confirmDialog);
+        alert.setCancelable(true);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
                 String service_name= etAddservices.getText().toString().trim();
-                 addshopServices(service_name);
-                 alertDialog.dismiss();
-                 }
+                addshopServices(service_name);
+                alertDialog.dismiss();
+            }
 
-         }); buttonCancel.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 alertDialog.dismiss();
+        }); buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
 
 
 
-                 }
+            }
 
-         });
-     }
+        });
+    }
 
     private void addshopServices(String service_name) {
         Retrofit retrofit = APIClient.getClient();
@@ -782,8 +774,8 @@ public class AddPostActivity extends AppCompatActivity {
                     AddShopServicesModel addShopServicesModel=response.body();
                     Toast.makeText(getApplicationContext(),addShopServicesModel.getMsg(),Toast.LENGTH_SHORT).show();
                 }
-
             }
+
             @Override
             public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
 
