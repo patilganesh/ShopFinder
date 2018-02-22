@@ -12,11 +12,8 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SearchView;
@@ -25,7 +22,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -54,13 +50,12 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
-import com.gajananmotors.shopfinder.model.CategoryModel;
+import com.gajananmotors.shopfinder.model.AddShopServicesModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.ShopServicesListModel;
 import com.gajananmotors.shopfinder.model.ShopServicesModel;
-import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
@@ -119,6 +114,7 @@ public class AddPostActivity extends AppCompatActivity {
     private Call<CreateShopModel> shopModelCall;
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm;
+    private ProgressBar subcategory_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,11 +122,16 @@ public class AddPostActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
-      /*StringCallback stringCallback = new StringCallback() {
+      //StringCallback stringCallback = new StringCallback() {
+        subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
+        addPostProgressbar = findViewById(R.id.addPostProgressbar);
+
+         /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
                 if (TextUtils.equals(s,"1")){
@@ -292,16 +293,12 @@ public class AddPostActivity extends AppCompatActivity {
         subcategory.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
-
-            @Override
+              @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+              }
             @Override
             public void afterTextChanged(Editable s) {
-
                 str_subCat_spinner = subcategory.getText().toString();
                 for (SubCategoryModel subCategoryModel : sub_category_list) {
                     if (TextUtils.equals(str_subCat_spinner.toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
@@ -616,6 +613,7 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
+
         if (location.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -692,6 +690,9 @@ public class AddPostActivity extends AppCompatActivity {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<ShopServicesListModel> call = restInterface.shopServices(int_subcat_id);
+        addPostProgressbar.setVisibility(View.VISIBLE);
+        addPostProgressbar.setIndeterminate(true);
+        addPostProgressbar.setProgress(500);
         call.enqueue(new Callback<ShopServicesListModel>() {
             @Override
             public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
@@ -699,9 +700,11 @@ public class AddPostActivity extends AppCompatActivity {
                     ShopServicesListModel listModel=response.body();
                     shopServicesModels = listModel.getShopServicesModels();
                     if(shopServicesModels.size()>0) {
+                        addPostProgressbar.setVisibility(View.INVISIBLE);
                         initialize();
                         initiatePopUp(shopServicesModels, etBusinessServices);
                         if (!expanded) {
+
                             //display all selected values
                             String selected = "";
                             int flag = 0;
@@ -721,6 +724,9 @@ public class AddPostActivity extends AppCompatActivity {
                             expanded = false;
                         }
                     }
+                }else {
+                    addServices();
+                    addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -769,18 +775,18 @@ public class AddPostActivity extends AppCompatActivity {
     private void addshopServices(String service_name) {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<ShopServicesListModel> call = restInterface.addshopServices(int_subcat_id,service_name);
-        call.enqueue(new Callback<ShopServicesListModel>() {
+        Call<AddShopServicesModel> call = restInterface.addshopServices(int_subcat_id,service_name);
+        call.enqueue(new Callback<AddShopServicesModel>() {
             @Override
-            public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
+            public void onResponse(Call<AddShopServicesModel> call, Response<AddShopServicesModel> response) {
                 if(response.isSuccessful()){
-                    ShopServicesListModel listModel=response.body();
-                    shopServicesModels = listModel.getShopServicesModels();
+                    AddShopServicesModel addShopServicesModel=response.body();
+                    Toast.makeText(getApplicationContext(),addShopServicesModel.getMsg(),Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
+            public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
 
             }
         });
@@ -841,5 +847,7 @@ public class AddPostActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+
+
     }
 }

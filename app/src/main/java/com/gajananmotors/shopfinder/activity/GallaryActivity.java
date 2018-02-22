@@ -47,6 +47,7 @@ public class GallaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +115,9 @@ public class GallaryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });*/
+
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
