@@ -725,38 +725,38 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
-        public void addServices() {
-         LayoutInflater inflater = LayoutInflater.from(this);
-         View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
-         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-         AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
-         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
+    public void addServices() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
+        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+        AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
+        final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
 
-         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-         alert.setView(confirmDialog);
-         alert.setCancelable(true);
-         final AlertDialog alertDialog = alert.create();
-         alertDialog.show();
-         buttonConfirm.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(confirmDialog);
+        alert.setCancelable(true);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
                 String service_name= etAddservices.getText().toString().trim();
-                 addshopServices(service_name);
-                 alertDialog.dismiss();
-                 }
+                addshopServices(service_name);
+                alertDialog.dismiss();
+            }
 
-         }); buttonCancel.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 alertDialog.dismiss();
+        }); buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
 
 
 
-                 }
+            }
 
-         });
-     }
+        });
+    }
 
     private void addshopServices(String service_name) {
         Retrofit retrofit = APIClient.getClient();
