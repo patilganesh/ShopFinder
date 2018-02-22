@@ -69,8 +69,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationListener,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMarkerClickListener {
-    public ArrayList<String> nameList;
-    public ArrayList<String> addressList;
     private GoogleMap mMap;
     private double latitude;
     private double longitude;
@@ -79,12 +77,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
-    RecyclerView recycleView;
     RecyclerView searchnearbyrecyclerview;
     LinearLayoutManager mLayoutManager;
     private ShopsListAdpater adapter;
     private TextView textView;
-    Marker marker;
+    private Marker marker;
     boolean gps_enabled = false;
     boolean network_enabled = false;
     private String nearbyPlace = "";
@@ -95,12 +92,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Log.d("MapsActivity", "onCreate");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
         if (!CheckGooglePlayServices()) {
-            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
         } else {
             Log.d("onCreate", "Google Play Services available.");
@@ -120,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         nearbyPlace = intent.getStringExtra("search_keyword");
         DiscreteSeekBar seek = findViewById(R.id.seek);
-        seek.setMin(2);
+      /*  seek.setMin(2);*/
         seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
@@ -138,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         mapFragment.getMapAsync(this);
-
+        getSearchList();
     }
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -212,12 +207,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                     setAdapter(shops_list);
+                } else {
+                    Toast.makeText(MapsActivity.this, "On ", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
+                Toast.makeText(MapsActivity.this, "On Failure" + t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -262,7 +259,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionSuspended(int i) {
 
     }
-
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -296,7 +292,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.d("MapsActivity", "onConnectionFailed");
     }
-
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     public boolean checkLocationPermission() {
@@ -319,7 +314,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -481,7 +475,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
     public void setAdapter(ArrayList<ShopsListModel> shops_list) {
         if (shops_list.size() != 0) {
             adapter = new ShopsListAdpater(this, shops_list);
