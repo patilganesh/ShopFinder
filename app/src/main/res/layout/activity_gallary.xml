@@ -3,42 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#000000"
-    android:gravity="center"
+    android:orientation="vertical"
+    style="@style/Base.ThemeOverlay.AppCompat.ActionBar"
     tools:context="com.gajananmotors.shopfinder.activity.GallaryActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <include layout="@layout/toolbar1" />
     <ImageView
         android:id="@+id/selectedImageView"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_margin="5dp"
-        android:scaleType="fitXY" />
-
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/gallery_progressbar"
-            android:visibility="visible"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-    <Gallery
-        android:id="@+id/simpleGallery"
-        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:unselectedAlpha="0.80" />
-
-    <TextView
-        android:id="@+id/tvText"
-        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+       />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gallary_recycler_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/red"
-        android:visibility="gone" />
+        android:layout_below="@id/selectedImageView"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" />
+
 </LinearLayout>
