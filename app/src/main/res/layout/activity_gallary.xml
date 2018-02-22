@@ -15,15 +15,27 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
        />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/gallary_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/selectedImageView"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal" />
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/gallary_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvText"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.gajananmotors.shopfinder.apiinterface;
 
+import com.gajananmotors.shopfinder.model.AddShopServicesModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.DeleteShopImagesModel;
@@ -197,7 +198,7 @@ public interface RestInterface {
 
     @FormUrlEncoded
     @POST("index.php/mobile_api/insert_services")
-    Call<ShopServicesListModel> addshopServices(
+    Call<AddShopServicesModel> addshopServices(
             @Field("sub_category_id") int subCategory_id,
             @Field("name") String name
 

@@ -52,6 +52,7 @@ import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
+import com.gajananmotors.shopfinder.model.AddShopServicesModel;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
@@ -131,6 +132,8 @@ public class AddPostActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
+        addPostProgressbar = findViewById(R.id.addPostProgressbar);
+
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -227,9 +230,7 @@ public class AddPostActivity extends AppCompatActivity {
                     }
                 }
                 Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
-                subcategory_progressbar.setVisibility(View.VISIBLE);
-                subcategory_progressbar.setProgress(500);
-                subcategory_progressbar.setIndeterminate(true);
+
                 sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
                     @Override
                     public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
@@ -689,6 +690,9 @@ public class AddPostActivity extends AppCompatActivity {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<ShopServicesListModel> call = restInterface.shopServices(int_subcat_id);
+        addPostProgressbar.setVisibility(View.VISIBLE);
+        addPostProgressbar.setIndeterminate(true);
+        addPostProgressbar.setProgress(500);
         call.enqueue(new Callback<ShopServicesListModel>() {
             @Override
             public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
@@ -696,6 +700,7 @@ public class AddPostActivity extends AppCompatActivity {
                     ShopServicesListModel listModel=response.body();
                     shopServicesModels = listModel.getShopServicesModels();
                     if(shopServicesModels.size()>0) {
+                        addPostProgressbar.setVisibility(View.INVISIBLE);
                         initialize();
                         initiatePopUp(shopServicesModels, etBusinessServices);
                         if (!expanded) {
@@ -718,6 +723,9 @@ public class AddPostActivity extends AppCompatActivity {
                             expanded = false;
                         }
                     }
+                }else {
+                    addServices();
+                    addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -766,18 +774,18 @@ public class AddPostActivity extends AppCompatActivity {
     private void addshopServices(String service_name) {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<ShopServicesListModel> call = restInterface.addshopServices(int_subcat_id,service_name);
-        call.enqueue(new Callback<ShopServicesListModel>() {
+        Call<AddShopServicesModel> call = restInterface.addshopServices(int_subcat_id,service_name);
+        call.enqueue(new Callback<AddShopServicesModel>() {
             @Override
-            public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
+            public void onResponse(Call<AddShopServicesModel> call, Response<AddShopServicesModel> response) {
                 if(response.isSuccessful()){
-                    ShopServicesListModel listModel=response.body();
-                    shopServicesModels = listModel.getShopServicesModels();
+                    AddShopServicesModel addShopServicesModel=response.body();
+                    Toast.makeText(getApplicationContext(),addShopServicesModel.getMsg(),Toast.LENGTH_SHORT).show();
                 }
-            }
 
+            }
             @Override
-            public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
+            public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
 
             }
 

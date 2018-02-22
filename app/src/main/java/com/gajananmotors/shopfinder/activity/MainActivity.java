@@ -115,11 +115,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.e("Refreshed token:", refreshedToken);
+        //Log.e("Refreshed token:", refreshedToken);
         Constant.device_token=refreshedToken;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-
         editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
         editor.apply();
         nearBy = findViewById(R.id.ivNearby);
@@ -298,13 +297,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean doubleBackToExitPressedOnce = false;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+      /*  if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
                 && keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
             onBackPressed();
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event);*/
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed();
+        }
+        return true;
     }
 
     @Override
@@ -405,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.clear();
             editor.apply();
+            finish();
             startActivity(new Intent(this, MainActivity.class));
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

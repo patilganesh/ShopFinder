@@ -49,7 +49,7 @@ public class GallaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        gallery_progressbar = findViewById(R.id.gallery_progressbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +81,7 @@ public class GallaryActivity extends AppCompatActivity {
         Intent i = getIntent();
         String shop_pic = i.getExtras().getString("shopCoverphoto");
 
-        simpleGallery = findViewById(R.id.simpleGallery);
+
 
         text =  findViewById(R.id.tvText);
         shop_id = i.getIntExtra("shop_id", 0);
@@ -102,9 +102,7 @@ public class GallaryActivity extends AppCompatActivity {
         //  simpleGallery.setAdapter(customGalleryAdapter);
         //simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(GallaryActivity.this);
-        gallery_progressbar.setVisibility(View.VISIBLE);
-        gallery_progressbar.setIndeterminate(true);
-        gallery_progressbar.setProgress(500);
+
         Picasso.with(GallaryActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()

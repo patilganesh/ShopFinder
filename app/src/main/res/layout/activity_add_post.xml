@@ -66,20 +66,6 @@
                         android:onClick="getAddress"
                         android:src="@drawable/google_map" />
                 </LinearLayout>
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:hintTextAppearance="@style/MyAppearance">
-                    <EditText
-                        android:id="@+id/etBusinessServices"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Services Offered:"
-                        android:inputType="text"
-                        android:editable="false"
-                        android:textSize="14sp" />
-                </android.support.design.widget.TextInputLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -172,6 +158,34 @@
                     android:visibility="gone"
                         app:hintTextAppearance="@style/MyAppearance"
                         app:met_floatingLabel="normal" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+                    <EditText
+                        android:id="@+id/etBusinessServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="false"
+                        android:hint="Services Offered:"
+                        android:inputType="text"
+                        android:editable="false"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+                <ProgressBar
+                    android:id="@+id/addPostProgressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+                </RelativeLayout>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
