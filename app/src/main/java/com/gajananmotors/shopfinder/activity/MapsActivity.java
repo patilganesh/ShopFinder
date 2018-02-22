@@ -129,7 +129,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 distance = seekBar.getProgress();
-                getSearchList();
+                getSearchList(distance);
             }
         });
         mapFragment.getMapAsync(this);
@@ -168,12 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-        LatLng baner = new LatLng(18.5670, 73.7696);
-        mMap.addMarker(new MarkerOptions().position(baner).title("Baner").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(baner));
-        LatLng baner1 = new LatLng(18.5669, 73.7704);
-        mMap.addMarker(new MarkerOptions().position(baner1).title("Dummy").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(baner1));
+
     }
     public void getplacesBykm() {
 
@@ -188,7 +183,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
     }
 
-    public void getSearchList() {
+    public void getSearchList(int distance) {
+        Log.d("mapActivty","getSearchList Called");
+
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<ShopsArrayListModel> call = restInterface.getNearByShops(nearbyPlace, latitude, longitude, distance);
@@ -207,16 +204,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                     setAdapter(shops_list);
-                } else {
-                    Toast.makeText(MapsActivity.this, "On ", Toast.LENGTH_SHORT).show();
+                    ShowNearbyPlaces(shops_list);
                 }
             }
 
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-                Toast.makeText(MapsActivity.this, "On Failure" + t.toString(), Toast.LENGTH_SHORT).show();
+
             }
         });
+    }
+
+
+    private void ShowNearbyPlaces(ArrayList<ShopsListModel> nearbyPlacesList) {
+        addressList = new ArrayList<>();
+        nameList = new ArrayList<>();
+        Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
+        mMap.clear();
+
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+
+        for (int i = 0; i < nearbyPlacesList.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions();
+           // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+            double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
+            double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
+            String placeName = nearbyPlacesList.get(i).getShop_name();
+            String vicinity = nearbyPlacesList.get(i).getAddress();
+            LatLng latLng = new LatLng(lat, lng);
+            markerOptions.position(latLng);
+            markerOptions.title(placeName + " : " + vicinity);
+            mMap.addMarker(markerOptions);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        }
     }
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -477,7 +501,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void setAdapter(ArrayList<ShopsListModel> shops_list) {
         if (shops_list.size() != 0) {
-            adapter = new ShopsListAdpater(this, shops_list);
+            String name=getIntent().getStringExtra("owner");
+            adapter = new ShopsListAdpater(this, shops_list,name);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             searchnearbyrecyclerview.setLayoutManager(mLayoutManager);
             //  adapter.notifyDataSetChanged();

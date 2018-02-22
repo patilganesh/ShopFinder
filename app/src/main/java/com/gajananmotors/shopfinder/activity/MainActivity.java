@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -25,18 +24,15 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
-import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
@@ -47,12 +43,11 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -189,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
                 search_keyword = newQuery;
+
+                Log.d("search_keyword", "newQuery" + newQuery);
                 nearBy.setVisibility(View.VISIBLE);
                 ivSearch.setVisibility(View.VISIBLE);
             }
@@ -200,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
     public void getSearchService(String search_keyword) {
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         intent.putExtra("search_keyword", search_keyword);
@@ -228,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
         category_progressbar.setVisibility(View.GONE);
     }
+
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -246,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (result)
                     getSub(category_Model_list.get(index).getCategory_id());
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
+
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -313,11 +314,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
+
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
+
     boolean doubleBackToExitPressedOnce = false;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
@@ -339,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         snackbar.show();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -399,10 +404,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
-        } else if (id == R.id.nav_nearby) {
+        } else if (id == R.id.nav_nearby) {/*
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             intent.putExtra("search_keyword", search_keyword);
-            startActivity(intent);
+            startActivity(intent);*/
 
         } else if (id == R.id.nav_addpost) {
             if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
@@ -435,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -442,6 +448,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -449,8 +456,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (!isNetworkAvailable(getApplicationContext())) {
                     displayPromptForEnablingData(this);
                 } else {
-                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
-                    startActivity(i);
+                    Log.d("search_keywordOnCLick", "search_keyword" + search_keyword);
+                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                    intent.putExtra("search_keyword", search_keyword);
+                    intent.putExtra("owner", "search");
+                    startActivity(intent);
                 }
         }
     }
