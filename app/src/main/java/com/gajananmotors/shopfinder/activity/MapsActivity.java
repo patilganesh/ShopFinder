@@ -176,12 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-        LatLng baner = new LatLng(18.5670, 73.7696);
-        mMap.addMarker(new MarkerOptions().position(baner).title("Baner").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(baner));
-        LatLng baner1 = new LatLng(18.5669, 73.7704);
-        mMap.addMarker(new MarkerOptions().position(baner1).title("Dummy").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(baner1));
+
     }
     public void getplacesBykm() {
 
