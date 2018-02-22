@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -29,6 +30,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
@@ -48,7 +52,6 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -63,17 +66,10 @@ import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private RecyclerView recycler_view_vertical, recyclerView;
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
-    private ShopsListAdpater adapter;
-    private static String search_text;
-    private ShopsListModel indivisual_list[] = new ShopsListModel[6];
     private static int RESPONSE_CODE = 1;
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
     private ArrayList<SubCategoryModel> sub_category_list = new ArrayList<>();
     private ArrayList<ArrayList<SubCategoryModel>> indi_sub_category_list = new ArrayList<ArrayList<SubCategoryModel>>();
-    // private ArrayList<SubCategoryListModel>[] subCategory_data=new ArrayList<>()[5];
-    private ArrayList<String> categoryNames = new ArrayList<>();
-    private ArrayList<String> categoryImages = new ArrayList<>();
-    private ArrayList<Integer> categoryId = new ArrayList<>();
     private Retrofit retrofit;
     private RestInterface restInterface;
     private CustomAdapterForVerticalGridViewAdapter gridAdapter;
@@ -82,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FloatingActionButton fab;
-    private String name="user";
+    private String name = "user";
     private int index = 0;
     private SharedPreferences sharedpreferences;
     private String refreshedToken = "";
@@ -92,9 +88,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerViewType recyclerViewType;
     android.support.design.widget.CoordinatorLayout coordinate_layout;
     private ImageView nearBy;
+    private ImageView ivSearch;
+    private String search_keyword = "";
 
     public static void finishActivity(Context context) {
-
     }
 
     @Override
@@ -116,13 +113,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.e("Refreshed token: ", refreshedToken);
-        Constant.device_token=refreshedToken;
+        Constant.device_token = refreshedToken;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 //      setting values to sharedpreferences keys.
         editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
         editor.apply();
         nearBy = findViewById(R.id.ivNearby);
+        ivSearch = findViewById(R.id.ivSearch);
         nearBy.setOnClickListener(this);
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
@@ -130,15 +128,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFocus() {
                 toolbar.setVisibility(View.GONE);
-
+                ivSearch.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onFocusCleared() {
                 toolbar.setVisibility(View.VISIBLE);
+                ivSearch.setVisibility(View.GONE);
             }
         });
-
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recyclerViewType = RecyclerViewType.GRID;
@@ -185,7 +183,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(mDividerItemDecoration);
         recyclerView.setAdapter(adapter);*/
+        searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+                search_keyword = newQuery;
+                nearBy.setVisibility(View.VISIBLE);
+
+            }
+        });
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSearchService(search_keyword);
+            }
+        });
     }
+
+    public void getSearchService(String search_keyword) {
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        intent.putExtra("search_keyword", search_keyword);
+        intent.putExtra("owner", "search");
+        startActivity(intent);
+    }
+
     private void setUpRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view_vertical);
         recyclerView.setNestedScrollingEnabled(false);
@@ -194,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(linearLayoutManager);
         populateRecyclerView();
     }
+
     //populate recycler view
     private void populateRecyclerView() {
         ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
@@ -206,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
         category_progressbar.setVisibility(View.GONE);
     }
+
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -224,12 +246,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (result)
                     getSub(category_Model_list.get(index).getCategory_id());
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Connection Failed!", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     public void getSub(final int int_cat_id) {
 
@@ -248,8 +272,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 if (index == category_Model_list.size()) {
-
-                    //   Log.i("size", "Size: "+indi_sub_category_list.size());
                     setUpRecyclerView();
 
                 }
@@ -263,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
+
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -291,11 +314,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
+
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
-        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id,name);
+        gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
         // recycler_view_vertical.setAdapter(gridAdapter);
     }
+
     boolean doubleBackToExitPressedOnce = false;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
@@ -317,9 +343,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         snackbar.show();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
+        searchView.clearQuery();
         navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
@@ -354,7 +382,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -411,6 +438,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -418,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "" + data.toString(), Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -450,4 +479,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.setFilter(suggest_list);
         return true;
     }*/
+
 }

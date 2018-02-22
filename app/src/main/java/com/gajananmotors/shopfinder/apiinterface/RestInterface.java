@@ -179,12 +179,17 @@ public interface RestInterface {
     Call<LinkShopModel> linkShop(
             @Field("shop_id") int shop_id
     );
-
     @FormUrlEncoded
     @POST("index.php/mobile_api/delete_shop_images")
     Call<DeleteShopImagesModel> deleteShopImage(
             @Field("shop_id") int shop_id,
             @Field("shop_image") String shop_image,
             @Field("colomn_name") String colomn_name
+    );
+
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/search_shop")
+    Call<ShopsArrayListModel> getSearchByKeyword(
+            @Field("search_string") String search_string
     );
 }

@@ -33,7 +33,7 @@ import retrofit2.Retrofit;
 public class ItemDetailsActivity extends AppCompatActivity {
 
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
-    ShopsListAdpater adapter;
+    private ShopsListAdpater adapter;
     private RecyclerView recyclerView;
     private Retrofit retrofit;
     private RestInterface restInterface;

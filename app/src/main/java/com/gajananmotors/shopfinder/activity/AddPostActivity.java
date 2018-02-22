@@ -84,7 +84,7 @@ public class AddPostActivity extends AppCompatActivity {
     private Place place;
     private static final int INTENT_REQUEST_GET_IMAGES = 13;
     private static final String TAG = "TedPicker";
-    private ArrayList<Uri> image_uris = new ArrayList<Uri>();
+    private ArrayList<Uri> image_uris = new ArrayList();
     private ArrayList<String> image_path = new ArrayList<>();
     private ArrayList<String> new_image_path = new ArrayList<>();
     private ArrayList<CategoryModel> category_Model_list = new ArrayList<>();
@@ -122,18 +122,6 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
-      /*StringCallback stringCallback = new StringCallback() {
-            @Override
-            public void StringCallback(String s) {
-                if (TextUtils.equals(s,"1")){
-                    for(int i=0;i<category_Model_list.size();i++)
-                        categoryNames.add(category_Model_list.get(i).getName().toString());
-                    category_Model_list.clear();
-                    flag=true;
-                }
-            }
-        };
-        category_Model_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             @Override
@@ -530,7 +518,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
-
     int index2 = 1;
     public void uploadShopImages(int index) {
         if (image_path.size() > index) {

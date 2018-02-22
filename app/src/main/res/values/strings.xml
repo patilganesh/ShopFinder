@@ -79,6 +79,7 @@
     <string name="string_image_gallary">Image Gallary</string>
     <string name="string_update_post">Update Post</string>
     <string name="string_delete">Delete</string>
+    <string name="string_search_list">Search Result</string>
 
 
 </resources>

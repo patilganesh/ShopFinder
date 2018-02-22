@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.AllPostsActivity;
 import com.gajananmotors.shopfinder.activity.ItemDetailsActivity;
+import com.gajananmotors.shopfinder.activity.SearchActivity;
 import com.gajananmotors.shopfinder.activity.ViewPostActivity;
 import com.gajananmotors.shopfinder.common.ViewShopList;
 import com.gajananmotors.shopfinder.holder.ShopsListHolder;
@@ -47,6 +48,14 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> {
         this.list = shops_list;
         this.name=name;
     }
+
+    public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
+
+        this.activity = activity;
+        this.list = shops_list;
+        this.name = name;
+    }
+
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
