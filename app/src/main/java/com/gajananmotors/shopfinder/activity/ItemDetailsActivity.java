@@ -101,7 +101,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
-        if (!shops_list.isEmpty()) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -122,7 +121,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
                     return true;
                 }
             });
-        }
+
         return true;
     }
     @Override

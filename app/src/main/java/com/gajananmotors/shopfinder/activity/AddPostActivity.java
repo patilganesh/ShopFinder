@@ -47,6 +47,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
@@ -70,6 +71,7 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import okhttp3.MediaType;
@@ -113,7 +115,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ArrayList<String> shopServicesList;
     private Call<CreateShopModel> shopModelCall;
     private ProgressBar addPostProgressbar;
-    private TextView tvConfirm;
+    private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,40 +250,8 @@ public class AddPostActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
-        searchView.setIconifiedByDefault(true);
-       /* searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() > 0) {
-                    recycler_view_vertical.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-                newText = newText.toLowerCase();
-                search_text = newText;
-                ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-                for (ShopsListModel s : shops_list) {
-                    if (s.getName().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getType().toLowerCase().startsWith(newText) || s.getDistance().toLowerCase().startsWith(newText) || s.getTiming().toLowerCase().startsWith(newText) || s.getMobileNo().toLowerCase().startsWith(newText))
-                        suggest_list.add(s);
-                    else if (s.getName().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getType().toLowerCase().endsWith(newText) || s.getDistance().toLowerCase().endsWith(newText) || s.getTiming().toLowerCase().endsWith(newText) || s.getMobileNo().toLowerCase().endsWith(newText))
-                        suggest_list.add(s);
-                    else if (s.getName().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getType().toLowerCase().contains(newText) || s.getDistance().toLowerCase().contains(newText) || s.getTiming().toLowerCase().contains(newText) || s.getMobileNo().toLowerCase().contains(newText))
-                        suggest_list.add(s);
-                }
-                adapter.setFilter(suggest_list);
-                return true;
-            }
-        });*/
-        //    Toast.makeText(this, "On Create Option Menu", Toast.LENGTH_LONG).show();
         return true;
     }
-
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
         for (int i = 0; i < sub_category_list.size(); i++) {
@@ -386,15 +356,16 @@ public class AddPostActivity extends AppCompatActivity {
         int index = 1;
         mSelectedImagesContainer.removeAllViews();
         if (image_uris.size() >= 1) {
-             /*for(Uri uri:image_uris) {
-                imagePath=uri.getPath();
+            for (Uri uri : image_uris) {
+                String imagePath = uri.getPath();
                 File file=new File(imagePath);
                 if(file.length()>51200) {
                     imagePath = ImageCompressor.compressImage(uri.getPath());
                }
-                Log.i("File Size:", "size: "+file.length());*//*
-                image_path.add(imagePath);
-            }*/
+                // Log.i("File Size:", "size: "+file.length());
+                // image_path.add(imagePath);
+                new_image_path.add(imagePath);
+            }
             mSelectedImagesContainer.setVisibility(View.VISIBLE);
         }
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
@@ -414,14 +385,20 @@ public class AddPostActivity extends AppCompatActivity {
                         alertDialog.setCancelable(false);
                         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getBaseContext(), " Shop cover photo set successfully!", Toast.LENGTH_LONG).show();
+                                /// Toast.makeText(getBaseContext(), " Shop cover photo set successfully!", Toast.LENGTH_SHORT).show();
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        "Shop cover photo set successfully!", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 20, 300);
+                                toast.show();
                                 getImages = uri.toString();
                             }
                         });
                         alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Photo selection rejected!", Toast.LENGTH_LONG).show();
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        "Photo selection rejected!", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 20, 300);
+                                toast.show();
                                 dialog.cancel();
                             }
                         });
@@ -450,6 +427,7 @@ public class AddPostActivity extends AppCompatActivity {
         TextView tvArea = confirmDialog.findViewById(R.id.tvArea);
         ImageView imgShopProfile = confirmDialog.findViewById(R.id.imgShop_dialog);
         TextView tvEdit = confirmDialog.findViewById(R.id.tvBack);
+        tvWait = confirmDialog.findViewById(R.id.tvWait);
         tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         addPostProgressbar = confirmDialog.findViewById(R.id.addPostProgressbar);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -486,8 +464,8 @@ public class AddPostActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = null;
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        for (int i = 0; i < image_uris.size(); i++) {
-            String path = image_uris.get(i).getPath();
+        for (int i = 0; i < new_image_path.size(); i++) {
+            String path = new_image_path.get(i);
             if (!path.equalsIgnoreCase(getImages)) {
                 image_path.add(path);
             }
@@ -512,9 +490,10 @@ public class AddPostActivity extends AppCompatActivity {
                     String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
                     strPlaceSearch, strBusinessWebUrl, strBusinessMobile);
         }
-        addPostProgressbar.setVisibility(View.VISIBLE);
+        /*addPostProgressbar.setVisibility(View.VISIBLE);
         addPostProgressbar.setIndeterminate(true);
-        addPostProgressbar.setProgress(500);
+        addPostProgressbar.setProgress(500);*/
+        tvWait.setVisibility(View.VISIBLE);
         tvConfirm.setVisibility(View.INVISIBLE);
         shopModelCall.enqueue(new Callback<CreateShopModel>() {
             @Override
@@ -525,7 +504,7 @@ public class AddPostActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(Constant.SHOP_ID, shop.getShop_id());
                         editor.apply();
-                        //         Toast.makeText(AddPostActivity.this, "Shop Created Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(AddPostActivity.this, "Shop Created Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
                         uploadShopImages(count);
                     }
                 }
@@ -536,7 +515,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
 
-    //    int index2 = 1;
+    int index2 = 1;
     public void uploadShopImages(int index) {
         if (image_path.size() > index) {
             File file_path = new File(image_path.get(index));
@@ -544,8 +523,8 @@ public class AddPostActivity extends AppCompatActivity {
             if (file_path != null) {
                 try {
                     RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
-                    fileToUpload = MultipartBody.Part.createFormData("image", file_path.getName(), mFile);
-                    //++index2;
+                    fileToUpload = MultipartBody.Part.createFormData("image" + (index2), file_path.getName(), mFile);
+                    ++index2;
                 } catch (Exception e) {
                     Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -569,7 +548,8 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             });
         } else {
-            addPostProgressbar.setVisibility(View.INVISIBLE);
+            //addPostProgressbar.setVisibility(View.INVISIBLE);
+            tvWait.setVisibility(View.GONE);
             tvConfirm.setVisibility(View.VISIBLE);
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(AddPostActivity.this, MainActivity.class));
