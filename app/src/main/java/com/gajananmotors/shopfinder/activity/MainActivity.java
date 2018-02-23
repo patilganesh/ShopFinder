@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onBackPressed();
             }
         });
+
         coordinate_layout = findViewById(R.id.coordinate_layout_main);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.e("Refreshed token:", refreshedToken);
@@ -381,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tvOwner_Name.setText(sharedpreferences.getString(Constant.OWNER_NAME, ""));
                 tvOwner_Email.setText(sharedpreferences.getString(Constant.OWNWER_EMAIL, ""));
                 Picasso.with(MainActivity.this)
-                        .load("http://www.findashop.in/images/owner_profile/" + sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                        .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                         .fit()
                         .placeholder(R.drawable.ic_account_circle_black_24dp)
                         .into(user_profile);

@@ -208,7 +208,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         editor.putString(Constant.OWNWER_EMAIL, email);
                         editor.putString(Constant.DATE_OF_BIRTH, dob);
                         editor.putString(Constant.MOBILE, mobile);
-                        editor.putString(Constant.OWNER_PROFILE,image);
+                        editor.putString(Constant.OWNER_PROFILE,"http://www.findashop.in/images/owner_profile/" +image);
                         editor.apply();
                         Intent intent = new Intent();
                         intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));

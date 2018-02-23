@@ -117,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             etMobile.setText(sharedpreferences.getString(Constant.MOBILE, ""));
             etDate.setText(sharedpreferences.getString(Constant.DATE_OF_BIRTH, ""));
             Picasso.with(ProfileActivity.this)
-                    .load("http://www.findashop.in/images/owner_profile/" +sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
+                    .load(sharedpreferences.getString(Constant.OWNER_PROFILE, ""))
                     .fit()
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(imgProfile);
@@ -336,7 +336,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         editor.putString(Constant.OWNWER_EMAIL, email);
                         editor.putString(Constant.DATE_OF_BIRTH, dob);
                         editor.putString(Constant.MOBILE, mobile);
-                        editor.putString(Constant.OWNER_PROFILE, image);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" +image);
                         editor.apply();
                         RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
                         deleteLayout.setVisibility(View.VISIBLE);
