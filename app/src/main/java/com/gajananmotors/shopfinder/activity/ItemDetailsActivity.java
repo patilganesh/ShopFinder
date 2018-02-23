@@ -108,17 +108,17 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
                     return false;
                 }
-
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     newText = newText.toLowerCase();
-                    ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
+                    /*ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
                     for (ShopsListModel s : shops_list) {
                         if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText))
 
                             suggest_list.add(s);
                     }
-                    adapter.setFilter(suggest_list);
+                    adapter.setFilter(suggest_list);*/
+                    adapter.getFilter().filter(newText);
                     return true;
                 }
             });

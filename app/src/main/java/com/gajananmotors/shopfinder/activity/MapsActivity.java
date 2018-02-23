@@ -133,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         mapFragment.getMapAsync(this);
-        getSearchList();
+
     }
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -214,12 +214,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
-
     private void ShowNearbyPlaces(ArrayList<ShopsListModel> nearbyPlacesList) {
-        addressList = new ArrayList<>();
-        nameList = new ArrayList<>();
-        Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
+
         mMap.clear();
 
         if (mCurrLocationMarker != null) {
@@ -229,6 +225,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
            // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+
             double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
             double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
             String placeName = nearbyPlacesList.get(i).getShop_name();
