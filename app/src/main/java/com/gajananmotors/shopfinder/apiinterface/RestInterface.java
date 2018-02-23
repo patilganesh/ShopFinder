@@ -173,7 +173,6 @@ public interface RestInterface {
     Call<UploadShopImagesModel> uploadShopImages(
             @Part("shop_id") int shop_id,
             @Part MultipartBody.Part image,
-            @Part("shop_mob_no") String shop_mob_no,
             @Part("action") String action,
             @Part("count") int count
     );

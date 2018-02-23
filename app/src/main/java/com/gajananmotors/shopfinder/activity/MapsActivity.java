@@ -69,8 +69,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationListener,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMarkerClickListener {
-    public ArrayList<String> nameList;
-    public ArrayList<String> addressList;
     private GoogleMap mMap;
     private double latitude;
     private double longitude;
@@ -79,12 +77,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
-    RecyclerView recycleView;
     RecyclerView searchnearbyrecyclerview;
     LinearLayoutManager mLayoutManager;
     private ShopsListAdpater adapter;
     private TextView textView;
-    Marker marker;
+    private Marker marker;
     boolean gps_enabled = false;
     boolean network_enabled = false;
     private String nearbyPlace = "";
@@ -95,12 +92,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Log.d("MapsActivity", "onCreate");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
         if (!CheckGooglePlayServices()) {
-            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
         } else {
             Log.d("onCreate", "Google Play Services available.");
@@ -119,9 +114,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Intent intent = getIntent();
         nearbyPlace = intent.getStringExtra("search_keyword");
-        Log.d("mapActivty","search_keyword"+nearbyPlace);
         DiscreteSeekBar seek = findViewById(R.id.seek);
-        seek.setMin(2);
+      /*  seek.setMin(2);*/
         seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
@@ -135,8 +129,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 distance = seekBar.getProgress();
-                Log.d("mapActivty","onStopTrackingTouch Called");
-
                 getSearchList(distance);
             }
         });
@@ -196,7 +188,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        Log.d("mapActivty","parameter"+nearbyPlace+"lat"+latitude+longitude+"distnc"+distance);
         Call<ShopsArrayListModel> call = restInterface.getNearByShops(nearbyPlace, latitude, longitude, distance);
         nearby_search_list_progressbar.setVisibility(View.VISIBLE);
         nearby_search_list_progressbar.setIndeterminate(true);
@@ -207,8 +198,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (response.isSuccessful()) {
                     ShopsArrayListModel list = response.body();
                     ArrayList<ShopsListModel> shopsListModels = list.getShopList();
-
-                    Log.d("mapActivty","shopsListModels"+shopsListModels.toString());
                     for (ShopsListModel model : shopsListModels) {
                         if (model.getStatus() == 1) {
                             shops_list.add(model);
@@ -221,16 +210,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-                Toast.makeText(MapsActivity.this, "Service Call Failed", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
-
-
     private void ShowNearbyPlaces(ArrayList<ShopsListModel> nearbyPlacesList) {
-        addressList = new ArrayList<>();
-        nameList = new ArrayList<>();
-        Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
+
         mMap.clear();
 
         if (mCurrLocationMarker != null) {
@@ -240,6 +225,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
            // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+
             double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
             double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
             String placeName = nearbyPlacesList.get(i).getShop_name();
@@ -294,7 +280,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionSuspended(int i) {
 
     }
-
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -328,7 +313,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.d("MapsActivity", "onConnectionFailed");
     }
-
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     public boolean checkLocationPermission() {
@@ -351,7 +335,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -513,7 +496,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
     public void setAdapter(ArrayList<ShopsListModel> shops_list) {
         if (shops_list.size() != 0) {
             String name=getIntent().getStringExtra("owner");

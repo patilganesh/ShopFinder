@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolbar.setVisibility(View.VISIBLE);
                 ivSearch.setVisibility(View.GONE);
                 nearBy.setVisibility(View.GONE);
+                searchView.clearQuery();
             }
         });
         retrofit = APIClient.getClient();

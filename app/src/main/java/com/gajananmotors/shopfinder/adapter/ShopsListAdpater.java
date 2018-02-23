@@ -57,21 +57,17 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
     }
 
     public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
+        this.activity = activity;
         this.list = shops_list;
         mFilteredList = shops_list;
-        this.activity = activity;
-        this.name=name;
+        this.name = name;
     }
-
-
-
     public ShopsListAdpater(AllPostsActivity allPostsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
         mFilteredList = shops_list;
         this.activity = allPostsActivity;
         this.name=name;
     }
-
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -134,8 +130,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
                 Log.e("updatedsize", String.valueOf(images.size()));
             }
         });
-
-
     }
     private void transition() {
         Log.d("Allpost", "transition");

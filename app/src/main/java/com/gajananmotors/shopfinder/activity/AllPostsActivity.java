@@ -139,25 +139,6 @@ public class AllPostsActivity extends AppCompatActivity {
         });
         return true;
     }
-
-
-    private void search(SearchView searchView) {
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-              //  adapter.getFilter().filter(newText);
-                return true;
-            }
-        });
-    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {

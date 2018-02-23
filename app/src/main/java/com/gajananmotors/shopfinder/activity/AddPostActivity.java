@@ -386,6 +386,15 @@ public class AddPostActivity extends AppCompatActivity {
         int index = 1;
         mSelectedImagesContainer.removeAllViews();
         if (image_uris.size() >= 1) {
+             /*for(Uri uri:image_uris) {
+                imagePath=uri.getPath();
+                File file=new File(imagePath);
+                if(file.length()>51200) {
+                    imagePath = ImageCompressor.compressImage(uri.getPath());
+               }
+                Log.i("File Size:", "size: "+file.length());*//*
+                image_path.add(imagePath);
+            }*/
             mSelectedImagesContainer.setVisibility(View.VISIBLE);
         }
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
@@ -527,7 +536,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
 
-    int index2 = 1;
+    //    int index2 = 1;
     public void uploadShopImages(int index) {
         if (image_path.size() > index) {
             File file_path = new File(image_path.get(index));
@@ -535,15 +544,15 @@ public class AddPostActivity extends AppCompatActivity {
             if (file_path != null) {
                 try {
                     RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file_path);
-                    fileToUpload = MultipartBody.Part.createFormData("image" + (index2), file_path.getName(), mFile);
-                    ++index2;
+                    fileToUpload = MultipartBody.Part.createFormData("image", file_path.getName(), mFile);
+                    //++index2;
                 } catch (Exception e) {
                     Toast.makeText(AddPostActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
             Retrofit retrofit = APIClient.getClient();
             RestInterface restInterface = retrofit.create(RestInterface.class);
-            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, shop.getShop_mob_no(), "create", index);
+            Call<UploadShopImagesModel> call = restInterface.uploadShopImages(shop.getShop_id(), fileToUpload, "create", index);
             call.enqueue(new Callback<UploadShopImagesModel>() {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
@@ -554,7 +563,6 @@ public class AddPostActivity extends AppCompatActivity {
                             uploadShopImages(uploadShopImagesModel.getCount());
                     }
                 }
-
                 @Override
                 public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
                     Toast.makeText(AddPostActivity.this, "Error: " + t.toString(), Toast.LENGTH_SHORT).show();
@@ -781,8 +789,6 @@ public class AddPostActivity extends AppCompatActivity {
             public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
 
             }
-
-
         });
 
     }
