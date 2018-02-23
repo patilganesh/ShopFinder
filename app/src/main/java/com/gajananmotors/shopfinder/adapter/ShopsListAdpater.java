@@ -57,14 +57,13 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
     }
 
     public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
-
-    }
-
-    public ShopsListAdpater(MapsActivity mapsActivity, ArrayList<ShopsListModel> shops_list) {
-        this.activity = mapsActivity;
         this.list = shops_list;
         mFilteredList = shops_list;
+        this.activity = activity;
+        this.name=name;
     }
+
+
 
     public ShopsListAdpater(AllPostsActivity allPostsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
