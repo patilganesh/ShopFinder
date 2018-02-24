@@ -67,5 +67,4 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionRecy
         return sectionModelArrayList.size();
     }
 
-
 }

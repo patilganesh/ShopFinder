@@ -72,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String name="",email="",profile="",logingoogle="";
     private Toolbar toolbar;
 
+
     private ProgressBar register_progressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,19 +112,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        if (extras != null ) {
             name = extras.getString("owner_name");
             email = extras.getString("owner_email");
-            profile = extras.getString("owner_profile");
+
+            if(profile.equals("")) {
+                profile="";}else{
+                profile = extras.getString("owner_profile");
+                Picasso.with(RegisterActivity.this)
+                        .load(profile)
+                        .fit()
+                        .placeholder(R.drawable.ic_account_circle_black_24dp)
+                        .into(imgProfile);
+            }
+
             logingoogle = extras.getString("usertype");
             outPutFile= new File(profile);
             etName.setText(name);
             etEmail.setText(email);
-            Picasso.with(RegisterActivity.this)
-                    .load(profile)
-                    .fit()
-                    .placeholder(R.drawable.ic_account_circle_black_24dp)
-                    .into(imgProfile);
+
         }
         etDate.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
@@ -208,7 +215,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         editor.putString(Constant.OWNWER_EMAIL, email);
                         editor.putString(Constant.DATE_OF_BIRTH, dob);
                         editor.putString(Constant.MOBILE, mobile);
-                        editor.putString(Constant.OWNER_PROFILE,image);
+                        editor.putString(Constant.OWNER_PROFILE,"http://www.findashop.in/images/owner_profile/" +image);
                         editor.apply();
                         Intent intent = new Intent();
                         intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));

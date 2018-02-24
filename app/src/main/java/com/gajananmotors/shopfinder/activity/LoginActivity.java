@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private int success = 0, otp = 0, responseCode = 0;
     private static final String TAG = LoginActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
-    private String tvDetails = "", owner_name = "", owner_email = "", ownner_mobile = "", owner_dob = "", owner_image = "";
+    public String tvDetails = "", owner_name = "", owner_email = "", ownner_mobile = "", owner_dob = "", owner_image = "";
     private SignInButton btnSignIn;
     private Button btnLogin, btnRegister;
     private ProgressBar login_progressbar;
@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNWER_EMAIL, owner_email);
                         editor.putString(Constant.DATE_OF_BIRTH, owner_dob);
                         editor.putString(Constant.MOBILE, ownner_mobile);
-                        editor.putString(Constant.OWNER_PROFILE, owner_image);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" +owner_image);
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();
@@ -284,17 +284,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         "\n Given Name :" + acct.getGivenName() +
                         "\n ID :" + acct.getId();
                 Log.e("google result", tvDetails);
+
+
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
+
                 owner_name = acct.getDisplayName();
                 owner_email = acct.getEmail();
-                owner_image = acct.getPhotoUrl().toString();
-                FacegleloginService();
+             //   owner_image ="";
+                if(owner_image.equals("")){
+                    owner_image="";
+
+                   }else {
+                    owner_image = acct.getPhotoUrl().toString();
+                }
+               FacegleloginService();
 
             }
         }
     }
-
     private void FacegleloginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -315,6 +323,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     LoginUserModel user = response.body();
                     String msg = user.getMsg();
                     status = user.getStatus();
+                    if (user.getResult() == 1 && status == 1) {
                     owner_name = user.getOwner_name();
                     owner_email = user.getOwner_email();
                     ownner_mobile = user.getMob_no();
@@ -322,9 +331,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     owner_image = user.getImage();
                     owner_id = user.getOwner_id();
                     status = user.getStatus();
-                    if (user.getResult() == 1 && status == 1) {
-
-
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         // setting values to sharedpreferences keys.
                         editor.putInt(Constant.OWNER_ID, owner_id);
@@ -332,7 +338,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNWER_EMAIL, owner_email);
                         editor.putString(Constant.DATE_OF_BIRTH, owner_dob);
                         editor.putString(Constant.MOBILE, ownner_mobile);
-                        editor.putString(Constant.OWNER_PROFILE, owner_image);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" +owner_image);
                         editor.apply();
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
@@ -341,13 +347,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     } else if (user.getResult() == 0) {
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                         Bundle b = new Bundle();
-                        b.putString("owner_name", owner_name);
-                        b.putString("owner_email", owner_email);
-                        b.putString("owner_profile", owner_image);
-                        b.putString("usertype", usertype);
-                        Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
-                        in.putExtras(b);
-                        startActivity(in);
+                            b.putString("owner_name", owner_name);
+                            b.putString("owner_email", owner_email);
+                            b.putString("owner_profile", owner_image);
+                            b.putString("usertype", usertype);
+                            Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
+                            in.putExtras(b);
+                            startActivity(in);
                         finish();
 
                     } else {

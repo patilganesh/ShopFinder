@@ -197,12 +197,22 @@
                             android:text="Submit"
                             android:textSize="20sp" />
 
-                        <ProgressBar
-                            android:id="@+id/addPostProgressbar"
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:visibility="gone" />
+                            android:id="@+id/tvWait"
+                            android:text="Please wait few second.."
+                            android:textColor="@color/red_light"
+                            android:textStyle="bold"
+                            android:layout_marginTop="11dp"
+                            android:visibility="gone"
+                            android:textSize="16sp" />
+                        <!-- <ProgressBar
+                             android:id="@+id/addPostProgressbar"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_centerInParent="true"
+                             android:visibility="gone" />-->
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>

@@ -226,16 +226,15 @@
                     android:paddingRight="20dp"
                     android:text="Select Photo"
                     android:textColor="#ffffff" />
-
                 <TextView
                     android:id="@+id/tvHeading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Select anyone image for ShopProfile"
-                    android:textColor="@color/colorBlack"
-                    android:visibility="gone" />
-
+                    android:gravity="center"
+                    android:text="Select anyone image for Shopcover photo"
+                    android:textColor="@color/DarkBlue"
+                    android:visibility="gone"
+                    android:textStyle="bold" />
                 <HorizontalScrollView
                     android:id="@+id/hori_scroll_view"
                     android:layout_width="match_parent"
@@ -243,7 +242,6 @@
                     android:fillViewport="false"
                     android:foregroundGravity="left"
                     android:visibility="gone">
-
                     <LinearLayout
                         android:id="@+id/selected_photos_container"
                         android:layout_width="match_parent"
