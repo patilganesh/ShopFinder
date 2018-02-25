@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -14,10 +15,10 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
@@ -39,7 +41,6 @@ import com.gajananmotors.shopfinder.utility.Validation;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -69,11 +70,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
-    private String name="",email="",profile="",logingoogle="";
+    private String name = "", email = "", profile = "", logingoogle = "";
     private Toolbar toolbar;
 
 
     private ProgressBar register_progressbar;
+    private Snackbar snackbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,20 +107,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // outPutFile = null;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
-        if(sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")){
-            device_token=Constant.device_token;
+        if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")) {
+            device_token = Constant.device_token;
         }
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000");
         //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         Bundle extras = getIntent().getExtras();
-        if (extras != null ) {
+        if (extras != null) {
             name = extras.getString("owner_name");
             email = extras.getString("owner_email");
 
-            if(profile.equals("")) {
-                profile="";}else{
+            if (profile.equals("")) {
+                profile = "";
+            } else {
                 profile = extras.getString("owner_profile");
                 Picasso.with(RegisterActivity.this)
                         .load(profile)
@@ -127,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             logingoogle = extras.getString("usertype");
-            outPutFile= new File(profile);
+            outPutFile = new File(profile);
             etName.setText(name);
             etEmail.setText(email);
 
@@ -142,7 +146,115 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Log.d("Country Code", countryCodeAndroid);
             }
         });
+
+        validationForAll();
     }
+
+    private void validationForAll() {
+
+        etName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etName.getText().toString();
+                    if (name.matches("")) {
+                        showSnackBar("Please Enter Username", linear_layout);
+                        etName.requestFocus();
+
+                    }
+                }
+            }
+        });
+
+        etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etName.getText().toString();
+                    if (name.matches("")) {
+                        showSnackBar("Please Enter Username", linear_layout);
+                    }
+                }
+            }
+        });
+
+        etDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String email = etEmail.getText().toString();
+                    if (email.matches("")) {
+                        showSnackBar("Please Enter Email", linear_layout);
+                    } else {
+
+                        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                        if (!email.matches(emailPattern)) {
+                            showSnackBar("Invalid Email", linear_layout);
+                        }
+                    }
+
+                }
+            }
+        });
+
+        etContactNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String email = etEmail.getText().toString();
+                    if (email.matches("")) {
+                        showSnackBar("Please Enter Email", linear_layout);
+                    } else {
+
+                        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                        if (!email.matches(emailPattern)) {
+                            showSnackBar("Invalid Email", linear_layout);
+                        }
+                    }
+                    String date = etDate.getText().toString();
+                    if (date.matches("")) {
+
+                        showSnackBar("Please Enter Date", linear_layout);
+                    }
+                }
+            }
+        });
+
+        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String mob = etContactNumber.getText().toString();
+
+                    if (mob.matches("")) {
+                        showSnackBar("Please Enter Mobile Number", linear_layout);
+                    } else {
+                        if (mob.length() < 9) {
+                            showSnackBar("Please Enter Valid Mobile Number", linear_layout);
+                        }
+                    }
+                }
+            }
+
+
+        });
+    }
+
+
+    void showSnackBar(String msg, View view) {
+
+        snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        snackbar.show();
+
+    }
+
+
     /*Calling Api and register shop owner's Data*/
     private void registerUser() {
         File shop_cover_photo = null;
@@ -173,9 +285,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             } catch (Exception e) {
                 Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        } else if(logingoogle.equals("google")) {
-            user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(),user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
-        }else if (outPutFile == null&& profile.isEmpty()) {
+        } else if (logingoogle.equals("google")) {
+            user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
+        } else if (outPutFile == null && profile.isEmpty()) {
             user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
         }
         btnSubmit.setVisibility(View.INVISIBLE);
@@ -215,7 +327,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         editor.putString(Constant.OWNWER_EMAIL, email);
                         editor.putString(Constant.DATE_OF_BIRTH, dob);
                         editor.putString(Constant.MOBILE, mobile);
-                        editor.putString(Constant.OWNER_PROFILE,"http://www.findashop.in/images/owner_profile/" +image);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + image);
                         editor.apply();
                         Intent intent = new Intent();
                         intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
@@ -225,6 +337,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_LONG).show();
                 }
             }
+
             @Override
             public void onFailure(Call<UserRegisterModel> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
@@ -232,6 +345,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -256,7 +370,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.btnSubmit:
               /*  if (checkValidation()) {*/
-                    //Toast.makeText(this, "Registration.....", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Registration.....", Toast.LENGTH_SHORT).show();
                 if (checkValidation())
                     registerUser();//calling register method for web services
                 // }
@@ -266,6 +380,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
@@ -291,6 +406,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
         builder.show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -310,34 +426,37 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onSuccess() {
                         }
+
                         @Override
                         public void onError() {
                         }
                     });
                 } else {
-                    if (outPutFile == null){
-                        Picasso.with(RegisterActivity.this).load(sharedpreferences.getString(Constant.OWNER_PROFILE,"")).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+                    if (outPutFile == null) {
+                        Picasso.with(RegisterActivity.this).load(sharedpreferences.getString(Constant.OWNER_PROFILE, "")).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
 
-                        @Override
-                        public void onSuccess () {
+                            @Override
+                            public void onSuccess() {
 
-                        }
+                            }
 
-                        @Override
-                        public void onError () {
-                        }
-                    });
-                }else{ Picasso.with(RegisterActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onError() {
+                            }
+                        });
+                    } else {
+                        Picasso.with(RegisterActivity.this).load(R.drawable.ic_account_circle_black_24dp).skipMemoryCache().into(imgProfile, new com.squareup.picasso.Callback() {
 
-                    @Override
-                    public void onSuccess () {
+                            @Override
+                            public void onSuccess() {
 
+                            }
+
+                            @Override
+                            public void onError() {
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onError () {
-                    }
-                });}
 
                 }
             } catch (Exception e) {
@@ -401,12 +520,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
     @Override
     public void onBackPressed() {
-  super.onBackPressed();
+        super.onBackPressed();
         finish();
 
     }
+
     private void validation() {
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -443,121 +564,122 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-/*
-    public void saveData() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
-        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-        final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
-        final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("OTP");
-        alert.setView(confirmDialog);
-        alert.setCancelable(false);
-        final AlertDialog alertDialog = alert.create();
-        alertDialog.show();
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                final String otpByUser = editTextConfirmOtp.getText().toString().trim();
-                String otPassword = String.valueOf(otp);
-                if (otpByUser.equals(otp + "")) {
 
-                    //call api
+    /*
+        public void saveData() {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
+            AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+            final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
+            final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("OTP");
+            alert.setView(confirmDialog);
+            alert.setCancelable(false);
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+            buttonConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     alertDialog.dismiss();
-                } else {
-                    tvResend.setVisibility(View.VISIBLE);
-                    tvResend.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Random rn = new Random();
-                            otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
-                            // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
+                    final String otpByUser = editTextConfirmOtp.getText().toString().trim();
+                    String otPassword = String.valueOf(otp);
+                    if (otpByUser.equals(otp + "")) {
 
-                        }
-                    });
-                    Toast.makeText(RegisterActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_LONG).show();
+                        //call api
+                        alertDialog.dismiss();
+                    } else {
+                        tvResend.setVisibility(View.VISIBLE);
+                        tvResend.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Random rn = new Random();
+                                otp = (rn.nextInt(10) * 1000) + (rn.nextInt(10) * 100) + (rn.nextInt(10) * 10) + (rn.nextInt(10));
+                                // sendOTP(etContactNumber.getText().toString(), otp, RegisterActivity.this);
+
+                            }
+                        });
+                        Toast.makeText(RegisterActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+    */
+    private boolean checkValidation() {
+        boolean ret = true;
+
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        LinearLayout linear_layout = findViewById(R.id.linear_layout);
+        String name = etName.getText().toString();
+        String email = etEmail.getText().toString();
+        String date = etDate.getText().toString();
+        String mob = etContactNumber.getText().toString();
+        String password = etPassword.getText().toString();
+        String cpassword = etConfirmPassword.getText().toString();
+        if (name.matches("")) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Name", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (email.matches("")) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (!email.matches(emailPattern)) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (date.matches("")) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Date of Birth", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (mob.matches("")) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Mobile Number", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (mob.length() <= 9) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Mobile Number", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (password.matches("")) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Password", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        if (cpassword.matches("")) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Please Enter Confirm Password", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+        return ret;
     }
-*/
-private boolean checkValidation() {
-    boolean ret = true;
-
-    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    LinearLayout linear_layout = findViewById(R.id.linear_layout);
-    String name = etName.getText().toString();
-    String email = etEmail.getText().toString();
-    String date = etDate.getText().toString();
-    String mob = etContactNumber.getText().toString();
-    String password = etPassword.getText().toString();
-    String cpassword = etConfirmPassword.getText().toString();
-    if (name.matches("")) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Please Enter Name", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (email.matches("")) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (!email.matches(emailPattern)) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (date.matches("")) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Please Enter Date of Birth", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (mob.matches("")) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Please Enter Mobile Number", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (mob.length() <= 9) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Invalid Mobile Number", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (password.matches("")) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Please Enter Password", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    if (cpassword.matches("")) {
-
-        Snackbar snackbar = Snackbar
-                .make(linear_layout, "Please Enter Confirm Password", Snackbar.LENGTH_LONG);
-
-        snackbar.show();
-        return false;
-    }
-    return ret;
-}
 }

@@ -247,19 +247,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-
-            double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
-            double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
-            String placeName = nearbyPlacesList.get(i).getShop_name();
-            String vicinity = nearbyPlacesList.get(i).getAddress();
-            LatLng latLng = new LatLng(lat, lng);
-            markerOptions.position(latLng);
-            markerOptions.title(placeName + " : " + vicinity);
-            mMap.addMarker(markerOptions);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-            setUpMapIfNeeded();
+            try {
+                double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
+                double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
+                String placeName = nearbyPlacesList.get(i).getShop_name();
+                String vicinity = nearbyPlacesList.get(i).getAddress();
+                LatLng latLng = new LatLng(lat, lng);
+                markerOptions.position(latLng);
+                markerOptions.title(placeName + " : " + vicinity);
+                mMap.addMarker(markerOptions);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                setUpMapIfNeeded();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
