@@ -164,6 +164,7 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessEmail = findViewById(R.id.etBusinessEmail);
         etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
         etBusinessServices = findViewById(R.id.etBusinessServices);
+        etBusinessWhatsApp = findViewById(R.id.etBusinessWhatsApp);
         etBusinessServices.setInputType(InputType.TYPE_NULL);
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         etBusinessHour = findViewById(R.id.etBusinessHour);
@@ -201,7 +202,151 @@ public class AddPostActivity extends AppCompatActivity {
             category.setVisibility(View.VISIBLE);
         }
 
+
+
+      validation();
     }
+
+    private void validation() {
+        etBusinessName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etBusinessName.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Shop Name", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+        etBusinessLocation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etBusinessName.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Shop Name", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+        etBusinessMobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etBusinessLocation.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Shop Location", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+        etBusinessWhatsApp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etBusinessMobile.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Shop Mobile Number", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+        etBusinessEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etBusinessEmail.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+        category.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = etBusinessEmail.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Email", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+        subcategory.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = category.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Shop Category", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+
+        etBusinessServices.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String name = subcategory.getText().toString();
+                    if (name.matches("")) {
+
+                        Snackbar snackbar = Snackbar
+                                .make(linear_layout, "Please Enter Shop subcategory", Snackbar.LENGTH_SHORT);
+
+                        snackbar.show();
+
+                    }
+                }
+            }
+        });
+    }
+
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
@@ -605,15 +750,6 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-        if (!email.matches(emailPattern)) {
-
-            Snackbar snackbar = Snackbar
-                    .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
-            return false;
-        }
-
         if (location.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -638,6 +774,16 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
+        if (!email.matches(emailPattern)) {
+
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Invalid Email", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            return false;
+        }
+
+
         if (categoryType.matches("")) {
 
             Snackbar snackbar = Snackbar
