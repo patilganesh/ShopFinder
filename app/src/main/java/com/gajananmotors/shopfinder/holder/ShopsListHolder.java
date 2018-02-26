@@ -15,6 +15,7 @@ import com.gajananmotors.shopfinder.helper.CircleImageView;
 public class ShopsListHolder extends RecyclerView.ViewHolder {
     public TextView name, type, distance, address, timing, call, weburl;
     public CircleImageView image;
+   public ImageView googleShopDirection;
 
 
     public ShopsListHolder(View itemView) {
@@ -27,5 +28,6 @@ public class ShopsListHolder extends RecyclerView.ViewHolder {
         call = itemView.findViewById(R.id.shop_timing);
         weburl = itemView.findViewById(R.id.website);
         image = itemView.findViewById(R.id.shop_image);
+        googleShopDirection = itemView.findViewById(R.id.googleShopDirection);
     }
 }

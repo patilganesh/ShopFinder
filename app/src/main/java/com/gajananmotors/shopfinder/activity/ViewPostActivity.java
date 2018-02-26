@@ -187,7 +187,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.shopDirectionLayout:
-                viewShopList.getLatitude();
+             //   viewShopList.getLatitude();
                 if (!isNetworkAvailable(this)) {
                     displayPromptForEnablingData(this);
                 } else {
