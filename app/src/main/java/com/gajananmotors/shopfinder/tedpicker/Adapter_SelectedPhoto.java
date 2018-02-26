@@ -28,7 +28,6 @@ public class Adapter_SelectedPhoto extends BaseRecyclerViewAdapter<Uri, Adapter_
     public void onBindView(SelectedPhotoHolder holder, int position) {
 
         Uri uri = getItem(position);
-
         Glide.with(imagePickerActivity)
                 .load(uri.toString())
                 .dontAnimate()

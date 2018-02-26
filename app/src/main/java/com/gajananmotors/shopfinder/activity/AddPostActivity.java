@@ -247,11 +247,11 @@ public class AddPostActivity extends AppCompatActivity {
         });
         // subcategory.setAdapter(categoryAdapter);
     }
-    @Override
+  /*  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
+    }*/
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
         for (int i = 0; i < sub_category_list.size(); i++) {
@@ -719,59 +719,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
-    public void addServices() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
-        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-        AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
-        final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setView(confirmDialog);
-        alert.setCancelable(true);
-        final AlertDialog alertDialog = alert.create();
-        alertDialog.show();
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String service_name= etAddservices.getText().toString().trim();
-                addshopServices(service_name);
-                alertDialog.dismiss();
-            }
-
-        }); buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-
-
-
-            }
-
-        });
-    }
-
-    private void addshopServices(String service_name) {
-        Retrofit retrofit = APIClient.getClient();
-        RestInterface restInterface = retrofit.create(RestInterface.class);
-        Call<AddShopServicesModel> call = restInterface.addshopServices(int_subcat_id,service_name);
-        call.enqueue(new Callback<AddShopServicesModel>() {
-            @Override
-            public void onResponse(Call<AddShopServicesModel> call, Response<AddShopServicesModel> response) {
-                if(response.isSuccessful()){
-                    AddShopServicesModel addShopServicesModel=response.body();
-                    Toast.makeText(getApplicationContext(),addShopServicesModel.getMsg(),Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
-
-            }
-        });
-
-    }
 
     /*
      * Function to set up the pop-up window which acts as drop-down list
@@ -783,6 +731,7 @@ public class AddPostActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.poupup_shop_services_menu, (ViewGroup) findViewById(R.id.PopUpView));
 
         LinearLayout layout1 = (LinearLayout) findViewById(R.id.linear_layout);
+
         pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
 
         pw.setBackgroundDrawable(new BitmapDrawable());
@@ -813,6 +762,31 @@ public class AddPostActivity extends AppCompatActivity {
         final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
         DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
         list.setAdapter(adapter);
+        final  TextView textView = (TextView) layout.findViewById(R.id.tvOther);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(AddPostActivity.this);
+                alertDialog.setMessage("Are you sure you want to add service? ");
+                alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
+                alertDialog.setCancelable(false);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        addServices();
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+
 
     }
 
@@ -830,4 +804,56 @@ public class AddPostActivity extends AppCompatActivity {
 
 
     }
+    public void addServices() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
+        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
+        AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
+        final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(confirmDialog);
+        alert.setCancelable(true);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String service_name= etAddservices.getText().toString().trim();
+                addshopServices(service_name);
+                alertDialog.dismiss();
+            }
+
+        }); buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+
+
+
+            }
+
+        });
+    }
+    private void addshopServices(String service_name) {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<AddShopServicesModel> call = restInterface.addshopServices(int_subcat_id,service_name);
+        call.enqueue(new Callback<AddShopServicesModel>() {
+            @Override
+            public void onResponse(Call<AddShopServicesModel> call, Response<AddShopServicesModel> response) {
+                if(response.isSuccessful()){
+                    AddShopServicesModel addShopServicesModel=response.body();
+                    Toast.makeText(getApplicationContext(),addShopServicesModel.getMsg(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 }

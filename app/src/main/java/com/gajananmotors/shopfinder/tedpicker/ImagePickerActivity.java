@@ -6,6 +6,7 @@ package com.gajananmotors.shopfinder.tedpicker;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
