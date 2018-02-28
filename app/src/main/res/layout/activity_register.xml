@@ -67,6 +67,7 @@
                             android:inputType="text"
                             android:textColorHint="@color/colorWhite"
                             android:textSize="15sp" />
+                        <requestFocus/>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout

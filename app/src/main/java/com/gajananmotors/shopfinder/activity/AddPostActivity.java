@@ -117,6 +117,8 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
+    private EditText etBusinessWhatsApp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,8 +132,9 @@ public class AddPostActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
       //StringCallback stringCallback = new StringCallback() {
-        //  subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
+        subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
+
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -204,11 +207,9 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
-
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
-        //categoryNames.add(0,"select Category");
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
         if (categoryNames.size() != 0) {
@@ -747,7 +748,11 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+
+
+
             }
+
         });
     }
 

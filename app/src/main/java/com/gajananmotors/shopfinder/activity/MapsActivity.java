@@ -2,7 +2,6 @@ package com.gajananmotors.shopfinder.activity;
 
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,15 +20,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.adapter.CustomAdapterForNearByLocAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.model.GoogleShopList;
 import com.gajananmotors.shopfinder.model.ShopsArrayListModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.utility.DataParser;
@@ -45,12 +46,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,15 +59,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingData;
 import static com.gajananmotors.shopfinder.common.CheckSetting.displayPromptForEnablingGPS;
+import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailable;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         GoogleMap.OnMapClickListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private GoogleMap mMap;
+
+    private ArrayList<GoogleShopList> google_shops_list = new ArrayList<>();
     private double latitude;
     private double longitude;
     private int distance = 0;
@@ -77,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
-    RecyclerView searchnearbyrecyclerview;
+    RecyclerView searchnearbyrecyclerview, googlesearchnearbyrecyclerview;
     LinearLayoutManager mLayoutManager;
     private ShopsListAdpater adapter;
     private TextView textView;
@@ -88,6 +90,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ProgressBar nearby_search_list_progressbar;
     private TextView txtemptylistnearbysearch;
+    Button googleNearby, mainNearBy;
+    private int seekvalue = 10;
+    String data = "search";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,10 +107,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("onCreate", "Google Play Services available.");
         }
         textView = findViewById(R.id.txtSeekBar);
+        textView.setText(seekvalue + "km");
+        mainNearBy = findViewById(R.id.btnMainNearBy);
+        googleNearby = findViewById(R.id.btnGoogleNearby);
+        mainNearBy.setOnClickListener(this);
+        googleNearby.setOnClickListener(this);
+
+        mainNearBy.setBackgroundColor(getResources().getColor(R.color.blue_light));
+        mainNearBy.setTextColor(getResources().getColor(R.color.white));
         txtemptylistnearbysearch = findViewById(R.id.txtemptylistnearbysearch);
         nearby_search_list_progressbar = findViewById(R.id.nearby_search_list_progressbar);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         searchnearbyrecyclerview = findViewById(R.id.searchnearbyrecyclerview);
+        googlesearchnearbyrecyclerview = findViewById(R.id.googlesearchnearbyrecyclerview);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -114,13 +129,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Intent intent = getIntent();
         nearbyPlace = intent.getStringExtra("search_keyword");
-        DiscreteSeekBar seek = findViewById(R.id.seek);
+        SeekBar seek = findViewById(R.id.seek);
+        seek.setOnSeekBarChangeListener(this);
+
+        distance = seekvalue;
       /*  seek.setMin(2);*/
-        seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+      /*  seek.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
                 textView.setText(value + " km");
             }
+
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
                 mMap.clear();
@@ -131,10 +150,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 distance = seekBar.getProgress();
                 getSearchList(distance);
             }
-        });
+        });*/
+
         mapFragment.getMapAsync(this);
 
     }
+
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
@@ -151,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return true;
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -170,22 +192,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
-    public void getplacesBykm() {
 
-        String url = getUrl(latitude, longitude, nearbyPlace);
-        Object[] DataTransfer = new Object[2];
-        DataTransfer[0] = mMap;
-        DataTransfer[1] = url;
-
-
-      /*  GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-        getNearbyPlacesData.execute(DataTransfer);*/
-        //Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
-    }
 
     public void getSearchList(int distance) {
-        Log.d("mapActivty","getSearchList Called");
+        Log.d("mapActivty", "getSearchList Called");
 
+        searchnearbyrecyclerview.setVisibility(View.VISIBLE);
+        googlesearchnearbyrecyclerview.setVisibility(View.GONE);
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<ShopsArrayListModel> call = restInterface.getNearByShops(nearbyPlace, latitude, longitude, distance);
@@ -203,8 +216,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             shops_list.add(model);
                         }
                     }
-                    setAdapter(shops_list);
+
+
                     ShowNearbyPlaces(shops_list);
+                    nearby_search_list_progressbar.setVisibility(View.GONE);
+                    setAdapter(shops_list);
                 }
             }
 
@@ -214,6 +230,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     private void ShowNearbyPlaces(ArrayList<ShopsListModel> nearbyPlacesList) {
 
         mMap.clear();
@@ -222,23 +239,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mCurrLocationMarker.remove();
         }
 
+
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
-           // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-
-            double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
-            double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
-            String placeName = nearbyPlacesList.get(i).getShop_name();
-            String vicinity = nearbyPlacesList.get(i).getAddress();
-            LatLng latLng = new LatLng(lat, lng);
-            markerOptions.position(latLng);
-            markerOptions.title(placeName + " : " + vicinity);
-            mMap.addMarker(markerOptions);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            // HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+            try {
+                double lat = Double.parseDouble(nearbyPlacesList.get(i).getShop_lat());
+                double lng = Double.parseDouble(nearbyPlacesList.get(i).getShop_long());
+                String placeName = nearbyPlacesList.get(i).getShop_name();
+                String vicinity = nearbyPlacesList.get(i).getAddress();
+                LatLng latLng = new LatLng(lat, lng);
+                markerOptions.position(latLng);
+                markerOptions.title(placeName + " : " + vicinity);
+                mMap.addMarker(markerOptions);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                setUpMapIfNeeded();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -265,7 +288,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("map", "Connection Failed");
         }
     }
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace, int distance) {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
@@ -276,10 +300,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
+
     @Override
     public void onConnectionSuspended(int i) {
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -305,14 +331,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             Log.d("onLocationChanged", "Removing Location Updates");
         }
+
+        getSearchList(distance);
         setUpMapIfNeeded();
     }
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d("map", "onConnectionFailed" + connectionResult);
 
         Log.d("MapsActivity", "onConnectionFailed");
     }
+
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     public boolean checkLocationPermission() {
@@ -335,11 +365,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
 
-        Log.d("MapsActivity", "onRequestPermissionsResult");
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
@@ -360,89 +390,192 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
     @Override
     public void onMapClick(LatLng latLng) {
 
     }
+
     @Override
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 
-    /*    class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        textView.setText(progress + " km");
+    }
 
-            String googlePlacesData = " ";
-            String url;
-            public String placeName;
-            public String vicinity;
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        mMap.clear();
+    }
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        distance = seekBar.getProgress();
+        Log.d("data", "dataString" + data);
+        {
 
-            @Override
-            protected void onCancelled() {
-                // TODO Auto-generated method stub
-                super.onCancelled();
-                this.cancel(true);
-            }
+            if (!isNetworkAvailable(getApplicationContext())) {
+                displayPromptForEnablingData(this);
 
-            @Override
-            protected String doInBackground(Object... params) {
-                try {
-                    Log.d("GetNearbyPlacesData", "doInBackground entered");
-                    mMap = (GoogleMap) params[0];
-                    url = (String) params[1];
-                    DownloadUrl downloadUrl = new DownloadUrl();
-                    googlePlacesData = "";
-                    googlePlacesData = downloadUrl.readUrl(url);
+            } else {
 
-                } catch (Exception e) {
-                    Log.d("GooglePlacesReadTask", e.toString());
+                if (data.equalsIgnoreCase("search")) {
+                    clear();
+                    getSearchList(distance);
+                } else {
+                    if (!google_shops_list.isEmpty()) {
+                        final int size = google_shops_list.size();
+                        if (size > 0) {
+                            for (int i = 0; i < size; i++) {
+                                google_shops_list.remove(0);
+                            }
+
+                            adapter.notifyItemRangeRemoved(0, size);
+                        }
+                    }
+                    getplacesBykm(distance, nearbyPlace);
                 }
-                return googlePlacesData;
-            }
 
-            @Override
-            protected void onPostExecute(String result) {
-                Log.d("GooglePlacesReadTask", "onPostExecute Entered");
-                List<HashMap<String, String>> nearbyPlacesList = null;
-                DataParser dataParser = new DataParser();
+            }
+        }
+    }
+
+    public void clear() {
+        if (!shops_list.isEmpty()) {
+            final int size = shops_list.size();
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    shops_list.remove(0);
+                }
+
+                adapter.notifyItemRangeRemoved(0, size);
+            }
+        }
+
+    }
+
+    class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
+
+        String googlePlacesData = " ";
+        String url;
+        public String placeName = "";
+        public String vicinity = "";
+
+        private String opening_hours = "", icon = "";
+        private String shopLong = "", shopLat = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            nearby_search_list_progressbar.setVisibility(View.VISIBLE);
+            nearby_search_list_progressbar.setIndeterminate(true);
+            nearby_search_list_progressbar.setProgress(500);
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            // TODO Auto-generated method stub
+            super.onCancelled();
+            this.cancel(true);
+        }
+
+        @Override
+        protected String doInBackground(Object... params) {
+            try {
+                Log.d("GetNearbyPlacesData", "doInBackground entered");
+                mMap = (GoogleMap) params[0];
+                url = (String) params[1];
+                DownloadUrl downloadUrl = new DownloadUrl();
+                googlePlacesData = "";
+                googlePlacesData = downloadUrl.readUrl(url);
+
+            } catch (Exception e) {
+                Log.d("GooglePlacesReadTask", e.toString());
+            }
+            return googlePlacesData;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("GooglePlacesReadTask", "onPostExecute Entered");
+            List<HashMap<String, String>> nearbyPlacesList = null;
+            DataParser dataParser = new DataParser();
+            if (!result.isEmpty()) {
+                nearby_search_list_progressbar.setVisibility(View.GONE);
                 nearbyPlacesList = dataParser.parse(result);
                 ShowNearbyPlaces(nearbyPlacesList);
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        adapter = new CustomAdapterForNearByLocAdapter(MapsActivity.this, nameList.toArray(new String[0]), addressList.toArray(new String[0]));
-                        recycleView.setLayoutManager(mLayoutManager);
-                        recycleView.setItemAnimator(new DefaultItemAnimator());
-                        recycleView.setAdapter(adapter);
+                        if (google_shops_list.size() != 0) {
+                            txtemptylistnearbysearch.setText("");
+                            data = "GoogleData";
+                            adapter = new ShopsListAdpater(MapsActivity.this, "GoogleData", google_shops_list);
+                            googlesearchnearbyrecyclerview.setLayoutManager(mLayoutManager);
+                            googlesearchnearbyrecyclerview.setItemAnimator(new DefaultItemAnimator());
+                            googlesearchnearbyrecyclerview.setAdapter(adapter);
+                        } else {
+                            nearby_search_list_progressbar.setVisibility(View.GONE);
+                            txtemptylistnearbysearch.setText("No shops found!");
+                        }
+
                     }
                 });
             }
-            private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
-                addressList = new ArrayList<>();
-                nameList = new ArrayList<>();
-                Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
-                mMap.clear();
+        }
 
-                if (mCurrLocationMarker != null) {
-                    mCurrLocationMarker.remove();
+        private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
+            double lng = 0, lat = 0;
+            //Log.d("nearbyPlacesList", "nearbyPlacesList" + nearbyPlacesList.toString());
+            mMap.clear();
+
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            }
+
+            for (int i = 0; i < nearbyPlacesList.size(); i++) {
+                GoogleShopList googleShopList = new GoogleShopList();
+                MarkerOptions markerOptions = new MarkerOptions();
+                HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+                shopLat = googlePlace.get("lat");
+                shopLong = googlePlace.get("lng");
+                placeName = googlePlace.get("place_name");
+                vicinity = googlePlace.get("vicinity");
+                icon = googlePlace.get("icon");
+                try {
+                    if (!placeName.isEmpty()) {
+
+                        googleShopList.setShopName(placeName);
+                    }
+                    if (!vicinity.isEmpty()) {
+                        googleShopList.setShopAddress(vicinity);
+                    }
+                    if (!shopLat.isEmpty() && !shopLat.equalsIgnoreCase("")) {
+                        googleShopList.setShopLat(shopLat);
+                    }
+                    if (!shopLong.isEmpty() && !shopLong.equalsIgnoreCase("")) {
+                        googleShopList.setShopLong(shopLong);
+                    }
+                    if (!shopLat.isEmpty() && !shopLat.equalsIgnoreCase("")) {
+                        lat = Double.parseDouble(shopLat);
+                    }
+                    if (!shopLong.isEmpty() && !shopLong.equalsIgnoreCase("")) {
+                        lng = Double.parseDouble(shopLong);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
-                for (int i = 0; i < nearbyPlacesList.size(); i++) {
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-                    double lat = Double.parseDouble(googlePlace.get("lat"));
-                    double lng = Double.parseDouble(googlePlace.get("lng"));
-                    placeName = googlePlace.get("place_name");
-                    vicinity = googlePlace.get("vicinity");
-                    nameList.add(placeName);
-                    addressList.add(vicinity);
+                google_shops_list.add(googleShopList);
+                if (lat != 0 && lng != 0) {
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : " + vicinity);
@@ -452,8 +585,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
                 }
             }
+        }
+    }
 
-        }*/
     private void setUpMapIfNeeded() {
         if (mMap != null) {
             setUpMap();
@@ -496,18 +630,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     public void setAdapter(ArrayList<ShopsListModel> shops_list) {
         if (shops_list.size() != 0) {
-            String name=getIntent().getStringExtra("owner");
-            adapter = new ShopsListAdpater(this, shops_list,name);
+            String name = getIntent().getStringExtra("owner");
+            adapter = new ShopsListAdpater(this, shops_list, name);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             searchnearbyrecyclerview.setLayoutManager(mLayoutManager);
             //  adapter.notifyDataSetChanged();
             searchnearbyrecyclerview.setAdapter(adapter);
-            nearby_search_list_progressbar.setVisibility(View.GONE);
+            txtemptylistnearbysearch.setText("");
+            //    nearby_search_list_progressbar.setVisibility(View.GONE);
         } else {
             nearby_search_list_progressbar.setVisibility(View.GONE);
             txtemptylistnearbysearch.setText("No shops found!");
+        }
+    }
+
+
+    public void getplacesBykm(int distance, String nearbyPlace) {
+        String url = getUrl(latitude, longitude, nearbyPlace, distance);
+        Object[] DataTransfer = new Object[2];
+        DataTransfer[0] = mMap;
+        DataTransfer[1] = url;
+
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        getNearbyPlacesData.execute(DataTransfer);
+        // Toast.makeText(MapsActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnMainNearBy:
+                if (!isNetworkAvailable(getApplicationContext())) {
+                    displayPromptForEnablingData(this);
+                } else {
+                    searchnearbyrecyclerview.setVisibility(View.VISIBLE);
+                    googlesearchnearbyrecyclerview.setVisibility(View.GONE);
+                    clear();
+                    mainNearBy.setBackgroundColor(getResources().getColor(R.color.blue_light));
+                    mainNearBy.setTextColor(getResources().getColor(R.color.white));
+                    googleNearby.setBackgroundColor(getResources().getColor(R.color.white));
+                    googleNearby.setTextColor(getResources().getColor(R.color.black));
+
+                    getSearchList(distance);
+                }
+                break;
+            case R.id.btnGoogleNearby:
+                if (!isNetworkAvailable(getApplicationContext())) {
+                    displayPromptForEnablingData(this);
+                } else {
+                    searchnearbyrecyclerview.setVisibility(View.GONE);
+                    googlesearchnearbyrecyclerview.setVisibility(View.VISIBLE);
+
+                    googleNearby.setBackgroundColor(getResources().getColor(R.color.blue_light));
+                    googleNearby.setTextColor(getResources().getColor(R.color.white));
+                    mainNearBy.setBackgroundColor(getResources().getColor(R.color.white));
+                    mainNearBy.setTextColor(getResources().getColor(R.color.black));
+                    getplacesBykm(distance, nearbyPlace);
+                }
+                break;
         }
     }
 }
