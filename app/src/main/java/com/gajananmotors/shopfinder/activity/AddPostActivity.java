@@ -96,7 +96,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ArrayList<ShopServicesModel> shopServicesModels = new ArrayList<>();
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
-    private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
+    private EditText etBusinessName, etBusinessEmail, etBusinessWhatsApp,etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
     private Toolbar toolbar;
     private String getImages = "", area = "", city = "", state = "", strBusinessName = "", strBusinessLocation = "", strBusinessMobile = "", strBusinessHour = "", country = "", pincode = "";
     private String strBusinessWebUrl = "", strBusinessServices = "", strBusinessEmail = "", strPlaceSearch = "";
@@ -848,6 +848,8 @@ public class AddPostActivity extends AppCompatActivity {
                             //display shortened representation of selected values
                             etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
                             expanded = false;
+                            addPostProgressbar.setVisibility(View.INVISIBLE);
+
                         }
                     }
                 }else {
