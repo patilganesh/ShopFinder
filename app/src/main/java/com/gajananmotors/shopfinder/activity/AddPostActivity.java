@@ -117,7 +117,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
-    private EditText etBusinessWhatsApp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

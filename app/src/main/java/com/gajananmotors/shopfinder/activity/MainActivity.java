@@ -387,10 +387,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
-        } else if (id == R.id.nav_nearby) {
-
-
-        } else if (id == R.id.nav_addpost) {
+        }  else if (id == R.id.nav_addpost) {
             if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             } else {

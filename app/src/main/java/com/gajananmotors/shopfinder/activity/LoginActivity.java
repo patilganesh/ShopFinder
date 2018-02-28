@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         login_progressbar = findViewById(R.id.login_progressbar);
-        primary_scrollView = findViewById(R.id.primary_scrollView);
+      //  primary_scrollView = findViewById(R.id.primary_scrollView);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()) {
@@ -270,42 +270,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
-    /* public void saveData() {
-         LayoutInflater inflater = LayoutInflater.from(this);
-         View confirmDialog = inflater.inflate(R.layout.dialog_otp, null);
-         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-         final TextView tvResend = confirmDialog.findViewById(R.id.tvResend);
-         final EditText editTextConfirmOtp = confirmDialog.findViewById(R.id.editTextOtp);
-         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-         alert.setTitle("OTP");
-         alert.setView(confirmDialog);
-         alert.setCancelable(false);
-         final AlertDialog alertDialog = alert.create();
-         alertDialog.show();
-         buttonConfirm.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 alertDialog.dismiss();
-                 final String otpByUser = editTextConfirmOtp.getText().toString().trim();
-                 String otPassword = String.valueOf(otp);
-                 if (otpByUser.equals(otp + "")) {
-                     //call api
-                     alertDialog.dismiss();
-                 } else {
 
-                     tvResend.setVisibility(View.VISIBLE);
-                     tvResend.setOnClickListener(new View.OnClickListener() {
-                         @Override
-                         public void onClick(View v) {
-
-                         }
-                     });
-
-                     Toast.makeText(LoginActivity.this, "Wrong OTP. Please try again...", Toast.LENGTH_SHORT).show();
-                 }
-             }
-         });
-     }*/
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -349,7 +314,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         "\n ID :" + acct.getId();
                 Log.e("google result", tvDetails);
 
-
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
 
@@ -357,10 +321,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 owner_email = acct.getEmail();
                 //   owner_image ="";
                 if (owner_image.equals("")) {
-                    owner_image = "";
-
-                } else {
                     owner_image = acct.getPhotoUrl().toString();
+
+                } else if(owner_image.equals("")){
+                    owner_image ="";
                 }
                 FacegleloginService();
 
