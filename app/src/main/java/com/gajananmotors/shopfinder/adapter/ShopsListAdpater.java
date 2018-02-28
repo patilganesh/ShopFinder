@@ -105,6 +105,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             holder.lDirectionLayout.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.GONE);
             holder.weburl.setVisibility(View.GONE);
+            holder.type.setVisibility(View.GONE);
             holder.name.setText(google_list.get(position).getShopName());
             holder.address.setText(google_list.get(position).getShopAddress());
             holder.timing.setText(google_list.get(position).getShopOpeningHours());

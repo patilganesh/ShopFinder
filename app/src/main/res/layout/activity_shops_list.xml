@@ -52,8 +52,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Shop Address"
-                android:singleLine="true"
-                android:textSize="12sp" />
+                android:textAlignment="viewStart"
+                android:textSize="12sp"
+                android:gravity="start" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
