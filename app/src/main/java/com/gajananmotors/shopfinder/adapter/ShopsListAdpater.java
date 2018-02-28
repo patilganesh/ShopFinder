@@ -31,23 +31,19 @@ import java.util.ArrayList;
 public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  implements Filterable{
     Activity activity;
     ArrayList<ShopsListModel> list = new ArrayList<>();
-
     private LinearLayout viewPostLayout;
     private ArrayList<String> images = new ArrayList<>();
     private int shop_id;
     private int index=0;
-    ViewShopList viewShopList = new ViewShopList();
+    public static ViewShopList viewShopList = new ViewShopList();
     private String name;
     private ArrayList<ShopsListModel> mFilteredList;
-
-
     public ShopsListAdpater(MapsActivity itemDetailsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
         mFilteredList = shops_list;
         this.activity = itemDetailsActivity;
         this.name=name;
     }
-
     public ShopsListAdpater(ItemDetailsActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
 
         this.activity = activity;
@@ -55,7 +51,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
         mFilteredList = shops_list;
         this.name=name;
     }
-
     public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
         this.activity = activity;
         this.list = shops_list;
@@ -74,7 +69,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
         View view = inflater.inflate(R.layout.activity_shops_list, parent, false);
         return new ShopsListHolder(view);
     }
-
     @Override
     public void onBindViewHolder(final ShopsListHolder holder, final int position) {
         holder.name.setText(mFilteredList.get(position).getShop_name());
@@ -125,16 +119,19 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
                 }
                 viewShopList.setArrayList(images);
                 viewShopList.setStrShop_pic(list.get(position).getShop_pic());
-                transition();
+                transition(position);
                 //activity.finish();
                 Log.e("updatedsize", String.valueOf(images.size()));
             }
         });
     }
-    private void transition() {
+    private void transition(int position) {
         Log.d("Allpost", "transition");
         Intent intent = new Intent(activity, ViewPostActivity.class);
-        intent.putExtra("shop_list", viewShopList);
+        intent.putExtra("position",""+position);
+        if(!name.equalsIgnoreCase("owner")) {
+            intent.putExtra("shop_list", viewShopList);
+        }
         intent.putExtra("owner",name);
         activity.startActivity(intent);
     }
@@ -142,19 +139,16 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
     public int getItemCount() {
         if(mFilteredList==null){
             return list.size();
-        }else{
-
+        }
+        else{
             return mFilteredList.size();
         }
     }
-
     public void setFilter(ArrayList<ShopsListModel> newList) {
         list = new ArrayList<>();
         list.addAll(newList);
         notifyDataSetChanged();
     }
-
-
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -175,8 +169,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
                         if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText)){
                             filteredList.add(s);
                         }
-
-
 //                        if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText))
 //
 //                            filteredList.add(s);
@@ -191,21 +183,15 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder>  imp
                 }
 
                 //mFilteredList = list;
-
-
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = mFilteredList;
                 return filterResults;
-
             }
-
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mFilteredList= (ArrayList<ShopsListModel>) results.values;
                 notifyDataSetChanged();
             }
-
-
         };
     }
 }

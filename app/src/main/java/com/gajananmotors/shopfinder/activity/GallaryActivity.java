@@ -33,21 +33,22 @@ public class GallaryActivity extends AppCompatActivity {
     Gallery simpleGallery;
     CustomAdapterForGallary customGalleryAdapter;
     ImageView selectedImageView;
-    TextView text;
+    static TextView text;
     // array of images
-    int shop_id;
+    private int shop_id;
+    private int position;
     ArrayList<String> images = new ArrayList<>();
     private Toolbar toolbar;
     private RecyclerView recycleView;
     private LinearLayoutManager mLayoutManager;
-    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private String shop_pic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallary);
         toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +58,7 @@ public class GallaryActivity extends AppCompatActivity {
         });
 
        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        text =  findViewById(R.id.tvText);
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -69,59 +70,60 @@ public class GallaryActivity extends AppCompatActivity {
         recycleView = findViewById(R.id.gallary_recycler_view);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         Intent i = getIntent();
-        String shop_pic = i.getExtras().getString("shopCoverphoto");
-        text =  findViewById(R.id.tvText);
-        shop_id = i.getIntExtra("shop_id", 0);
-        selectedImageView = findViewById(R.id.selectedImageView);
+        String name=i.getStringExtra("owner");
         images.clear();
-        images = i.getExtras().getStringArrayList("images");
-        if(images.isEmpty()){
+        if(name.equalsIgnoreCase("owner")) {
+            position=i.getIntExtra("position",0);
+            shop_pic=AllPostsActivity.shops_list.get(position).getShop_pic();
+            if(AllPostsActivity.shops_list.get(position).getImage1()!=null) {
+                images.add(AllPostsActivity.shops_list.get(position).getImage1());
+            }
+            if(AllPostsActivity.shops_list.get(position).getImage2()!=null) {
+                images.add(AllPostsActivity.shops_list.get(position).getImage2());
+            }
+            if(AllPostsActivity.shops_list.get(position).getImage3()!=null) {
+                images.add(AllPostsActivity.shops_list.get(position).getImage3());
+            }
+            if(AllPostsActivity.shops_list.get(position).getImage4()!=null) {
+                images.add(AllPostsActivity.shops_list.get(position).getImage4());
+            }
+            if(AllPostsActivity.shops_list.get(position).getImage5()!=null) {
+                images.add(AllPostsActivity.shops_list.get(position).getImage5());
+            }
+            if(AllPostsActivity.shops_list.get(position).getImage6()!=null)
+            images.add(AllPostsActivity.shops_list.get(position).getImage6());
+        }
+        else
+        {
+            images = i.getExtras().getStringArrayList("images");
+            shop_pic=i.getStringExtra("shopCoverphoto");
+        }
+
+        if(images.isEmpty()||images.size()==0){
             text.setVisibility(View.VISIBLE);
             text.setText("No shop images found ");
         }
-        Log.d("listsize", String.valueOf(images.size()));
-
+        shop_id = i.getIntExtra("shop_id", 0);
+        selectedImageView = findViewById(R.id.selectedImageView);
         customGalleryAdapter = new CustomAdapterForGallary(this, images, shop_id, selectedImageView);
         customGalleryAdapter.notifyDataSetChanged();
         recycleView.setLayoutManager(mLayoutManager);
-        //  recycleView.setItemAnimator(new DefaultItemAnimator());
         recycleView.setAdapter(customGalleryAdapter);
-        //  simpleGallery.setAdapter(customGalleryAdapter);
-        //simpleGallery.setSpacing(6);
         ImageView imageView = new ImageView(GallaryActivity.this);
-
         Picasso.with(GallaryActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(selectedImageView);
-        // selectedImageView.setImageResource(images.get(0));
-       /* simpleGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ImageView imageView = new ImageView(GallaryActivity.this);
-                Picasso.with(GallaryActivity.this)
-                        .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + images.get(position))
-                        .fit()
-                        .placeholder(R.drawable.background_splashscreen)
-                        .into(selectedImageView);
-
-                //  selectedImageView.setImageResource(images.get(position));
-            }
-        });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });*/
-
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         images.clear();
         finish();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

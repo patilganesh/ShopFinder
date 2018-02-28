@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
@@ -129,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolbar.setVisibility(View.GONE);
 
             }
-
             @Override
             public void onFocusCleared() {
                 toolbar.setVisibility(View.VISIBLE);
@@ -138,6 +138,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 searchView.clearQuery();
             }
         });
+        searchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+                // Toast.makeText(MainActivity.this, "Text:"+currentQuery, Toast.LENGTH_SHORT).show();
+                getSearchService(currentQuery);
+            }
+        });
+
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         recyclerViewType = RecyclerViewType.GRID;
@@ -200,14 +213,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
     public void getSearchService(String search_keyword) {
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         intent.putExtra("search_keyword", search_keyword);
         intent.putExtra("owner", "search");
         startActivity(intent);
     }
-
     private void setUpRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view_vertical);
         recyclerView.setNestedScrollingEnabled(false);
@@ -216,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(linearLayoutManager);
         populateRecyclerView();
     }
-
     //populate recycler view
     private void populateRecyclerView() {
         ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
@@ -229,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
         category_progressbar.setVisibility(View.GONE);
     }
-
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -286,9 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(MainActivity.this, "Index Error:" + index, Toast.LENGTH_LONG).show();
             }
         });
-
     }
-
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -317,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
-
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
         // recycler_view_vertical.setAdapter(gridAdapter);
@@ -401,7 +407,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }*/
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -448,7 +453,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

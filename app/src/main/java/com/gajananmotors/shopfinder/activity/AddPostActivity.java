@@ -130,9 +130,8 @@ public class AddPostActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
       //StringCallback stringCallback = new StringCallback() {
-        subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
+        //  subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
-
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -202,49 +201,54 @@ public class AddPostActivity extends AppCompatActivity {
         if (detector.isConnectingToInternet()) {
             category.setVisibility(View.VISIBLE);
         }
-
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
+
         for (int i = 0; i < category_Model_list.size(); i++) {
             categoryNames.add(category_Model_list.get(i).getName().toString());
         }
+        //categoryNames.add(0,"select Category");
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
-        category.setAdapter(categoryAdapter);
-
-        category.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                str_cat_spinner = category.getText().toString();
-                for (CategoryModel cat : category_Model_list) {
-                    if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
-                        int_cat_id = cat.getCategory_id();
-                    }
+        if (categoryNames.size() != 0) {
+            category.setAdapter(categoryAdapter);
+            category.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
-                Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
-                sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
-                    @Override
-                    public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
-                        if (response.isSuccessful()) {
-                            subcategory.setVisibility(View.VISIBLE);
-                            SubCategoryListModel list = response.body();
-                            sub_category_list = list.getSubcategory();
-                            getSubCategoryData();
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    str_cat_spinner = category.getText().toString();
+                    for (CategoryModel cat : category_Model_list) {
+                        if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
+                            int_cat_id = cat.getCategory_id();
                         }
                     }
-                    @Override
-                    public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
-                    }
-                });
-            }
-        });
+                    Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
+                    sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
+                        @Override
+                        public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
+                            if (response.isSuccessful()) {
+                                subcategory.setVisibility(View.VISIBLE);
+                                SubCategoryListModel list = response.body();
+                                sub_category_list = list.getSubcategory();
+                                getSubCategoryData();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
+                        }
+                    });
+                }
+            });
+        }
         // subcategory.setAdapter(categoryAdapter);
     }
     @Override
@@ -568,7 +572,6 @@ public class AddPostActivity extends AppCompatActivity {
         String mob = etBusinessMobile.getText().toString();
         String categoryType = category.getText().toString();
         String subcategoryType = subcategory.getText().toString();
-
         if (name.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -744,11 +747,7 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-
-
-
             }
-
         });
     }
 

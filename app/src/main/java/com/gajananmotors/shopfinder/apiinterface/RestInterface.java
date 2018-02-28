@@ -168,6 +168,31 @@ public interface RestInterface {
             @Field("website") String website,
             @Field("shop_mob_no") String shop_mob_no
     );
+    @FormUrlEncoded
+    @POST("index.php/mobile_api/update_shop")
+    Call<CreateShopModel> updateShopforEmptyImage(
+            @Field("shop_id") int shop_id,
+            @Field("category_id") int category_id,
+            @Field("sub_category_id") int sub_category_id,
+            @Field("category_name") String category_name,
+            @Field("sub_category_name") String sub_category_name,
+            @Field("category_search") String category_search,
+            @Field("owner_id") int owner_id,
+            @Field("shop_name") String shop_name,
+            @Field("shop_timing") String shop_timing,
+            @Field("address") String address,
+            @Field("shop_details") String shop_details,
+            @Field("shop_lat") String shop_lat,
+            @Field("shop_long") String shop_long,
+            @Field("area") String area,
+            @Field("city") String city,
+            @Field("state") String state,
+            @Field("country") String country,
+            @Field("pincode") String pincode,
+            @Field("place_search") String place_search,
+            @Field("website") String website,
+            @Field("shop_mob_no") String shop_mob_no
+    );
     @Multipart
     @POST("index.php/mobile_api/upload_shop_images")
     Call<UploadShopImagesModel> uploadShopImages(
@@ -175,6 +200,13 @@ public interface RestInterface {
             @Part MultipartBody.Part image,
             @Part("action") String action,
             @Part("count") int count
+    );
+    @Multipart
+    @POST("index.php/mobile_api/upload_shop_images")
+    Call<UploadShopImagesModel> updateShopImages(
+            @Field("shop_id") int shop_id,
+            @Field("action") String action,
+            @Field("index_name") int index_name
     );
     @FormUrlEncoded
     @POST("index.php/mobile_api/view_single_shop")

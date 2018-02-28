@@ -43,6 +43,7 @@ public class SearchActivity extends AppCompatActivity {
     private String search_keyword;
     private String name = "";
     private SearchView searchView;
+    private  MenuItem item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,25 +85,22 @@ public class SearchActivity extends AppCompatActivity {
                     setAdapter(name);
                 }
             }
-
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
             }
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
+        item = menu.findItem(R.id.action_search);
+        item.setVisible(false);
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 newText = newText.toLowerCase();
@@ -135,9 +133,11 @@ public class SearchActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             searchrecyclerView.setAdapter(adapter);
             search_list_progressbar.setVisibility(View.GONE);
+            item.setVisible(true);
         } else {
             search_list_progressbar.setVisibility(View.GONE);
             txtemptylistsearch.setText("No shops found!");
+            item.setVisible(false);
         }
     }
 }

@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -35,10 +34,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 public class AllPostsActivity extends AppCompatActivity {
-
-    private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
+    public static ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private ShopsListAdpater adapter;
     private RecyclerView recyclerView;
     private Retrofit retrofit;
@@ -51,6 +48,7 @@ public class AllPostsActivity extends AppCompatActivity {
     private String search_text;
     private ProgressBar allPostProgressBar;
     private TextView txtowneremptylist;
+    private  MenuItem item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +67,6 @@ public class AllPostsActivity extends AppCompatActivity {
         });
         Intent i = getIntent();
         name= i.getStringExtra("owner");
-
         recyclerView = findViewById(R.id.recyclerview);
         sharedPreferences = getSharedPreferences(Constant.MyPREFERENCES, MODE_PRIVATE);
         retrofit = APIClient.getClient();
@@ -94,19 +91,17 @@ public class AllPostsActivity extends AppCompatActivity {
                     setAdapter(name);
                 }
             }
-
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
             }
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem search = menu.findItem(R.id.action_search);
-        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(search);
+        item = menu.findItem(R.id.action_search);
+        item.setVisible(false);
+        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -131,8 +126,7 @@ public class AllPostsActivity extends AppCompatActivity {
 //                    else if (s.getShop_name().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText))
 //                        suggest_list.add(s);
 //                }
-
-                              adapter.getFilter().filter(newText);
+                   adapter.getFilter().filter(newText);
                // adapter.setFilter(suggest_list);
                return true;
             }
@@ -159,9 +153,20 @@ public class AllPostsActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             recyclerView.setAdapter(adapter);
             allPostProgressBar.setVisibility(View.GONE);
+            item.setVisible(true);
         } else {
             txtowneremptylist.setText("No shops found!");
             allPostProgressBar.setVisibility(View.GONE);
+            item.setVisible(false);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (adapter!=null){
+            adapter.notifyDataSetChanged();
         }
     }
 }
