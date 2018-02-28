@@ -101,10 +101,15 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
     @Override
     public void onBindViewHolder(final ShopsListHolder holder, final int position) {
         if (name.equalsIgnoreCase("GoogleData")) {
+
+            holder.lDirectionLayout.setVisibility(View.VISIBLE);
+            holder.image.setVisibility(View.GONE);
+            holder.weburl.setVisibility(View.GONE);
+            holder.type.setVisibility(View.GONE);
             holder.name.setText(google_list.get(position).getShopName());
             holder.address.setText(google_list.get(position).getShopAddress());
             holder.timing.setText(google_list.get(position).getShopOpeningHours());
-            holder.googleShopDirection.setOnClickListener(new View.OnClickListener() {
+            holder.lDirectionLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String lattitude = google_list.get(position).getShopLat();
@@ -134,8 +139,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                     }
                 }
             });
-          holder.image.setVisibility(View.GONE);
-          holder.weburl.setVisibility(View.GONE);
+
           /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -156,7 +160,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             });*/
         } else {
 
-            holder.googleShopDirection.setVisibility(View.GONE);
+            holder.lDirectionLayout.setVisibility(View.GONE);
             holder.name.setText(mFilteredList.get(position).getShop_name());
             holder.address.setText(mFilteredList.get(position).getAddress());
             holder.distance.setText(mFilteredList.get(position).getCity() + "/" + mFilteredList.get(position).getState() + "/" + mFilteredList.get(position).getCountry());

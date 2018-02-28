@@ -5,24 +5,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
+
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.LoginUserModel;
-import com.gajananmotors.shopfinder.utility.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -34,15 +36,13 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static com.gajananmotors.shopfinder.helper.Constant.MyPREFERENCES;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private EditText etUserName, etPassword;
     private com.hbb20.CountryCodePicker ccp;
@@ -59,13 +59,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String device_token = "";
     private int owner_id, status;
     private String usertype = "google";
-
+    private Snackbar snackbar;
+    ScrollView primary_scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         login_progressbar = findViewById(R.id.login_progressbar);
+        primary_scrollView = findViewById(R.id.primary_scrollView);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()) {
@@ -89,8 +91,50 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
+        etUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String username = etUserName.getText().toString();
+                    if (username.matches("")) {
+                        showSnackBar("Please Enter Username!", linear_layout);
+                        focusOnView(etUserName);
 
+                    } else {
+                        if (username.length() < 9) {
+                            showSnackBar("Please Enter Valid Mobile Number!", linear_layout);
+                            focusOnView(etUserName);
+                        }
 
+                    }
+
+                }
+            }
+        });
+        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    LinearLayout linear_layout = findViewById(R.id.linear_layout);
+                    String username = etUserName.getText().toString();
+                    if (username.matches("")) {
+
+                        showSnackBar("Please Enter Username!", linear_layout);
+                        focusOnView(etUserName);
+
+                    } else {
+                        if (username.length() < 9) {
+
+                            showSnackBar("Please Enter Username!", linear_layout);
+                            focusOnView(etUserName);
+                        }
+
+                    }
+
+                }
+            }
+        });
     }
 
 
@@ -99,25 +143,44 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Log.d(TAG, "Connection Failed : " + connectionResult);
     }
 
+
+    void showSnackBar(String msg, View view) {
+
+        snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        snackbar.show();
+    }
+
+    private final void focusOnView(final View paramView) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                LoginActivity.this.primary_scrollView.scrollTo(0, paramView.getTop() - 5);
+            }
+        });
+    }
+
     private boolean checkValidation() {
         boolean ret = true;
         LinearLayout linear_layout = findViewById(R.id.linear_layout);
         String username = etUserName.getText().toString();
         String password = etPassword.getText().toString();
+
         if (username.matches("")) {
+            showSnackBar("Please Enter Username!", linear_layout);
+            focusOnView(etUserName);
+            return false;
+        }
+        if (username.length() < 9) {
 
-            Snackbar snackbar = Snackbar
-                    .make(linear_layout, "Please Enter Username", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            showSnackBar("Please Enter Valid Mobile Number!", linear_layout);
+            focusOnView(etUserName);
             return false;
         }
         if (password.matches("")) {
 
-            Snackbar snackbar = Snackbar
-                    .make(linear_layout, "Please Enter Password", Snackbar.LENGTH_LONG);
+            showSnackBar("Please Enter Password", linear_layout);
 
-            snackbar.show();
             return false;
         }
         return ret;
@@ -186,7 +249,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNWER_EMAIL, owner_email);
                         editor.putString(Constant.DATE_OF_BIRTH, owner_dob);
                         editor.putString(Constant.MOBILE, ownner_mobile);
-                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" +owner_image);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + owner_image);
                         editor.apply();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
                         finish();
@@ -248,6 +311,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -291,18 +355,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 owner_name = acct.getDisplayName();
                 owner_email = acct.getEmail();
-             //   owner_image ="";
-                if(owner_image.equals("")){
-                    owner_image="";
+                //   owner_image ="";
+                if (owner_image.equals("")) {
+                    owner_image = "";
 
-                   }else {
+                } else {
                     owner_image = acct.getPhotoUrl().toString();
                 }
-               FacegleloginService();
+                FacegleloginService();
 
             }
         }
     }
+
     private void FacegleloginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -324,13 +389,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String msg = user.getMsg();
                     status = user.getStatus();
                     if (user.getResult() == 1 && status == 1) {
-                    owner_name = user.getOwner_name();
-                    owner_email = user.getOwner_email();
-                    ownner_mobile = user.getMob_no();
-                    owner_dob = user.getDate_of_birth();
-                    owner_image = user.getImage();
-                    owner_id = user.getOwner_id();
-                    status = user.getStatus();
+                        owner_name = user.getOwner_name();
+                        owner_email = user.getOwner_email();
+                        ownner_mobile = user.getMob_no();
+                        owner_dob = user.getDate_of_birth();
+                        owner_image = user.getImage();
+                        owner_id = user.getOwner_id();
+                        status = user.getStatus();
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         // setting values to sharedpreferences keys.
                         editor.putInt(Constant.OWNER_ID, owner_id);
@@ -338,7 +403,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         editor.putString(Constant.OWNWER_EMAIL, owner_email);
                         editor.putString(Constant.DATE_OF_BIRTH, owner_dob);
                         editor.putString(Constant.MOBILE, ownner_mobile);
-                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" +owner_image);
+                        editor.putString(Constant.OWNER_PROFILE, "http://www.findashop.in/images/owner_profile/" + owner_image);
                         editor.apply();
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                         startActivity(new Intent(LoginActivity.this, AddPostActivity.class));
@@ -347,13 +412,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     } else if (user.getResult() == 0) {
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                         Bundle b = new Bundle();
-                            b.putString("owner_name", owner_name);
-                            b.putString("owner_email", owner_email);
-                            b.putString("owner_profile", owner_image);
-                            b.putString("usertype", usertype);
-                            Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
-                            in.putExtras(b);
-                            startActivity(in);
+                        b.putString("owner_name", owner_name);
+                        b.putString("owner_email", owner_email);
+                        b.putString("owner_profile", owner_image);
+                        b.putString("usertype", usertype);
+                        Intent in = new Intent(getApplicationContext(), RegisterActivity.class);
+                        in.putExtras(b);
+                        startActivity(in);
                         finish();
 
                     } else {

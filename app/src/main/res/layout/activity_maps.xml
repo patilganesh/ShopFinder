@@ -8,7 +8,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         tools:context="firebasedemo.demo.com.googlemapapi.MapsActivity" />
 
     <LinearLayout
@@ -43,21 +43,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="5dp"
-            android:weightSum="1">
+            android:weightSum="2">
             <Button
                 android:id="@+id/btnMainNearBy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
+                android:layout_weight="1"
                 android:text="Results"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:background="@drawable/gray_border_layout"
                />
             <Button
                 android:id="@+id/btnGoogleNearby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:text="Google"/>
+                android:layout_weight="1"
+                android:text="Google"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:background="@drawable/gray_border_layout"
+                />
         </LinearLayout>
 
         <LinearLayout

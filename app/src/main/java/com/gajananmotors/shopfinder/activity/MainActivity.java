@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String search_keyword = "";
     private long lastPressedTime;
 
-    public static void finishActivity(Context context) {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

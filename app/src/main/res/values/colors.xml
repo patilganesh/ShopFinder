@@ -685,6 +685,7 @@
     <color name="list_fram_bg">#ff5a5a5a</color>
     <color name="list_item_seperator">#ffeaeaea</color>
     <color name="lite_bg_cat_fragment">#33000000</color>
+    <color name="blue_light">#3366CC</color>
     <color name="lite_transprent_grey">#fff4f4f4</color>
     <color name="little_transparent">#72000000</color>
     <color name="login_card_heading_color">#ff333333</color>
