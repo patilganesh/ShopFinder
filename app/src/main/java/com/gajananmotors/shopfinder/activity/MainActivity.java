@@ -90,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView ivSearch;
     private String search_keyword = "";
 
-    public static void finishActivity(Context context) {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -410,11 +408,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_profile) {
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
-
-        } else if (id == R.id.nav_nearby) {/*
-            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-            intent.putExtra("search_keyword", search_keyword);
-            startActivity(intent);*/
 
         } else if (id == R.id.nav_addpost) {
             if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {

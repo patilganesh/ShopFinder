@@ -2,8 +2,8 @@ package com.gajananmotors.shopfinder.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
@@ -15,8 +15,9 @@ import com.gajananmotors.shopfinder.helper.CircleImageView;
 public class ShopsListHolder extends RecyclerView.ViewHolder {
     public TextView name, type, distance, address, timing, call, weburl;
     public CircleImageView image;
-   public ImageView googleShopDirection;
+    public ImageView googleShopDirection;
 
+    public LinearLayout lDirectionLayout;
 
     public ShopsListHolder(View itemView) {
         super(itemView);
@@ -29,5 +30,6 @@ public class ShopsListHolder extends RecyclerView.ViewHolder {
         weburl = itemView.findViewById(R.id.website);
         image = itemView.findViewById(R.id.shop_image);
         googleShopDirection = itemView.findViewById(R.id.googleShopDirection);
+        lDirectionLayout = itemView.findViewById(R.id.lDirectionLayout);
     }
 }

@@ -506,6 +506,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             runOnUiThread(new Runnable() {
                 public void run() {
                     if (google_shops_list.size() != 0) {
+                        txtemptylistnearbysearch.setText("");
                         data = "GoogleData";
                         adapter = new ShopsListAdpater(MapsActivity.this, "GoogleData", google_shops_list);
                         googlesearchnearbyrecyclerview.setLayoutManager(mLayoutManager);
@@ -626,6 +627,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             searchnearbyrecyclerview.setLayoutManager(mLayoutManager);
             //  adapter.notifyDataSetChanged();
             searchnearbyrecyclerview.setAdapter(adapter);
+            txtemptylistnearbysearch.setText("");
             //    nearby_search_list_progressbar.setVisibility(View.GONE);
         } else {
             nearby_search_list_progressbar.setVisibility(View.GONE);
