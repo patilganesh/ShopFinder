@@ -43,8 +43,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private String name;
     private ProgressBar item_details_progressbar;
     private TextView txtemptylist;
+    private MenuItem item;
     //private com.arlib.floatingsearchview.FloatingSearchView searchView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +75,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         item_details_progressbar.setVisibility(View.VISIBLE);
         item_details_progressbar.setIndeterminate(true);
         item_details_progressbar.setProgress(500);
+
         call.enqueue(new Callback<ShopsArrayListModel>() {
             @Override
             public void onResponse(Call<ShopsArrayListModel> call, Response<ShopsArrayListModel> response) {
@@ -87,19 +88,18 @@ public class ItemDetailsActivity extends AppCompatActivity {
                         }
                     }
                     setAdapter(name);
-
                 }
             }
             @Override
             public void onFailure(Call<ShopsArrayListModel> call, Throwable t) {
-
             }
         });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
+        item = menu.findItem(R.id.action_search);
+        item.setVisible(false);
         searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -138,16 +138,17 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
     private void setAdapter(String name) {
         if (shops_list.size() != 0) {
-
             adapter = new ShopsListAdpater(this, shops_list, name);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(mLayoutManager);
             adapter.notifyDataSetChanged();
             recyclerView.setAdapter(adapter);
             item_details_progressbar.setVisibility(View.GONE);
+            item.setVisible(true);
         } else {
             item_details_progressbar.setVisibility(View.GONE);
             txtemptylist.setText("No shops found!");
+            item.setVisible(false);
         }
     }
 }

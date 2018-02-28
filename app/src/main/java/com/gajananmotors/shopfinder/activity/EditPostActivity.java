@@ -1,6 +1,8 @@
 package com.gajananmotors.shopfinder.activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AlertDialog;
@@ -10,9 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-
-import android.view.LayoutInflater;
-
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gajananmotors.shopfinder.R;
@@ -28,6 +28,7 @@ import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.common.ViewShopList;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
@@ -39,19 +40,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 public class EditPostActivity extends AppCompatActivity {
     private Toolbar toolbar;
-    private ViewShopList viewShopList;
     private EditText etShopName, etAddress, etMobileNumber, etServicesOffered, etShopOpeningHours, etWebsite;
     private Button btncategory, btnsubCategory, btnUpdate;
     private ArrayList<String> categoryNames = new ArrayList<>();
@@ -62,14 +60,17 @@ public class EditPostActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private int PLACE_PICKER_REQUEST = 1;
     private Place place;
-    private String area = "", city = "", state = "", country = "", pincode = "", strPlaceSearch = "", strCategorySearch = "";
+    private String area = "", city = "", state = "", country = "", pincode = "", strPlaceSearch = "", strCategorySearch = "",str_cat_spinner="";
+    private String str_subCat_spinner="",shop_name="",shop_time="",strShopLocation="",strShopServices="",strShopWebUrl="",strShopMobile="";
     private double latitude, longitude;
     private GoogleApiClient mGoogleApiClient;
-    private int int_cat_id, int_subcat_id, owner_id;
-    // private TextView txtnetwork_error_massege;
+    private int int_cat_id, int_subcat_id, owner_id,shop_id;
     private LinearLayout edit_post_layout;
-    private ArrayList<String> images = new ArrayList<>();
-    private ShopImagesAdapter adapter;
+    public static ArrayList<String> images = new ArrayList<>();
+    private static ShopImagesAdapter adapter;
+    private  int position;
+    private SharedPreferences sharedpreferences;
+    private ProgressBar editShopProgressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,7 @@ public class EditPostActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//      txtnetwork_error_massege=findViewById(R.id.network_error_massege);
+        editShopProgressbar=findViewById(R.id.editShopProgressbar);
         edit_post_layout = findViewById(R.id.edit_post_layout);
         etShopName = findViewById(R.id.etShopName);
         etAddress = findViewById(R.id.etAddress);
@@ -88,13 +89,12 @@ public class EditPostActivity extends AppCompatActivity {
         btncategory = findViewById(R.id.etCategory);
         btnsubCategory = findViewById(R.id.etSubCategory);
         btnUpdate = findViewById(R.id.btnUpdate);
-        viewShopList = getIntent().getParcelableExtra("shop_list");
+        Intent intent=getIntent();
+        position=intent.getIntExtra("position",0);
         img_rcv = findViewById(R.id.img_rcv);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         img_rcv.setLayoutManager(mLayoutManager);
-        images = viewShopList.getArrayList();
-        images.add(0, viewShopList.getStrShop_pic());
-        ShopImagesAdapter adapter = new ShopImagesAdapter(EditPostActivity.this, images, viewShopList.getShop_id());
+        adapter = new ShopImagesAdapter(EditPostActivity.this,AllPostsActivity.shops_list.get(position).getShop_id(),position);
         img_rcv.setAdapter(adapter);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,20 +102,15 @@ public class EditPostActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-       /* ConnectionDetector detector = new ConnectionDetector(this);
-        if (!detector.isConnectingToInternet()) {
-           txtnetwork_error_massege.setVisibility(View.VISIBLE);
-            edit_post_layout.setVisibility(View.GONE);
-        }*/
-        // txtnetwork_error_massege.setVisibility(View.GONE);
-        etShopName.setText(viewShopList.getStrShop_name());
-        etAddress.setText(viewShopList.getStrAddress());
-        etMobileNumber.setText(viewShopList.getStrMobile());
-        btncategory.setText(viewShopList.getStrCategory());
-        btnsubCategory.setText(viewShopList.getStrSub_category());
-        etServicesOffered.setText(viewShopList.getStrservices());
-        etShopOpeningHours.setText(viewShopList.getStrShopTime());
-        etWebsite.setText(viewShopList.getStrWeburl());
+        etShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
+        etAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
+        etMobileNumber.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
+        btncategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
+        btnsubCategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
+        etServicesOffered.setText(AllPostsActivity.shops_list.get(position).getShop_details());
+        etShopOpeningHours.setText(AllPostsActivity.shops_list.get(position).getShop_timing());
+        etWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+        shop_id=AllPostsActivity.shops_list.get(position).getShop_id();
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<CategoryListModel> call = restInterface.getCategoryList();
@@ -152,47 +147,61 @@ public class EditPostActivity extends AppCompatActivity {
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
-
     }
-
-    /*  public void refresh()
+    public static void refresh()
       {
-          viewShopList = getIntent().getParcelableExtra("shop_list");
-          adapter= new ShopImagesAdapter(EditPostActivity.this, images, viewShopList.getShop_id());
-          img_rcv.setAdapter(adapter);
-      }*/
+          adapter.notifyDataSetChanged();
+
+      }
     public void update() {
         strPlaceSearch = area + "," + city + "," + state + "," + country;
+        str_cat_spinner=btncategory.getText().toString();
+        str_subCat_spinner=btnsubCategory.getText().toString();
+        shop_name=etShopName.getText().toString();
+        shop_time=etShopOpeningHours.getText().toString();
+        strShopLocation=etAddress.getText().toString();
+        strShopServices=etServicesOffered.getText().toString();
+        strCategorySearch = str_cat_spinner + "," + str_subCat_spinner;
+        strShopWebUrl=etWebsite.getText().toString();
+        strShopMobile=etMobileNumber.getText().toString();
+        sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
+        owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
         for (SubCategoryModel subCategoryModel : sub_category_list) {
             if (TextUtils.equals(btnsubCategory.getText().toString().toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
                 int_subcat_id = subCategoryModel.getSub_category_id();
         }
+        editShopProgressbar.setVisibility(View.VISIBLE);
+        editShopProgressbar.setIndeterminate(true);
+        editShopProgressbar.setProgress(500);
         strCategorySearch = btncategory.getText().toString() + btnsubCategory.getText().toString();
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-       /* Call<CreateShopModel> call=restInterface.createShopforEmptyImage(int_cat_id, int_subcat_id, str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
-                    strBusinessHour, strBusinessLocation, strBusinessServices,
+        Call<CreateShopModel> call=restInterface.updateShopforEmptyImage(shop_id,int_cat_id, int_subcat_id, str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, shop_name,
+                    shop_time, strShopLocation, strShopServices,
                     String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
-                    strPlaceSearch, strBusinessWebUrl, strBusinessMobile
+                    strPlaceSearch, strShopWebUrl, strShopMobile
             );
         call.enqueue(new Callback<CreateShopModel>() {
             @Override
             public void onResponse(Call<CreateShopModel> call, Response<CreateShopModel> response) {
                 if(response.isSuccessful())
                 {
-                    Toast.makeText(EditPostActivity.this, "Shop Edit Success!", Toast.LENGTH_SHORT).show();
+                    editShopProgressbar.setVisibility(View.GONE);
+                    Intent intent=new Intent(EditPostActivity.this,AllPostsActivity.class);
+                    intent.putExtra("owner","owner");
+                    startActivity(intent);
+                    finish();
+                    Toast.makeText(EditPostActivity.this, "Shop Updated Success!", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<CreateShopModel> call, Throwable t) {
 
             }
         });
- */
-    }
 
-    private void showDialog(ArrayList<String> categoryNames, final boolean flag, String title) {
+    }
+    private void showDialog(ArrayList<String> categoryNames, final boolean flag, final String title) {
         final String[] categories = categoryNames.toArray(new String[categoryNames.size()]);
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, categories);
@@ -200,7 +209,7 @@ public class EditPostActivity extends AppCompatActivity {
         dialog.setTitle(title);
         dialog.setCancelable(true);
         View view = getLayoutInflater().inflate(R.layout.category_list, null);
-        ListView lv = (ListView) view.findViewById(R.id.listview);
+        ListView lv = view.findViewById(R.id.listview);
         lv.setAdapter(adapter);
         // Change MyActivity.this and myListOfItems to your own values
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -209,6 +218,9 @@ public class EditPostActivity extends AppCompatActivity {
                 dialog.cancel();
                 if (flag == true) {
                     btncategory.setText(categories[position]);
+                    editShopProgressbar.setVisibility(View.VISIBLE);
+                    editShopProgressbar.setIndeterminate(true);
+                    editShopProgressbar.setProgress(500);
                     getSubCategory();
                 } else {
                     btnsubCategory.setText(categories[position]);
@@ -220,7 +232,7 @@ public class EditPostActivity extends AppCompatActivity {
     }
 
     public void getSubCategory() {
-        String str_cat_spinner = btncategory.getText().toString();
+        str_cat_spinner = btncategory.getText().toString();
         for (CategoryModel cat : category_Model_list) {
             if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
                 int_cat_id = cat.getCategory_id();
@@ -240,6 +252,7 @@ public class EditPostActivity extends AppCompatActivity {
                     for (int i = 0; i < sub_category_list.size(); i++) {
                         subCategoryNames.add(sub_category_list.get(i).getName().toString());
                     }
+                    editShopProgressbar.setVisibility(View.GONE);
                 }
             }
             @Override
@@ -292,5 +305,17 @@ public class EditPostActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        images.clear();
+        images.add(AllPostsActivity.shops_list.get(position).getShop_pic());
+        images.add(AllPostsActivity.shops_list.get(position).getImage1());
+        images.add(AllPostsActivity.shops_list.get(position).getImage2());
+        images.add(AllPostsActivity.shops_list.get(position).getImage3());
+        images.add(AllPostsActivity.shops_list.get(position).getImage4());
+        images.add(AllPostsActivity.shops_list.get(position).getImage5());
+        images.add(AllPostsActivity.shops_list.get(position).getImage6());
     }
 }

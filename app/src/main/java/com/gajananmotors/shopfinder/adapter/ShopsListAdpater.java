@@ -48,8 +48,8 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
     private LinearLayout viewPostLayout;
     private ArrayList<String> images = new ArrayList<>();
     private int shop_id;
-    private int index = 0;
-    ViewShopList viewShopList = new ViewShopList();
+    private int index=0;
+    public static ViewShopList viewShopList = new ViewShopList();
     private String name;
     private ArrayList<ShopsListModel> mFilteredList;
     private double lat, lng;
@@ -61,15 +61,13 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
         this.activity = itemDetailsActivity;
         this.name = name;
     }
-
     public ShopsListAdpater(ItemDetailsActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
 
         this.activity = activity;
         this.list = shops_list;
         mFilteredList = shops_list;
-        this.name = name;
+        this.name=name;
     }
-
     public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
         this.activity = activity;
         this.list = shops_list;
@@ -85,19 +83,17 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
     }
 
     public ShopsListAdpater(AllPostsActivity allPostsActivity, ArrayList<ShopsListModel> shops_list, String name) {
-        this.activity = allPostsActivity;
         this.list = shops_list;
         mFilteredList = shops_list;
-        this.name = name;
+        this.activity = allPostsActivity;
+        this.name=name;
     }
-
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.activity_shops_list, parent, false);
         return new ShopsListHolder(view);
     }
-
     @Override
     public void onBindViewHolder(final ShopsListHolder holder, final int position) {
         if (name.equalsIgnoreCase("GoogleData")) {
@@ -176,55 +172,55 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                 @Override
                 public void onClick(View v) {
 
-                    viewShopList.setShop_id(list.get(position).getShop_id());
-                    viewShopList.setStrShop_name(list.get(position).getShop_name());
-                    viewShopList.setStrAddress(list.get(position).getAddress());
-                    viewShopList.setLatitude(Double.parseDouble(list.get(position).getShop_lat()));
-                    viewShopList.setLongitude(Double.parseDouble(list.get(position).getShop_long()));
-                    viewShopList.setStrCategory(list.get(position).getCategory_name());
-                    viewShopList.setStrSub_category(list.get(position).getSub_category_name());
-                    viewShopList.setStrWeburl(list.get(position).getWebsite());
-                    viewShopList.setStrMobile(list.get(position).getShop_mob_no());
-                    viewShopList.setStrShopTime(list.get(position).getShop_timing());
-                    viewShopList.setStrservices(list.get(position).getServices());
-                    images.clear();
-                    index = 0;
-                    if (list.get(position).getImage1() != null) {
-                        images.add(index++, list.get(position).getImage1());
-                    }
-                    if (list.get(position).getImage2() != null) {
-                        images.add(index++, list.get(position).getImage2());
-                    }
-                    if (list.get(position).getImage3() != null) {
-                        images.add(index++, list.get(position).getImage3());
-                    }
-                    if (list.get(position).getImage4() != null) {
-                        images.add(index++, list.get(position).getImage4());
-                    }
-                    if (list.get(position).getImage5() != null) {
-                        images.add(index++, list.get(position).getImage5());
-                    }
-                    if (list.get(position).getImage6() != null) {
-                        images.add(index++, list.get(position).getImage6());
-                    }
-                    viewShopList.setArrayList(images);
-                    viewShopList.setStrShop_pic(list.get(position).getShop_pic());
-                    transition();
-                    //activity.finish();
-                    Log.e("updatedsize", String.valueOf(images.size()));
+                viewShopList.setShop_id(list.get(position).getShop_id());
+                viewShopList.setStrShop_name(list.get(position).getShop_name());
+                viewShopList.setStrAddress(list.get(position).getAddress());
+                viewShopList.setLatitude(Double.parseDouble(list.get(position).getShop_lat()));
+                viewShopList.setLongitude(Double.parseDouble(list.get(position).getShop_long()));
+                viewShopList.setStrCategory(list.get(position).getCategory_name());
+                viewShopList.setStrSub_category(list.get(position).getSub_category_name());
+                viewShopList.setStrWeburl(list.get(position).getWebsite());
+                viewShopList.setStrMobile(list.get(position).getShop_mob_no());
+                viewShopList.setStrShopTime(list.get(position).getShop_timing());
+                viewShopList.setStrservices(list.get(position).getServices());
+                images.clear();
+                index = 0;
+                if (list.get(position).getImage1() != null) {
+                    images.add(index++, list.get(position).getImage1());
                 }
-            });
-        }
+                if (list.get(position).getImage2() != null) {
+                    images.add(index++, list.get(position).getImage2());
+                }
+                if (list.get(position).getImage3() != null) {
+                    images.add(index++, list.get(position).getImage3());
+                }
+                if (list.get(position).getImage4() != null) {
+                    images.add(index++, list.get(position).getImage4());
+                }
+                if (list.get(position).getImage5() != null) {
+                    images.add(index++, list.get(position).getImage5());
+                }
+                if (list.get(position).getImage6() != null) {
+                    images.add(index++, list.get(position).getImage6());
+                }
+                viewShopList.setArrayList(images);
+                viewShopList.setStrShop_pic(list.get(position).getShop_pic());
+                transition(position);
+                //activity.finish();
+                Log.e("updatedsize", String.valueOf(images.size()));
+            }
+        });
     }
-
-    private void transition() {
+    private void transition(int position) {
         Log.d("Allpost", "transition");
         Intent intent = new Intent(activity, ViewPostActivity.class);
-        intent.putExtra("shop_list", viewShopList);
-        intent.putExtra("owner", name);
+        intent.putExtra("position",""+position);
+        if(!name.equalsIgnoreCase("owner")) {
+            intent.putExtra("shop_list", viewShopList);
+        }
+        intent.putExtra("owner",name);
         activity.startActivity(intent);
     }
-
     @Override
     public int getItemCount() {
         if (name.equalsIgnoreCase("GoogleData")) {
@@ -246,8 +242,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
         list.addAll(newList);
         notifyDataSetChanged();
     }
-
-
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -258,7 +252,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
 
                 if (newText.isEmpty()) {
 
-                    mFilteredList = list;
+                    mFilteredList= list;
                 } else {
 
                     ArrayList<ShopsListModel> filteredList = new ArrayList<>();
@@ -276,16 +270,12 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = mFilteredList;
                 return filterResults;
-
             }
-
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mFilteredList = (ArrayList<ShopsListModel>) results.values;
                 notifyDataSetChanged();
             }
-
-
         };
     }
 }

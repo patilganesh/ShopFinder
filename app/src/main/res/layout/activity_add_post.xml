@@ -145,11 +145,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:hint="Category:"
+                    android:hint="Select Category:"
                     android:textSize="14sp"
                     app:hintTextAppearance="@style/MyAppearance"
                     app:met_floatingLabel="normal"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    />
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                         android:id="@+id/spnBusinessSubcategory"
                         android:layout_width="match_parent"
@@ -157,14 +158,13 @@
                         android:layout_margin="10dp"
                         android:hint="Sub Category:"
                         android:textSize="14sp"
-                    android:visibility="gone"
+                        android:visibility="gone"
                         app:hintTextAppearance="@style/MyAppearance"
-                        app:met_floatingLabel="normal" />
+                        app:met_floatingLabel="normal"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    >
+                    android:gravity="center">
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
