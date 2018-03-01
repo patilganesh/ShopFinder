@@ -313,6 +313,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
