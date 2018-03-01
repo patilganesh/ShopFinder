@@ -17,6 +17,8 @@
      <!--   <item
             android:id="@+id/nav_nearby"
             android:icon="@drawable/ic_map"
+            android:visible="false"
+            android:title="Near By" />
             android:title="Near By" />-->
         <item
             android:id="@+id/nav_addpost"

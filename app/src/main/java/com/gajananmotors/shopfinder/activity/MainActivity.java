@@ -64,6 +64,7 @@ import static com.gajananmotors.shopfinder.common.CheckSetting.isNetworkAvailabl
 import static com.gajananmotors.shopfinder.helper.Config.hasPermissions;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    private static final int PERIOD = 2000;
     private RecyclerView recycler_view_vertical, recyclerView;
     private ArrayList<ShopsListModel> shops_list = new ArrayList<>();
     private static int RESPONSE_CODE = 1;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView nearBy;
     private ImageView ivSearch;
     private String search_keyword = "";
+    private long lastPressedTime;
 
 
     @Override
@@ -177,23 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-      /* nearby = findViewById(R.id.nearby);
-      nearby.setOnClickListener(this);*/
-        // below code is for feature refernce,please dont delete this code.
-        /*recyclerView = findViewById(R.id.rcv);
-        shops_list.add(new ShopsListModel("Gajana Motors Pvt.Ltd.", "500.00 m", "Vinayak Residencey,near DMart,Baner", "Opens 24 Hours", "http:/www.informedevice.com", "Hotel", "9856237845"));
-        shops_list.add(new ShopsListModel("Aloha Technology Pvt.Ltd.", "400.00 m", "2nd & 3rd Floor, Kumar Crystals, New D P Road, Opposite Converses, Aundh, Baner, Pune", "Opens 9Am-10PM", "http:/www.aloha.com", "IT", "7812345645"));
-        shops_list.add(new ShopsListModel("Xoriant Technology", "200.00 m", "501-502, 5th Floor, Amar Paradigm, Baner Road, Near D-Mart, Baner, Pune", "Opens 9.30Am-6PM", "http:/www.xoriant.com", "IT", "8185868231"));
-        shops_list.add(new ShopsListModel("Veritas Technology", "800.00 m", "East Middlefield Road Mountain View, CA 94043", "Opens 9.30Am-7PM", "http:/www.veritas.com", "Hospital", "9095969314"));
-        shops_list.add(new ShopsListModel("MNM Solutions", "5.00 km", "UNIT no 802, Tower no. 7, SEZ Magarpatta city, Hadapsar, Pune, Maharashtra 411013", "Opens 24 Hours", "http:/www.mnm.com", "Business", "8794156568"));
-        shops_list.add(new ShopsListModel("Infosys Solutions", "100.00 km", "UNIT no 802, Tower no. 7, SEZ Magarpatta city, Hadapsar, Pune, Maharashtra 411013", "Opens 24 Hours", "http:/www.infosys.com", "Business", "7856123245"));
-        adapter = new ShopsListAdpater(shops_list);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-        DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(mDividerItemDecoration);
-        recyclerView.setAdapter(adapter);*/
+
         searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
@@ -331,28 +317,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-      /*  if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
-                && keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);*/
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            onBackPressed();
-        }
-        return true;
-    }
 
-    @Override
-    public void onBackPressed() {
-        Snackbar snackbar = Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            if (event.getDownTime() - lastPressedTime < PERIOD) {
                 finish();
+            } else {
+                Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                }).show();
+                lastPressedTime = event.getEventTime();
             }
-        });
-        snackbar.show();
+
+        return true;
     }
 
     @Override
@@ -414,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
-        } else if (id == R.id.nav_addpost) {
+        }  else if (id == R.id.nav_addpost) {
             if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             } else {
@@ -469,24 +447,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
         }
     }
-  /* @Override
-    public boolean onQueryTextSubmit(String query) {
 
-        Toast.makeText(this, "On Submit......", Toast.LENGTH_SHORT).show();
-        return false;
-    }*/
-    /*@Override
-    public boolean onQueryTextChange(String newText) {
-        recycleView.setVisibility(RecyclerView.VISIBLE);
-        recycler_view_vertical.setVisibility(RecyclerView.GONE);
-        newText = newText.toLowerCase();
-        ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-        for (ShopsListModel s : shops_list) {
-            if (s.getName().toLowerCase().contains(newText)||s.getAddress().toLowerCase().contains(newText)||s.getType().toLowerCase().contains(newText)||s.getDistance().toLowerCase().contains(newText)||s.getTiming().toLowerCase().contains(newText))
-                //   Toast.makeText(this, "Text:" + newText, Toast.LENGTH_LONG).show();
-                suggest_list.add(s);
-        }
-        adapter.setFilter(suggest_list);
-        return true;
-    }*/
 }

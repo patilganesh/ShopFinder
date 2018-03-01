@@ -377,9 +377,7 @@
                                 android:textColor="@color/TextcolorsBlack"
                                 android:textSize="15dp" />
                         </LinearLayout>
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+
                         <LinearLayout
                             android:id="@+id/linservices"
                             android:layout_width="match_parent"
@@ -402,10 +400,11 @@
                                 android:layout_weight="0.8"
                                 android:gravity="start"
                                 android:text="mobile"
+                                android:inputType="textMultiLine"
                                 android:textColor="@color/TextcolorsBlack"
                                 android:textSize="15dp" />
                         </LinearLayout>
-</ScrollView>
+
                         <LinearLayout
                             android:id="@+id/lin1"
                             android:layout_width="match_parent"

@@ -112,7 +112,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                     if (!isNetworkAvailable(activity)) {
                         displayPromptForEnablingData(activity);
                     } else {
-                        String shopName = holder.name.getText().toString();
+                        String shopName=holder.name.getText().toString();
                         String uriBegin = "geo:" + viewShopList.getLatitude() + "," + viewShopList.getLongitude();
                         String query = viewShopList.getLatitude() + "," + viewShopList.getLongitude() + "(" + name + ")";
                         String encodedQuery = Uri.encode(query);
@@ -120,9 +120,9 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                         Uri uri = Uri.parse(uriString);
                         String address = getAddress(lat, lng, activity);
                         Log.d("MultiViewType", "address" + address);
-                        Uri gmmIntentUri = Uri.parse("geo:" + lat + "," + lng + "?q=" + shopName + "+" + address);
-                        // Uri gmmIntentUri = Uri.parse("geo:navigation" + 0 + "," + 0 + "?q=" + address);
-                        Log.d("uriIntent", "gmmIntentUri" + gmmIntentUri);
+                      Uri gmmIntentUri = Uri.parse("geo:" + lat + "," + lng +"?q=" +shopName+"+" +address);
+                       // Uri gmmIntentUri = Uri.parse("geo:navigation" + 0 + "," + 0 + "?q=" + address);
+                        Log.d("uriIntent","gmmIntentUri"+gmmIntentUri);
                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                         mapIntent.setPackage("com.google.android.apps.maps");
                         activity.startActivity(mapIntent);

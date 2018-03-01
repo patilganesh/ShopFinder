@@ -75,6 +75,7 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.tv = (TextView) convertView.findViewById(R.id.SelectOption);
             holder.chkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
+          //  holder.tv1 = (TextView) convertView.findViewById(R.id.tvOther);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -137,7 +138,7 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView tv;
+        TextView tv,tv1;
         CheckBox chkbox;
     }
 }

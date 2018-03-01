@@ -168,7 +168,6 @@ public class CwacCameraFragment extends Fragment implements View.OnClickListener
             public void onSensorChanged(SensorEvent event) {
 
 
-/*
 
                 if (event.values[1]<6.5 && event.values[1]>-6.5) {
                     if (device_orientation!=1) {
@@ -183,7 +182,6 @@ public class CwacCameraFragment extends Fragment implements View.OnClickListener
                 }
 
 
-*/
 
                 float x = event.values[0];
                 float y = event.values[1];
@@ -343,7 +341,7 @@ public class CwacCameraFragment extends Fragment implements View.OnClickListener
 
     public void onTakePicture(View view) {
         Log.d("gun0912","onTakePicture()");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
                 && focusList == null
                 ) {
             cameraView.autoFocus();

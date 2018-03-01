@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/linear_layout">
 
 
-    <android.support.v7.widget.CardView
+  <!--  <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+android:background="#aarrggbb"
+        android:layout_marginTop="210dp"
         android:elevation="10dp"
-        app:cardElevation="10dp">
-        <!-- app:cardBackgroundColor="#f8f3f3"-->
+        app:cardElevation="10dp">-->
 
-
-        <!--<ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/background" />-->
         <ScrollView
-            android:id="@+id/primary_scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-
+            android:layout_height="match_parent"
+          >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_gravity="bottom"
+               >
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Login to Find a shop"
-                    android:textColor="@android:color/black"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -62,8 +62,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+
                         android:layout_marginTop="@dimen/activity_horizontal_top_margin"
-                        android:textColorHint="@android:color/black">
+                        android:textColorHint="@android:color/white">
 
                         <EditText
                             android:id="@+id/etUserName"
@@ -74,11 +75,9 @@
                             android:hint="@string/String_Contact_Number"
                             android:inputType="phone"
                             android:maxLength="10"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="#dadada"
+                            android:textColor="@android:color/white"
+                            android:textColorHint="@android:color/white"
                             android:textSize="15sp" />
-
-                        <requestFocus />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
@@ -86,33 +85,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center">
-
-                    <android.support.design.widget.TextInputLayout
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:textColorHint="@android:color/white">
+                    <EditText
+                        android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="15dp"
-                        android:textColorHint="@android:color/black">
-
-                        <EditText
-                            android:id="@+id/etPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/side_margin"
-                            android:hint="@string/String_password"
-                            android:inputType="textPassword"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="#dadada" />
-                    </android.support.design.widget.TextInputLayout>
+                        android:layout_margin="@dimen/side_margin"
+                        android:hint="@string/String_password"
+                        android:inputType="textPassword"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@android:color/white" />
+                </android.support.design.widget.TextInputLayout>
 
                     <ProgressBar
                         android:id="@+id/login_progressbar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
                         android:theme="@style/CircularProgress"
-                        android:visibility="invisible" />
+                        android:visibility="invisible"
+                        android:layout_centerInParent="true" />
                 </RelativeLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -161,7 +157,6 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:weightSum="2">
-
                     <View
                         android:layout_width="wrap_content"
                         android:layout_height="0.1dp"
@@ -169,7 +164,6 @@
                         android:layout_marginRight="16dp"
                         android:layout_weight="1"
                         android:background="@android:color/black" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -193,19 +187,6 @@
                     android:layout_gravity="center_vertical"
                     android:weightSum="1">
 
-                    <!--   <com.facebook.login.widget.LoginButton
-                           android:id="@+id/login_button"
-                           android:layout_width="0dp"
-                           android:layout_height="wrap_content"
-                           android:layout_marginBottom="13dp"
-                           android:layout_marginLeft="10dp"
-                           android:layout_marginRight="10dp"
-                           android:layout_marginTop="14dp"
-                           android:layout_weight="1"
-                           android:elevation="7dp"
-                           android:paddingBottom="6dp"
-                           android:paddingTop="7dp"
-                           app:com_facebook_login_text="Sign In" />-->
 
                     <com.google.android.gms.common.SignInButton
                         android:id="@+id/btnSignIn"
@@ -216,8 +197,9 @@
                         android:layout_weight="1" />
                 </LinearLayout>
             </LinearLayout>
+            </LinearLayout>
         </ScrollView>
-    </android.support.v7.widget.CardView>
+   <!-- </android.support.v7.widget.CardView>-->
 
 
 </LinearLayout>

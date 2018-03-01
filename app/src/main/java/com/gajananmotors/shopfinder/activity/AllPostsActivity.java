@@ -111,23 +111,8 @@ public class AllPostsActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                setAdapter("");
-//                newText = newText.toLowerCase();
-//                search_text = newText;
-//                ArrayList<ShopsListModel> suggest_list = new ArrayList<>();
-//                for (ShopsListModel s : shops_list) {
-//                    if (s.getShop_name().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getArea().toLowerCase().contains(newText) || s.getSub_category_name().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText) || s.getState().toLowerCase().contains(newText) || s.getCountry().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getShop_timing().toLowerCase().contains(newText) || s.getWebsite().toLowerCase().contains(newText))
-//
-//                        suggest_list.add(s);
-//                    if (s.getShop_name().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getAddress().toLowerCase().startsWith(newText) || s.getCity().toLowerCase().startsWith(newText) || s.getCategory_name().toLowerCase().startsWith(newText) || s.getShop_mob_no().toLowerCase().startsWith(newText))
-//                        suggest_list.add(s);
-//                    else if (s.getShop_name().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getAddress().toLowerCase().endsWith(newText) || s.getCity().toLowerCase().endsWith(newText) || s.getCategory_name().toLowerCase().endsWith(newText) || s.getShop_mob_no().toLowerCase().endsWith(newText))
-//                        suggest_list.add(s);
-//                    else if (s.getShop_name().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getAddress().toLowerCase().contains(newText) || s.getCity().toLowerCase().contains(newText) || s.getCategory_name().toLowerCase().contains(newText) || s.getShop_mob_no().toLowerCase().contains(newText))
-//                        suggest_list.add(s);
-//                }
+
                    adapter.getFilter().filter(newText);
-               // adapter.setFilter(suggest_list);
                return true;
             }
         });
