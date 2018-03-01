@@ -15,13 +15,24 @@
             android:layout_height="90dp"
             android:layout_marginTop="20dp"
             android:src="@drawable/new_shop_image" />
-
         <ImageView
             android:id="@+id/shop_img_edit"
             android:layout_width="45dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="55dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="52dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/edit" />
+
     </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvimageinfo"
+        android:text="Shop Image"
+        android:textSize="13sp"
+        android:layout_marginLeft="10dp"
+        android:padding="2dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black_dark" />
 </RelativeLayout>

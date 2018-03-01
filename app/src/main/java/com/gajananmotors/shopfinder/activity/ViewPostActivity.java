@@ -55,7 +55,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private LinearLayout linearLayout;
     private int position;
     private String name = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,12 +208,21 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 if (!isNetworkAvailable(this)) {
                     displayPromptForEnablingData(this);
                 } else {
-                    String address = getAddress(viewShopList.getLatitude(), viewShopList.getLongitude(), this);
-                    Log.d("MultiViewType", "address" + address);
-                    Uri gmmIntentUri = Uri.parse("geo:" + viewShopList.getLatitude() + "," + viewShopList.getLatitude() + "?q=" + address);
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    startActivity(mapIntent);
+                    if (name.equals("owner")) {
+                        String address = getAddress(Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()), Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_long()), this);
+                        Log.d("MultiViewType", "address" + address);
+                        Uri gmmIntentUri = Uri.parse("geo:" + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "," + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_long()) + "?q=" + address);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    } else {
+                        String address = getAddress(viewShopList.getLatitude(), viewShopList.getLongitude(), this);
+                        Log.d("MultiViewType", "address" + address);
+                        Uri gmmIntentUri = Uri.parse("geo:" + viewShopList.getLatitude() + "," + viewShopList.getLatitude() + "?q=" + address);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    }
                 }
                 break;
             case R.id.shopGallaryLayout:

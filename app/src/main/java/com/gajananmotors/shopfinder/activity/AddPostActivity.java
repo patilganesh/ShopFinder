@@ -118,7 +118,6 @@ public class AddPostActivity extends AppCompatActivity {
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
     private EditText etBusinessWhatsApp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -254,7 +253,7 @@ public class AddPostActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
     public void getSubCategoryData() {
@@ -718,10 +717,7 @@ public class AddPostActivity extends AppCompatActivity {
             public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
 
             }
-
-
         });
-
     }
     public void addServices() {
         LayoutInflater inflater = LayoutInflater.from(this);
