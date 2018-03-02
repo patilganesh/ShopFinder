@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Ashwin on 1/17/2018.
  */
-
 public class CreateShopModel {
     @SerializedName("shop_id")
     private int shop_id;

@@ -52,8 +52,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
     private String name;
     private ArrayList<ShopsListModel> mFilteredList;
     private double lat, lng;
-
-
     public ShopsListAdpater(MapsActivity itemDetailsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
         mFilteredList = shops_list;
@@ -120,7 +118,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                         Uri uri = Uri.parse(uriString);
                         String address = getAddress(lat, lng, activity);
                         Log.d("MultiViewType", "address" + address);
-                      Uri gmmIntentUri = Uri.parse("geo:" + lat + "," + lng +"?q=" +shopName+"+" +address);
+                        Uri gmmIntentUri = Uri.parse("geo:" + lat + "," + lng + "?q=" + shopName + "+" + address);
                        // Uri gmmIntentUri = Uri.parse("geo:navigation" + 0 + "," + 0 + "?q=" + address);
                         Log.d("uriIntent","gmmIntentUri"+gmmIntentUri);
                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -197,7 +195,6 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                     viewShopList.setArrayList(images);
                     viewShopList.setStrShop_pic(mFilteredList.get(position).getShop_pic());
                     transition(position);
-
                 }
             });
         }
@@ -260,6 +257,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mFilteredList = (ArrayList<ShopsListModel>) results.values;
+                AllPostsActivity.shops_list = mFilteredList;
                 notifyDataSetChanged();
             }
         };
