@@ -202,7 +202,15 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                android:layout_gravity="bottom|center_horizontal"
+                ads:adUnitId="@string/banner_home_footer">
+            </com.google.android.gms.ads.AdView>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

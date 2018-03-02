@@ -321,10 +321,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 owner_email = acct.getEmail();
                 //   owner_image ="";
                 if (owner_image.equals("")) {
-                    owner_image = acct.getPhotoUrl().toString();
-
-                } else if(owner_image.equals("")){
                     owner_image ="";
+
+                } else {
+                    owner_image = acct.getPhotoUrl().toString();
                 }
                 FacegleloginService();
 

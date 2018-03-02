@@ -28,6 +28,12 @@ import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.DeleteShopModel;
 import com.gajananmotors.shopfinder.model.LinkShopModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -55,6 +61,8 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private LinearLayout linearLayout;
     private int position;
     private String name = "";
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +111,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopDeleteLayout.setVisibility(View.GONE);
         shopCallLayout.setVisibility(View.VISIBLE);
         shopMsgLayout.setVisibility(View.VISIBLE);
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        init();
         if (!name.isEmpty()) {
             if (name.equals("owner")) {
                 shopEditLayout.setVisibility(View.VISIBLE);
@@ -154,6 +169,44 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             LinkShopServices(shop_id);
         }*/
     }
+
+    private void init() {
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                // Check the LogCat to get your test device ID
+                .addTestDevice(getString(R.string.string_addtest_device))
+                .build();
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+            }
+
+            @Override
+            public void onAdClosed() {
+                Toast.makeText(getApplicationContext(), "Ad is closed!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Toast.makeText(getApplicationContext(), "Ad failed to load! error code: " + errorCode, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                Toast.makeText(getApplicationContext(), "Ad left application!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+        });
+
+        mAdView.loadAd(adRequest);
+    }
+
     private void LinkShopServices(final int shop_id) {
         Retrofit retrofit;
         retrofit = APIClient.getClient();
@@ -288,8 +341,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     }
     private void deleteShopServices(int shop_id) {
         Retrofit retrofit;
-        DeleteShopModel deleteShopModel;
-        deleteShopModel = new DeleteShopModel();
+        DeleteShopModel deleteShopModel = new DeleteShopModel();
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<DeleteShopModel> deleteShop = restInterface.deleteShop(shop_id);
@@ -320,6 +372,34 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         if (!name.equals("owner")) {
             allimages.clear();
         }
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
        finish();
+    }
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
 }
