@@ -104,7 +104,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ArrayList<ShopServicesModel> shopServicesModels = new ArrayList<>();
     private ViewGroup mSelectedImagesContainer;
     private MaterialBetterSpinner category, subcategory;
-    private EditText etBusinessName, etBusinessEmail, etBusinessWhatsApp,etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
+    private EditText etBusinessName, etBusinessEmail, etBusinessLocation, etBusinessMobile, etBusinessWebUrl, etBusinessServices, etBusinessHour;
     private Toolbar toolbar;
     private String getImages = "", area = "", city = "", state = "", strBusinessName = "", strBusinessLocation = "", strBusinessMobile = "", strBusinessHour = "", country = "", pincode = "";
     private String strBusinessWebUrl = "", strBusinessServices = "", strBusinessEmail = "", strPlaceSearch = "";
@@ -317,11 +317,11 @@ init();
         }
         // subcategory.setAdapter(categoryAdapter);
     }
-  /*  @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }*/
+    }
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
         for (int i = 0; i < sub_category_list.size(); i++) {
@@ -778,8 +778,6 @@ init();
                             //display shortened representation of selected values
                             etBusinessServices.setText(DropDownShopServicesListAdapter.getSelected());
                             expanded = false;
-                            addPostProgressbar.setVisibility(View.INVISIBLE);
-
                         }
                     }
                 }else {
@@ -792,95 +790,7 @@ init();
             public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
 
             }
-
-
         });
-
-    }
-
-
-    /*
-     * Function to set up the pop-up window which acts as drop-down list
-     * */
-    private void initiatePopUp(ArrayList<ShopServicesModel> items, TextView tv) {
-        LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.poupup_shop_services_menu, (ViewGroup) findViewById(R.id.PopUpView));
-
-        LinearLayout layout1 = (LinearLayout) findViewById(R.id.linear_layout);
-
-        pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-
-        pw.setBackgroundDrawable(new BitmapDrawable());
-        pw.setTouchable(true);
-
-        pw.setOutsideTouchable(false);
-        pw.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        pw.setTouchInterceptor(new View.OnTouchListener() {
-
-            public boolean onTouch(View v, MotionEvent event) {
-                // TODO Auto-generated method stub
-                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                    pw.dismiss();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        pw.setContentView(layout);
-
-        // pw.showAsDropDown(layout1);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            pw.showAsDropDown(etBusinessServices, Gravity.CENTER,0,0);
-        }
-
-        final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
-        DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
-        list.setAdapter(adapter);
-        final  TextView textView = (TextView) layout.findViewById(R.id.tvOther);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pw.dismiss();
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(AddPostActivity.this);
-                alertDialog.setMessage("Are you sure you want to add service? ");
-                alertDialog.setIcon(R.drawable.ic_add_circle_black_24dp);
-                alertDialog.setCancelable(false);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        addServices();
-                        dialog.dismiss();
-                    }
-                });
-                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                alertDialog.show();
-            }
-        });
-
-
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            onBackPressed();
-        }
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-
-
     }
     public void addServices() {
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -888,6 +798,7 @@ init();
         AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
         AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
+
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setView(confirmDialog);
         alert.setCancelable(true);
@@ -913,6 +824,7 @@ init();
 
         });
     }
+
     private void addshopServices(String service_name) {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -955,5 +867,62 @@ init();
             mAdView.destroy();
         }
         super.onDestroy();
+    }
+    /*
+     * Function to set up the pop-up window which acts as drop-down list
+     * */
+    private void initiatePopUp(ArrayList<ShopServicesModel> items, TextView tv) {
+        LayoutInflater inflater = (LayoutInflater) AddPostActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.poupup_shop_services_menu, (ViewGroup) findViewById(R.id.PopUpView));
+
+        LinearLayout layout1 = (LinearLayout) findViewById(R.id.linear_layout);
+        pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+
+        pw.setBackgroundDrawable(new BitmapDrawable());
+        pw.setTouchable(true);
+
+        pw.setOutsideTouchable(false);
+        pw.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        pw.setTouchInterceptor(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    pw.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        pw.setContentView(layout);
+
+        // pw.showAsDropDown(layout1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            pw.showAsDropDown(etBusinessServices, Gravity.CENTER,0,0);
+        }
+
+        final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
+        DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
+        list.setAdapter(adapter);
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed();
+        }
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+
+
     }
 }

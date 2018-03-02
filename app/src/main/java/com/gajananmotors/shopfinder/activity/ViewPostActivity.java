@@ -255,7 +255,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.shopDirectionLayout:
-
+             //   viewShopList.getLatitude();
                 if (!isNetworkAvailable(this)) {
                     displayPromptForEnablingData(this);
                 } else {
@@ -294,7 +294,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             case R.id.shopCallLayout:
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
                 }
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + tvMobile.getText().toString()));
@@ -365,7 +371,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

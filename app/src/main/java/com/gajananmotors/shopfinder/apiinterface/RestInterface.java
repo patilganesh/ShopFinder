@@ -201,7 +201,8 @@ public interface RestInterface {
             @Part("action") String action,
             @Part("count") int count
     );
-    @Multipart
+
+    @FormUrlEncoded
     @POST("index.php/mobile_api/upload_shop_images")
     Call<UploadShopImagesModel> updateShopImages(
             @Field("shop_id") int shop_id,

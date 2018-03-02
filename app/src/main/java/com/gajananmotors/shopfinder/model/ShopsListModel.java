@@ -26,7 +26,6 @@ public class ShopsListModel {
     private String shop_timing;
     @SerializedName("services")
     private String services;
-
     public String getServices() {
         return services;
     }
