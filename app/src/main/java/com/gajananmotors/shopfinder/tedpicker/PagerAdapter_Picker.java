@@ -21,7 +21,6 @@ public class PagerAdapter_Picker extends FragmentPagerAdapter {
     public PagerAdapter_Picker(Context context, FragmentManager fm) {
         super(fm);
             tab_titles = context.getResources().getStringArray(R.array.tab_titles);
-
     }
 
     @Override

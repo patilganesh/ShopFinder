@@ -423,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
                 tvOwner_Name.setText("User Name");
                 tvOwner_Email.setText("User Email_id");
+
             }
             navigationView.setNavigationItemSelectedListener(MainActivity.this);
             String name = sharedpreferences.getString(Constant.OWNER_NAME, "");

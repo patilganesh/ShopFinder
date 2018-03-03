@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -85,6 +86,7 @@ public class Util {
                 }
             } catch (OutOfMemoryError ex) {
                 // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
+                Log.d("OutOfMemoryError",ex.getMessage());
             }
         }
         return bitmap;
