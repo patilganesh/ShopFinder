@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        coordinate_layout = findViewById(R.id.coordinate_layout_main);
+        coordinate_layout = findViewById(R.id.coordinate_layout);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.e("Refreshed token:", refreshedToken);
         Constant.device_token=refreshedToken;

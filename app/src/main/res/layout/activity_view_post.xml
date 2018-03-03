@@ -399,7 +399,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.8"
-                                android:gravity="start"
+                                android:gravity="end"
                                 android:text="mobile"
                                 android:inputType="textMultiLine"
                                 android:textColor="@color/TextcolorsBlack"

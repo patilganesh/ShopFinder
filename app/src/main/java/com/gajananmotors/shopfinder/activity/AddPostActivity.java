@@ -817,9 +817,6 @@ init();
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-
-
-
             }
 
         });
