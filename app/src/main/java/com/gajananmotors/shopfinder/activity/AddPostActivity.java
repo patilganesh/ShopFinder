@@ -780,7 +780,7 @@ init();
                             expanded = false;
                         }
                     }
-                }else {
+                }else if(shopServicesModels.size()<=0){
                     addServices();
                     addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
@@ -817,9 +817,6 @@ init();
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-
-
-
             }
 
         });
