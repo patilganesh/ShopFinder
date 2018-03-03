@@ -362,7 +362,10 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     String msg = response.body().getMsg();
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                     finish();
-                    startActivity(new Intent(ViewPostActivity.this, AllPostsActivity.class));
+                  //  startActivity(new Intent(ViewPostActivity.this, AllPostsActivity.class));
+                    Intent intent = new Intent(ViewPostActivity.this, AllPostsActivity.class);
+                    intent.putExtra("owner", "owner");
+                    startActivity(intent);
                 }
             }
             @Override
