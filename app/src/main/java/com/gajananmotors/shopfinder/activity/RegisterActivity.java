@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,8 @@ import com.gajananmotors.shopfinder.model.CropingOptionModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
 import com.gajananmotors.shopfinder.utility.Validation;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,10 +73,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
-    private String name = "", email = "", profile = "", logingoogle = "";
+    public String name = "", email = "", profile = "", logingoogle = "";
     private Toolbar toolbar;
-
-
     private ProgressBar register_progressbar;
     private Snackbar snackbar;
 
@@ -107,9 +108,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // outPutFile = null;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
 
-        if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").equals("")) {
-            device_token = Constant.device_token;
-        }
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000");
         //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
 
@@ -118,19 +116,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (extras != null) {
             name = extras.getString("owner_name");
             email = extras.getString("owner_email");
-
-            if (profile.equals("")) {
-                profile = "";
-            } else {
+            logingoogle = extras.getString("usertype");
+            if (!TextUtils.isEmpty(profile)) {
                 profile = extras.getString("owner_profile");
                 Picasso.with(RegisterActivity.this)
                         .load(profile)
                         .fit()
                         .placeholder(R.drawable.ic_account_circle_black_24dp)
                         .into(imgProfile);
-            }
+            }else{   profile = "";}
 
-            logingoogle = extras.getString("usertype");
+
             outPutFile = new File(profile);
             etName.setText(name);
             etEmail.setText(email);
