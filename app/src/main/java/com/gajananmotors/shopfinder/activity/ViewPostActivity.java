@@ -47,7 +47,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private String shopCoverpic = "";
     private ImageView shopCoverphoto;
     private ArrayList<String> allimages = new ArrayList<>();
-    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite, tvShopTime,tvServices;
+    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite, tvShopTime, tvServices;
     private ViewShopList viewShopList;
     private int shop_id = 0;
     private Toolbar toolbar;
@@ -55,6 +55,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private LinearLayout linearLayout;
     private int position;
     private String name = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         tvSubcategory = findViewById(R.id.tvSubcategory);
         linearLayout = findViewById(R.id.lin1);
         tvWebsite = findViewById(R.id.tvWebsite);
-        tvServices=findViewById(R.id.tvServices);
+        tvServices = findViewById(R.id.tvServices);
         shopGallaryLayout.setOnClickListener(this);
         shopEditLayout = findViewById(R.id.shopEditLayout);
         shopShareLayout = findViewById(R.id.shopShareLayout);
@@ -108,19 +109,27 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 shopDeleteLayout.setVisibility(View.VISIBLE);
                 shopCallLayout.setVisibility(View.GONE);
                 shopMsgLayout.setVisibility(View.GONE);
-                tvShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
-                tvAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
-                tvCategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
-                tvServices.setText(AllPostsActivity.shops_list.get(position).getShop_details());
-                if (!AllPostsActivity.shops_list.get(position).getWebsite().isEmpty()) {
-                    linearLayout.setVisibility(View.VISIBLE);
-                    tvWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+
+                try {
+
+
+                    tvShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
+                    tvAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
+                    tvCategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
+                    tvServices.setText(AllPostsActivity.shops_list.get(position).getShop_details());
+                    if (!AllPostsActivity.shops_list.get(position).getWebsite().isEmpty()) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                        tvWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+                    }
+                    tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
+                    tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
+                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_mob_no());
+                    shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
+                    shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
+
+                } catch (Exception e) {
+                    Toast.makeText(this, "" + position + "     " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
-                tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
-                tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_mob_no());
-                shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
-                shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
             } else {
                 viewShopList = getIntent().getParcelableExtra("shop_list");
                 shopEditLayout.setVisibility(View.GONE);
@@ -143,16 +152,17 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 shop_id = viewShopList.getShop_id();
             }
             Picasso.with(ViewPostActivity.this)
-                        .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
-                        .fit()
-                        .placeholder(R.drawable.background_splashscreen)
-                        .into(shopCoverphoto);
+                    .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
+                    .fit()
+                    .placeholder(R.drawable.background_splashscreen)
+                    .into(shopCoverphoto);
         }
        /* else*//*{
            Uri data = i.getData();
             LinkShopServices(shop_id);
         }*/
     }
+
     private void LinkShopServices(final int shop_id) {
         Retrofit retrofit;
         retrofit = APIClient.getClient();
@@ -182,7 +192,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     tvShopTime.setText("Open : " + linkShopModel.getShop_timing());
                     allimages = viewShopList.getArrayList();
                     Picasso.with(ViewPostActivity.this)
-                            .load("http://findashop.in/images/shop_profile/" + "shop_id" + "/" +shop_id)
+                            .load("http://findashop.in/images/shop_profile/" + "shop_id" + "/" + shop_id)
                             .fit()
                             .placeholder(R.drawable.background_splashscreen)
                             .into(shopCoverphoto);
@@ -191,29 +201,30 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     startActivity(new Intent(ViewPostActivity.this, AllPostsActivity.class));
                 }
             }
+
             @Override
             public void onFailure(Call<LinkShopModel> call, Throwable t) {
 
             }
         });
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.shopDirectionLayout:
-             //   viewShopList.getLatitude();
+                //   viewShopList.getLatitude();
                 if (!isNetworkAvailable(this)) {
                     displayPromptForEnablingData(this);
                 } else {
-                    if(name.equals("owner")){
+                    if (name.equals("owner")) {
                         String address = getAddress(Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()), Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_long()), this);
-                       // Log.d("MultiViewType", "address" + address);
-                        Uri gmmIntentUri = Uri.parse("geo:" + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "," +Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "?q=" + address);
+                        // Log.d("MultiViewType", "address" + address);
+                        Uri gmmIntentUri = Uri.parse("geo:" + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "," + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "?q=" + address);
                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                         mapIntent.setPackage("com.google.android.apps.maps");
                         startActivity(mapIntent);
-                    }
-                    else {
+                    } else {
                         String address = getAddress(viewShopList.getLatitude(), viewShopList.getLongitude(), this);
                         Log.d("MultiViewType", "address" + address);
                         Uri gmmIntentUri = Uri.parse("geo:" + viewShopList.getLatitude() + "," + viewShopList.getLatitude() + "?q=" + address);
@@ -228,11 +239,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 i.putExtra("shop_id", shop_id);
                 if (name.equals("owner")) {
                     i.putExtra("position", position);
-                    i.putExtra("owner","owner");
+                    i.putExtra("owner", "owner");
                 } else {
                     i.putStringArrayListExtra("images", allimages);
                     i.putExtra("shopCoverphoto", shopCoverpic);
-                    i.putExtra("owner","user");
+                    i.putExtra("owner", "user");
                 }
                 startActivity(i);
 
@@ -291,6 +302,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
     private void deleteShopServices(int shop_id) {
         Retrofit retrofit;
         DeleteShopModel deleteShopModel;
@@ -312,18 +324,20 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     startActivity(new Intent(ViewPostActivity.this, AllPostsActivity.class));
                 }
             }
+
             @Override
             public void onFailure(Call<DeleteShopModel> call, Throwable t) {
 
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         if (!name.equals("owner")) {
             allimages.clear();
         }
-       finish();
+        finish();
     }
 }

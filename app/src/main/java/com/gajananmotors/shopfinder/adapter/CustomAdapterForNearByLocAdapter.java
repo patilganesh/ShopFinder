@@ -18,21 +18,17 @@ public class CustomAdapterForNearByLocAdapter extends RecyclerView.Adapter<Custo
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView shop_name;
         public TextView shop_address;
-
         public MyViewHolder(View rowView) {
             super(rowView);
             shop_name = rowView.findViewById(R.id.list_shopname);
             shop_address = rowView.findViewById(R.id.list_address);
         }
     }
-
     public CustomAdapterForNearByLocAdapter(Activity context, String[] source, String[] destination) {
-
         this.name = source;
         this.address = destination;
         this.context1 = context;
     }
-
     @Override
     public CustomAdapterForNearByLocAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

@@ -12,6 +12,8 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -47,6 +50,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
+import com.gajananmotors.shopfinder.common.GeocodingLocation;
 import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
@@ -118,6 +122,8 @@ public class AddPostActivity extends AppCompatActivity {
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
     private EditText etBusinessWhatsApp;
+    private Address address = null;
+    private String locationStatus = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +139,6 @@ public class AddPostActivity extends AppCompatActivity {
       //StringCallback stringCallback = new StringCallback() {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
-
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -217,11 +222,9 @@ public class AddPostActivity extends AppCompatActivity {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
-
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                 }
-
                 @Override
                 public void afterTextChanged(Editable s) {
                     str_cat_spinner = category.getText().toString();
@@ -241,7 +244,6 @@ public class AddPostActivity extends AppCompatActivity {
                                 getSubCategoryData();
                             }
                         }
-
                         @Override
                         public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                         }
@@ -307,16 +309,110 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
-        strBusinessLocation = etBusinessLocation.getText().toString().trim();
+        if (place != null) {
+            strBusinessLocation = etBusinessLocation.getText().toString().trim();
+            strPlaceSearch = area + "," + city + "," + state + "," + country;
+        } else {
+            strBusinessLocation = etBusinessLocation.getText().toString().trim();
+            getAddressFromLocation(strBusinessLocation,
+                    getApplicationContext(), new GeocoderHandler());
+
+        }
         strBusinessMobile = etBusinessMobile.getText().toString().trim();
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
         strBusinessServices = etBusinessServices.getText().toString().trim();
         strBusinessEmail = etBusinessEmail.getText().toString().trim();
         strBusinessHour = etBusinessHour.getText().toString().trim();
         strCategorySearch = str_cat_spinner + "," + str_subCat_spinner;
-        strPlaceSearch = area + "," + city + "," + state + "," + country;
-        if (checkValidation())
-            confirmdetails();
+        if (checkValidation()) {
+            try {
+                Thread.sleep(2000);
+                if (locationStatus.equals("sucsess")) {
+                    strPlaceSearch = area + "," + city + "," + state + "," + country;
+                }
+                confirmdetails();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public void getAddressFromLocation(final String locationAddress,
+                                       final Context context, final Handler handler) {
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                String result = null;
+                String state = "", city = "", area = "", country = "", pincode = "";
+                double lat = 0, longi = 0;
+                try {
+                    List addressList = geocoder.getFromLocationName(locationAddress, 1);
+                    if (addressList != null && addressList.size() > 0) {
+                        address = (Address) addressList.get(0);
+                        area = address.getSubLocality();
+                        city = address.getLocality();
+                        state = address.getAdminArea();
+                        country = address.getCountryName();
+                        pincode = address.getPostalCode();
+                        lat = address.getLatitude();
+                        longi = address.getLongitude();
+                        result = "sucsess";
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to connect to Geocoder", e);
+                } finally {
+                    Message message = Message.obtain();
+                    message.setTarget(handler);
+                    if (result != null) {
+                        message.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("area", area);
+                        bundle.putString("state", state);
+                        bundle.putString("country", country);
+                        bundle.putString("city", city);
+                        bundle.putString("pincode", pincode);
+                        bundle.putDouble("lat", lat);
+                        bundle.putDouble("longi", longi);
+                        bundle.putString("result", result);
+                        message.setData(bundle);
+                    } else {
+                        message.what = 1;
+                        Bundle bundle = new Bundle();
+                        result = "Address: " + locationAddress +
+                                "\n Unable to get Latitude and Longitude for this address location.";
+                        bundle.putString("result", result);
+                        message.setData(bundle);
+                    }
+                    message.sendToTarget();
+                }
+            }
+        };
+        thread.start();
+    }
+
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationStatus = bundle.getString("result");
+                    if (locationStatus.equals("sucsess")) {
+                        area = bundle.getString("area");
+                        city = bundle.getString("city");
+                        state = bundle.getString("state");
+                        country = bundle.getString("country");
+                        pincode = bundle.getString("pincode");
+                        latitude = bundle.getDouble("lat");
+                        longitude = bundle.getDouble("longi");
+                    }
+                    break;
+                default:
+                    locationStatus = "fail to load location";
+            }
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -423,7 +519,9 @@ public class AddPostActivity extends AppCompatActivity {
     }
     private void confirmdetails() {
         LayoutInflater inflater = LayoutInflater.from(this);
+
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
+        LinearLayout arealinearlayout = confirmDialog.findViewById(R.id.arealinearlayout);
         TextView tvShopName = confirmDialog.findViewById(R.id.tvShopName);
         TextView tvMobile = confirmDialog.findViewById(R.id.tvMobile);
         TextView tvCategory = confirmDialog.findViewById(R.id.tvCategory);
@@ -441,7 +539,13 @@ public class AddPostActivity extends AppCompatActivity {
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
         tvShopName.setText(strBusinessName);
-        tvArea.setText(city + "," + state);
+        if (city.equals("")) {
+            arealinearlayout.setVisibility(View.GONE);
+        } else {
+            arealinearlayout.setVisibility(View.VISIBLE);
+            tvArea.setText(city + "," + state);
+        }
+
         tvMobile.setText(strBusinessMobile);
         tvAddress.setText(strBusinessLocation);
         tvCategory.setText(str_cat_spinner + "/" + str_subCat_spinner);
@@ -518,7 +622,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
     }
-
     int index2 = 1;
     public void uploadShopImages(int index) {
         if (image_path.size() > index) {
@@ -540,7 +643,6 @@ public class AddPostActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
                     if (response.isSuccessful()) {
-
                         UploadShopImagesModel uploadShopImagesModel = response.body();
                         if (uploadShopImagesModel.getResult() == 1)
                             uploadShopImages(uploadShopImagesModel.getCount());
@@ -596,7 +698,6 @@ public class AddPostActivity extends AppCompatActivity {
             snackbar.show();
             return false;
         }
-
         if (location.matches("")) {
 
             Snackbar snackbar = Snackbar
@@ -656,14 +757,10 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < checkSelected.length; i++) {
             checkSelected[i] = false;
         }
-
 	/*SelectBox is the TextView where the selected values will be displayed in the form of "Item 1 & 'n' more".
          * When this selectBox is clicked it will display all the selected values
     	 * and when clicked again it will display in shortened representation as before.
     	 * */
-
-
-
        /* etBusinessServices.setOnClickListener(new View.OnClickListener() {
 
     }
@@ -687,7 +784,6 @@ public class AddPostActivity extends AppCompatActivity {
                         initialize();
                         initiatePopUp(shopServicesModels, etBusinessServices);
                         if (!expanded) {
-
                             //display all selected values
                             String selected = "";
                             int flag = 0;
@@ -712,7 +808,6 @@ public class AddPostActivity extends AppCompatActivity {
                     addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
             }
-
             @Override
             public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
 
@@ -739,19 +834,13 @@ public class AddPostActivity extends AppCompatActivity {
                 addshopServices(service_name);
                 alertDialog.dismiss();
             }
-
         }); buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-
-
-
             }
-
         });
     }
-
     private void addshopServices(String service_name) {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -772,7 +861,6 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
-
     /*
      * Function to set up the pop-up window which acts as drop-down list
      * */
@@ -813,7 +901,6 @@ public class AddPostActivity extends AppCompatActivity {
         final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
         DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
         list.setAdapter(adapter);
-
     }
 
     @Override
@@ -827,7 +914,6 @@ public class AddPostActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-
-
     }
+
 }

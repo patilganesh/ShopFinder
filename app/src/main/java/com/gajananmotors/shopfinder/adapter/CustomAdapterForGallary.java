@@ -26,13 +26,7 @@ public class CustomAdapterForGallary extends RecyclerView.Adapter<CustomAdapterF
     int shop_id;
     // private String[] name;
     private Context context;
-    private int[] imageId;
     private ArrayList<String> imageList;
-    private ArrayList<String> namesList;
-    private ArrayList<Integer> categoryId;
-    private String name;
-
-
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView images;
@@ -46,18 +40,12 @@ public class CustomAdapterForGallary extends RecyclerView.Adapter<CustomAdapterF
         }
     }
 
-
-    public CustomAdapterForGallary(GallaryActivity mainActivity, ArrayList<String> imagesList, int shop_id, ImageView selectedImageView) {
+    public CustomAdapterForGallary(GallaryActivity mainActivity, ArrayList<String> imageList, int shop_id, ImageView selectedImageView) {
         this.context = mainActivity;
-        this.imageList = imagesList;
         this.shop_id = shop_id;
         this.imgView=selectedImageView;
-      /*  TypedArray array = c.obtainStyledAttributes(R.styleable.MyGallery);
-        itemBackground = array.getResourceId
-                (R.styleable.MyGallery_android_galleryItemBackground, 0);
-        array.recycle();*/
+        this.imageList = imageList;
     }
-
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -65,39 +53,29 @@ public class CustomAdapterForGallary extends RecyclerView.Adapter<CustomAdapterF
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.gallary_images_layout, parent, false);
         return new MyViewHolder(itemView);
     }
-
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
-
         holder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 Picasso.with(context)
                         .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + imageList.get(position))
                         .fit()
                         .placeholder(R.drawable.background_splashscreen)
                         .into(imgView);
-
                 //  context.startActivity(new Intent(context, SubCategoryActivity.class));
             }
         });
-
         Picasso.with(context)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + imageList.get(position))
                 .fit()
                 .placeholder(R.drawable.background_splashscreen)
                 .into(holder.images);
-
     }
-
     @Override
     public int getItemCount() {
         return imageList.size();
     }
-
     @Override
     public int getItemViewType(int position) {
 
