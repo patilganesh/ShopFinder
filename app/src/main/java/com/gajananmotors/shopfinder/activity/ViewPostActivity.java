@@ -53,7 +53,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private String shopCoverpic = "";
     private ImageView shopCoverphoto;
     private ArrayList<String> allimages = new ArrayList<>();
-    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite, tvShopTime,tvServices;
+    private TextView tvShopName, tvAddress, tvMobile, tvCategory, tvSubcategory, tvWebsite, tvShopTime, tvServices;
     private ViewShopList viewShopList;
     private int shop_id = 0;
     private Toolbar toolbar;
@@ -124,19 +124,27 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 shopDeleteLayout.setVisibility(View.VISIBLE);
                 shopCallLayout.setVisibility(View.GONE);
                 shopMsgLayout.setVisibility(View.GONE);
-                tvShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
-                tvAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
-                tvCategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
-                tvServices.setText(AllPostsActivity.shops_list.get(position).getShop_details());
-                if (!AllPostsActivity.shops_list.get(position).getWebsite().isEmpty()) {
-                    linearLayout.setVisibility(View.VISIBLE);
-                    tvWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+
+                try {
+
+
+                    tvShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
+                    tvAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
+                    tvCategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
+                    tvServices.setText(AllPostsActivity.shops_list.get(position).getShop_details());
+                    if (!AllPostsActivity.shops_list.get(position).getWebsite().isEmpty()) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                        tvWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+                    }
+                    tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
+                    tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
+                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_mob_no());
+                    shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
+                    shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
+
+                } catch (Exception e) {
+                    Toast.makeText(this, "" + position + "     " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
-                tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
-                tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_mob_no());
-                shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
-                shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
             } else {
                 viewShopList = getIntent().getParcelableExtra("shop_list");
                 shopEditLayout.setVisibility(View.GONE);
@@ -159,10 +167,10 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 shop_id = viewShopList.getShop_id();
             }
             Picasso.with(ViewPostActivity.this)
-                        .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
-                        .fit()
-                        .placeholder(R.drawable.background_splashscreen)
-                        .into(shopCoverphoto);
+                    .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
+                    .fit()
+                    .placeholder(R.drawable.background_splashscreen)
+                    .into(shopCoverphoto);
         }
        /* else*//*{
            Uri data = i.getData();

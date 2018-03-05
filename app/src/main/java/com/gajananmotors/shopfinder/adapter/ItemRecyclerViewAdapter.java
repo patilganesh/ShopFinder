@@ -7,12 +7,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.ItemDetailsActivity;
+import com.gajananmotors.shopfinder.activity.ProfileActivity;
+import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -26,11 +30,13 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
     class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView itemLabel;
         private CardView card_view_home_page;
+        private ImageView subcategoryimage;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             itemLabel = itemView.findViewById(R.id.item_label);
             card_view_home_page = itemView.findViewById(R.id.card_view_home_page);
+            subcategoryimage = itemView.findViewById(R.id.subcategoryimage);
         }
     }
     private Context context;
@@ -50,6 +56,13 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
         holder.itemLabel.setText(arrayList.get(position).getName());
+      /*  Picasso.with(context)
+                .load(arrayList.get(position).getImage())
+                .fit()
+                .placeholder(R.drawable.ic_account_circle_black_24dp)
+                .into(holder.subcategoryimage);
+
+*/
         holder.card_view_home_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
