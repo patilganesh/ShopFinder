@@ -125,8 +125,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         .placeholder(R.drawable.ic_account_circle_black_24dp)
                         .into(imgProfile);
             }else{   profile = "";}
-
-
             outPutFile = new File(profile);
             etName.setText(name);
             etEmail.setText(email);
