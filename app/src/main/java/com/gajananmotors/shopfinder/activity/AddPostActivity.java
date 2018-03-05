@@ -43,7 +43,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
@@ -66,12 +65,6 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -128,9 +121,6 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
-    private RelativeLayout relativeservice;
-    private AdView mAdView;
-    private InterstitialAd mInterstitialAd;
     private EditText etBusinessWhatsApp;
     private Address address = null;
     private String locationStatus = "";
@@ -146,24 +136,9 @@ public class AddPostActivity extends AppCompatActivity {
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         owner_id = sharedpreferences.getInt(Constant.OWNER_ID, 00000);
-      //StringCallback stringCallback = new StringCallback() {
+        //StringCallback stringCallback = new StringCallback() {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-init();
-
-
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                // Load the next interstitial.
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-        });
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -197,7 +172,6 @@ init();
         etBusinessEmail = findViewById(R.id.etBusinessEmail);
         etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
         etBusinessServices = findViewById(R.id.etBusinessServices);
-        relativeservice = findViewById(R.id.relativeservice);
         etBusinessServices.setInputType(InputType.TYPE_NULL);
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         etBusinessHour = findViewById(R.id.etBusinessHour);
@@ -235,46 +209,6 @@ init();
             category.setVisibility(View.VISIBLE);
         }
     }
-
-    private void init() {
-        mAdView = findViewById(R.id.adView);
-
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                // Check the LogCat to get your test device ID
-                .addTestDevice(getString(R.string.string_addtest_device))
-                .build();
-
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-            }
-
-            @Override
-            public void onAdClosed() {
-                Toast.makeText(getApplicationContext(), "Ad is closed!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                Toast.makeText(getApplicationContext(), "Ad failed to load! error code: " + errorCode, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                Toast.makeText(getApplicationContext(), "Ad left application!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdOpened() {
-                super.onAdOpened();
-            }
-        });
-
-        mAdView.loadAd(adRequest);
-    }
-
-
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
@@ -336,9 +270,10 @@ init();
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-              @Override
+
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-              }
+            }
             @Override
             public void afterTextChanged(Editable s) {
                 str_subCat_spinner = subcategory.getText().toString();
@@ -346,8 +281,7 @@ init();
                     if (TextUtils.equals(str_subCat_spinner.toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
                         int_subcat_id = subCategoryModel.getSub_category_id();
                 }
-                relativeservice.setVisibility(View.VISIBLE);
-               // Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
+                Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -393,11 +327,11 @@ init();
         strCategorySearch = str_cat_spinner + "," + str_subCat_spinner;
         if (checkValidation()) {
             try {
-                Thread.sleep(2000);
                 if (locationStatus.equals("sucsess")) {
                     strPlaceSearch = area + "," + city + "," + state + "," + country;
+                    confirmdetails();
                 }
-                confirmdetails();
+                //  confirmdetails();
             } catch (Exception e) {
             }
         }
@@ -528,7 +462,7 @@ init();
                 File file=new File(imagePath);
                 if(file.length()>51200) {
                     imagePath = ImageCompressor.compressImage(uri.getPath());
-               }
+                }
                 // Log.i("File Size:", "size: "+file.length());
                 // image_path.add(imagePath);
                 new_image_path.add(imagePath);
@@ -611,7 +545,6 @@ init();
             arealinearlayout.setVisibility(View.VISIBLE);
             tvArea.setText(city + "," + state);
         }
-
         tvMobile.setText(strBusinessMobile);
         tvAddress.setText(strBusinessLocation);
         tvCategory.setText(str_cat_spinner + "/" + str_subCat_spinner);
@@ -631,12 +564,6 @@ init();
             public void onClick(View v) {
                 createShop();//calling web services for create shop
                 //  alertDialog.dismiss();
-
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
             }
         });
     }
@@ -875,7 +802,7 @@ init();
                             expanded = false;
                         }
                     }
-                }else if(shopServicesModels.size()<=0){
+                } else {
                     addServices();
                     addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
@@ -932,29 +859,6 @@ init();
             }
         });
 
-    }
-    @Override
-    public void onPause() {
-        if (mAdView != null) {
-            mAdView.pause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mAdView != null) {
-            mAdView.resume();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        super.onDestroy();
     }
     /*
      * Function to set up the pop-up window which acts as drop-down list
