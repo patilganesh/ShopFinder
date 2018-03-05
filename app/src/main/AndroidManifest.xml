@@ -42,7 +42,8 @@
         <activity
             android:name=".activity.AddPostActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/string_shop_post" />
+            android:label="@string/string_shop_post"
+            />
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -57,6 +58,7 @@
         <activity
             android:name=".activity.ProfileActivity"
             android:configChanges="orientation|screenSize"
+
             android:label="@string/profile" />
         <activity
             android:name=".activity.MapsActivity"

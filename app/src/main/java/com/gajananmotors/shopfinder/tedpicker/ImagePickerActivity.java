@@ -185,6 +185,7 @@ public class ImagePickerActivity extends AppCompatActivity implements CameraHost
 
         rc_selected_photos.setLayoutManager(mLayoutManager_Linear);
         rc_selected_photos.addItemDecoration(new SpacesItemDecoration(Util.dpToPx(this, 6), SpacesItemDecoration.TYPE_VERTICAL));
+
         rc_selected_photos.setHasFixedSize(true);
 
         int closeImageRes = mConfig.getSelectedCloseImage();

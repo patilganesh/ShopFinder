@@ -164,7 +164,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:id="@+id/relativeservice">
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -179,7 +181,8 @@
                         android:hint="Services Offered:"
                         android:inputType="text"
                         android:editable="false"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        />
                 </android.support.design.widget.TextInputLayout>
                 <ProgressBar
                     android:id="@+id/addPostProgressbar"
@@ -268,7 +271,19 @@
                     android:text="Submit"
                     android:textColor="#ffffff" />
             </LinearLayout>
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                android:visibility="gone"
+                android:layout_gravity="bottom|center_horizontal"
+                ads:adUnitId="@string/banner_home_footer">
+            </com.google.android.gms.ads.AdView>
+
         </android.support.v7.widget.CardView>
+
     </ScrollView>
 
 </LinearLayout>

@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
@@ -65,6 +66,12 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -121,6 +128,9 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar addPostProgressbar;
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
+    private RelativeLayout relativeservice;
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
     private EditText etBusinessWhatsApp;
     private Address address = null;
     private String locationStatus = "";
@@ -139,6 +149,21 @@ public class AddPostActivity extends AppCompatActivity {
       //StringCallback stringCallback = new StringCallback() {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+init();
+
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -172,6 +197,7 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessEmail = findViewById(R.id.etBusinessEmail);
         etBusinessWebUrl = findViewById(R.id.etBusinessWebUrl);
         etBusinessServices = findViewById(R.id.etBusinessServices);
+        relativeservice = findViewById(R.id.relativeservice);
         etBusinessServices.setInputType(InputType.TYPE_NULL);
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         etBusinessHour = findViewById(R.id.etBusinessHour);
@@ -209,6 +235,46 @@ public class AddPostActivity extends AppCompatActivity {
             category.setVisibility(View.VISIBLE);
         }
     }
+
+    private void init() {
+        mAdView = findViewById(R.id.adView);
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                // Check the LogCat to get your test device ID
+                .addTestDevice(getString(R.string.string_addtest_device))
+                .build();
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+            }
+
+            @Override
+            public void onAdClosed() {
+                Toast.makeText(getApplicationContext(), "Ad is closed!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Toast.makeText(getApplicationContext(), "Ad failed to load! error code: " + errorCode, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                Toast.makeText(getApplicationContext(), "Ad left application!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+        });
+
+        mAdView.loadAd(adRequest);
+    }
+
+
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
         for (int i = 0; i < category_Model_list.size(); i++) {
@@ -280,7 +346,8 @@ public class AddPostActivity extends AppCompatActivity {
                     if (TextUtils.equals(str_subCat_spinner.toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
                         int_subcat_id = subCategoryModel.getSub_category_id();
                 }
-                Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
+                relativeservice.setVisibility(View.VISIBLE);
+               // Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -519,7 +586,6 @@ public class AddPostActivity extends AppCompatActivity {
     }
     private void confirmdetails() {
         LayoutInflater inflater = LayoutInflater.from(this);
-
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
         LinearLayout arealinearlayout = confirmDialog.findViewById(R.id.arealinearlayout);
         TextView tvShopName = confirmDialog.findViewById(R.id.tvShopName);
@@ -565,6 +631,12 @@ public class AddPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 createShop();//calling web services for create shop
                 //  alertDialog.dismiss();
+
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
             }
         });
     }
@@ -803,7 +875,7 @@ public class AddPostActivity extends AppCompatActivity {
                             expanded = false;
                         }
                     }
-                }else {
+                }else if(shopServicesModels.size()<=0){
                     addServices();
                     addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
@@ -860,6 +932,29 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
     }
     /*
      * Function to set up the pop-up window which acts as drop-down list

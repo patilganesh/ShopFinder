@@ -17,6 +17,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -45,6 +48,11 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
@@ -92,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView ivSearch;
     private String search_keyword = "";
     private long lastPressedTime;
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
 
 
     @Override
@@ -111,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        coordinate_layout = findViewById(R.id.coordinate_layout_main);
+        coordinate_layout = findViewById(R.id.coordinate_layout);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.e("Refreshed token:", refreshedToken);
         Constant.device_token=refreshedToken;
@@ -122,6 +132,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nearBy = findViewById(R.id.ivNearby);
         ivSearch = findViewById(R.id.ivSearch);
         nearBy.setOnClickListener(this);
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        init();
         searchView = findViewById(R.id.floating_search_view);
         searchView.clearSearchFocus();
         searchView.setOnFocusChangeListener(new com.arlib.floatingsearchview.FloatingSearchView.OnFocusChangeListener() {
@@ -197,6 +214,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
+    private void init() {
+        mAdView = findViewById(R.id.adView);
+      /*  mAdView.setAdSize(AdSize.BANNER);
+        mAdView.setAdUnitId(getString(R.string.banner_home_footer));
+*/
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                // Check the LogCat to get your test device ID
+                .addTestDevice(getString(R.string.string_addtest_device))
+                .build();
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+            }
+
+            @Override
+            public void onAdClosed() {
+                Toast.makeText(getApplicationContext(), "Ad is closed!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Toast.makeText(getApplicationContext(), "Ad failed to load! error code: " + errorCode, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                Toast.makeText(getApplicationContext(), "Ad left application!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+        });
+
+        mAdView.loadAd(adRequest);
+    }
+
     public void getSearchService(String search_keyword) {
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         intent.putExtra("search_keyword", search_keyword);
@@ -319,11 +377,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
             if (event.getDownTime() - lastPressedTime < PERIOD) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
                 finish();
             } else {
                 Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
                         finish();
                     }
                 }).show();
@@ -338,6 +406,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         searchView.clearQuery();
         navigationView = findViewById(R.id.nav_view);
+        if (mAdView != null) {
+            mAdView.resume();
+        }
         if (navigationView != null) {
             if (!sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
                 navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
@@ -352,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TextView tvOwner_Email = headerView.findViewById(R.id.tvOwner_Email);
                 tvOwner_Name.setText("User Name");
                 tvOwner_Email.setText("User Email_id");
+
             }
             navigationView.setNavigationItemSelectedListener(MainActivity.this);
             String name = sharedpreferences.getString(Constant.OWNER_NAME, "");
@@ -448,4 +520,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
 }

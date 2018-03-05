@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         login_progressbar = findViewById(R.id.login_progressbar);
-      //  primary_scrollView = findViewById(R.id.primary_scrollView);
+        //  primary_scrollView = findViewById(R.id.primary_scrollView);
         //getSupportActionBar().hide();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()) {
@@ -99,12 +100,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String username = etUserName.getText().toString();
                     if (username.matches("")) {
                         showSnackBar("Please Enter Username!", linear_layout);
-                        focusOnView(etUserName);
+
 
                     } else {
                         if (username.length() < 9) {
                             showSnackBar("Please Enter Valid Mobile Number!", linear_layout);
-                            focusOnView(etUserName);
                         }
 
                     }
@@ -121,13 +121,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     if (username.matches("")) {
 
                         showSnackBar("Please Enter Username!", linear_layout);
-                        focusOnView(etUserName);
+
 
                     } else {
                         if (username.length() < 9) {
 
                             showSnackBar("Please Enter Username!", linear_layout);
-                            focusOnView(etUserName);
+
                         }
 
                     }
@@ -151,15 +151,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         snackbar.show();
     }
 
-    private final void focusOnView(final View paramView) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                LoginActivity.this.primary_scrollView.scrollTo(0, paramView.getTop() - 5);
-            }
-        });
-    }
-
     private boolean checkValidation() {
         boolean ret = true;
         LinearLayout linear_layout = findViewById(R.id.linear_layout);
@@ -168,13 +159,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         if (username.matches("")) {
             showSnackBar("Please Enter Username!", linear_layout);
-            focusOnView(etUserName);
+
             return false;
         }
         if (username.length() < 9) {
 
             showSnackBar("Please Enter Valid Mobile Number!", linear_layout);
-            focusOnView(etUserName);
             return false;
         }
         if (password.matches("")) {
@@ -271,7 +261,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -320,19 +309,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 owner_name = acct.getDisplayName();
                 owner_email = acct.getEmail();
                 //   owner_image ="";
-                if (owner_image.equals("")) {
+                if (!TextUtils.isEmpty(owner_image)) {
                     owner_image = acct.getPhotoUrl().toString();
-
-                } else if(owner_image.equals("")){
-                    owner_image ="";
+                } else {
+                    owner_image = "";
                 }
-                FacegleloginService();
+                GoogleloginService();
 
             }
         }
     }
 
-    private void FacegleloginService() {
+    private void GoogleloginService() {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<LoginUserModel> loginUser = restInterface.loginUsersFacegleList(owner_email, device_token);

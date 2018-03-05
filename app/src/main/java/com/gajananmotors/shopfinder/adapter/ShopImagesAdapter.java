@@ -80,7 +80,7 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
             holder.tvimageinfo.setText("Shop Image " + position);
         if (TextUtils.isEmpty(EditPostActivity.images.get(position)) || EditPostActivity.images.get(position) == null) {
             Picasso.with(context)
-                    .load(R.drawable.icon_add_image)
+                    .load(R.drawable.ic_action_done)
                     .into(holder.imageView);
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
