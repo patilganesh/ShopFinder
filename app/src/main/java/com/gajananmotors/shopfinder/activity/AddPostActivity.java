@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -15,10 +16,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -30,7 +29,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +43,12 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.common.GeocodingLocation;
 import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
@@ -72,12 +70,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

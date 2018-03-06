@@ -305,15 +305,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
+            try {
+
 
                 owner_name = acct.getDisplayName();
                 owner_email = acct.getEmail();
                 //   owner_image ="";
-                if (!TextUtils.isEmpty(owner_image)) {
-                    owner_image = acct.getPhotoUrl().toString();
-                } else {
-                    owner_image = "";
-                }
+
+                owner_image = acct.getPhotoUrl().toString();
+            }
+            catch (Exception e){
+                owner_image="";
+                owner_email="";
+                owner_name="";
+            }
                 GoogleloginService();
 
             }
