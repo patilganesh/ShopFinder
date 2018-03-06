@@ -293,6 +293,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         } else if (outPutFile == null && profile.isEmpty()) {
             user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
         }
+
         btnSubmit.setVisibility(View.INVISIBLE);
         register_progressbar.setVisibility(View.VISIBLE);
         register_progressbar.setIndeterminate(true);
