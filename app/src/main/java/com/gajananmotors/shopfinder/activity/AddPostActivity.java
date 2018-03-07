@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +122,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ProgressBar subcategory_progressbar;
     private EditText etBusinessWhatsApp;
     private TextView tvOther;
+    private RelativeLayout relativeservices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,7 @@ public class AddPostActivity extends AppCompatActivity {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
         tvOther = findViewById(R.id.tvOther);
-
+        relativeservices = findViewById(R.id.relativeservices);
 
          /*StringCallback stringCallback = new StringCallback() {
             @Override
@@ -182,6 +184,12 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        tvOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addServices();
             }
         });
         getImages.setOnClickListener(new View.OnClickListener() {
@@ -256,12 +264,12 @@ public class AddPostActivity extends AppCompatActivity {
             });
         }
 
-        tvOther.setOnClickListener(new View.OnClickListener() {
+       /* tvOther.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addServices();
             }
-        });
+        });*/
         // subcategory.setAdapter(categoryAdapter);
     }
     @Override
@@ -273,7 +281,7 @@ public class AddPostActivity extends AppCompatActivity {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
         for (int i = 0; i < sub_category_list.size(); i++) {
             SubCategoryNames.add(sub_category_list.get(i).getName().toString());
-            tvOther.setVisibility(View.VISIBLE);
+
 
         }
         ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<>(this,
@@ -292,10 +300,14 @@ public class AddPostActivity extends AppCompatActivity {
                 for (SubCategoryModel subCategoryModel : sub_category_list) {
                     if (TextUtils.equals(str_subCat_spinner.toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
                         int_subcat_id = subCategoryModel.getSub_category_id();
+                    relativeservices.setVisibility(View.VISIBLE);
                 }
                 Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
             }
         });
+
+
+
     }
     private void getImages(Config config) {
         ImagePickerActivity.setConfig(config);
@@ -700,7 +712,7 @@ public class AddPostActivity extends AppCompatActivity {
                     if(shopServicesModels.size()>0) {
                         addPostProgressbar.setVisibility(View.INVISIBLE);
                         initialize();
-                       // initiatePopUp(shopServicesModels, etBusinessServices);
+                        // initiatePopUp(shopServicesModels, etBusinessServices);
                         final Dialog dialog=new Dialog(AddPostActivity.this);
                         dialog.setContentView(R.layout.poupup_shop_services_menu);
                         Button submit=dialog.findViewById( R.id.btnSubmit);
