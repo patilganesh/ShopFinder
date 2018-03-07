@@ -22,6 +22,16 @@ public class UserRegisterModel {
     private String msg;
     @SerializedName("result")
     private int result;
+    @SerializedName("google")
+    private int google;
+
+    public int getGoogle() {
+        return google;
+    }
+
+    public void setGoogle(int google) {
+        this.google = google;
+    }
 
     public int getResult() {
         return result;

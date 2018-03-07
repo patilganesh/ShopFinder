@@ -73,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferences sharedpreferences;
     private Call<UserRegisterModel> user;
     private boolean flag = false;
-    public String name = "", email = "", profile = "", logingoogle = "";
+    private String name = "", email = "", profile = "", logingoogle = "";
     private Toolbar toolbar;
     private ProgressBar register_progressbar;
     private Snackbar snackbar;
@@ -117,15 +117,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             name = extras.getString("owner_name");
             email = extras.getString("owner_email");
             logingoogle = extras.getString("usertype");
-            if (!TextUtils.isEmpty(profile)) {
-                profile = extras.getString("owner_profile");
-                Picasso.with(RegisterActivity.this)
-                        .load(profile)
-                        .fit()
-                        .placeholder(R.drawable.ic_account_circle_black_24dp)
-                        .into(imgProfile);
-            }else{   profile = "";}
-
+            profile = extras.getString("owner_profile");
+            Picasso.with(RegisterActivity.this)
+                    .load(profile)
+                    .fit()
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
+                    .into(imgProfile);
 
             outPutFile = new File(profile);
             etName.setText(name);
@@ -282,10 +279,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else if (logingoogle.equals("google")) {
-            user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
+            if (!profile.equals(""))
+                user = restInterface.userRegisterforGoogleImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getImage1(), user_data.getPassword(), user_data.getDevice_token());
+        }else if (profile.equals("")&& outPutFile != null) {
+            try {
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), outPutFile);
+                fileToUpload = MultipartBody.Part.createFormData("image", outPutFile.getName(), mFile);
+                user = restInterface.userRegister(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), fileToUpload, user_data.getPassword(), user_data.getDevice_token());
+                //   RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), shop_cover_photo.getName());
+            } catch (Exception e) {
+                Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         } else if (outPutFile == null && profile.isEmpty()) {
             user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
         }
+
         btnSubmit.setVisibility(View.INVISIBLE);
         register_progressbar.setVisibility(View.VISIBLE);
         register_progressbar.setIndeterminate(true);
@@ -305,6 +313,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     String image = user.getImage1();
                     int owner_id = user.getOwner_id();
                     int result = user.getResult();
+                    int google=user.getGoogle();
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     if (result == 1) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
@@ -329,7 +338,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
                         startActivity(intent);
                         finish();
-                    } else
+                    } else if (result == 1&& google == 1) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
+                        alert.setMessage("Successfully Registered\nOwner Id:" + owner_id + "\nMesg:" + msg + "\nImage:" + image + "\nName:" + name + "\nEmail:" + email + "\nResult:" + result); //display response in Alert dialog.
+                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        alert.show();
+                        //  Toast.makeText(RegisterActivity.this, "msg:" + msg + "\nImage:" + image + "\nMobile No:" + mobile, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+                             /*  setting values to sharedpreferences keys.*/
+                        editor.putInt(Constant.OWNER_ID, owner_id);
+                        editor.putString(Constant.OWNER_NAME, name);
+                        editor.putString(Constant.OWNWER_EMAIL, email);
+                        editor.putString(Constant.DATE_OF_BIRTH, dob);
+                        editor.putString(Constant.MOBILE, mobile);
+                        editor.putString(Constant.OWNER_PROFILE,image);
+                        editor.apply();
+                        Intent intent = new Intent();
+                        intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
+                        startActivity(intent);
+                        finish();
+                    }
                         Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -466,7 +498,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setType("image/*");
         List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
-        String profile_img = mImageCaptureUri.toString();
+       // String profile_img = mImageCaptureUri.toString();
         int size = list.size();
         if (size == 0) {
             Toast.makeText(this, "Cann't find image croping app", Toast.LENGTH_SHORT).show();

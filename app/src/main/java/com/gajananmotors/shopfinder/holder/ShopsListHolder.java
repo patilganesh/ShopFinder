@@ -14,7 +14,7 @@ import com.gajananmotors.shopfinder.helper.CircleImageView;
  */
 public class ShopsListHolder extends RecyclerView.ViewHolder {
     public TextView name, type, distance, address, timing, call, weburl;
-    public CircleImageView image;
+    public ImageView image;
     public ImageView googleShopDirection;
 
     public LinearLayout lDirectionLayout;

@@ -1,6 +1,7 @@
 package com.gajananmotors.shopfinder.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,13 +13,9 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.Snackbar;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -30,11 +27,11 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -43,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
@@ -50,7 +48,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-
+import com.gajananmotors.shopfinder.common.GeocodingLocation;
 import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
@@ -65,6 +63,9 @@ import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.gajananmotors.shopfinder.tedpicker.ImagePickerActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -75,7 +76,6 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Locale;
 import okhttp3.MediaType;
@@ -122,8 +122,10 @@ public class AddPostActivity extends AppCompatActivity {
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
     private EditText etBusinessWhatsApp;
-    private Address address = null;
-    private String locationStatus = "";
+    private TextView tvOther;
+    private RelativeLayout relativeservices;
+    private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +134,11 @@ public class AddPostActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -139,6 +146,9 @@ public class AddPostActivity extends AppCompatActivity {
         //StringCallback stringCallback = new StringCallback() {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
+        tvOther = findViewById(R.id.tvOther);
+        relativeservices = findViewById(R.id.relativeservices);
+
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -181,6 +191,12 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        tvOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addServices();
             }
         });
         getImages.setOnClickListener(new View.OnClickListener() {
@@ -280,6 +296,7 @@ public class AddPostActivity extends AppCompatActivity {
                 for (SubCategoryModel subCategoryModel : sub_category_list) {
                     if (TextUtils.equals(str_subCat_spinner.toLowerCase(), subCategoryModel.getName().toString().toLowerCase()))
                         int_subcat_id = subCategoryModel.getSub_category_id();
+                    relativeservices.setVisibility(View.VISIBLE);
                 }
                 Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
             }
@@ -310,13 +327,13 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
-        strBusinessLocation = etBusinessLocation.getText().toString().trim();
         if (place != null) {
-
+            strBusinessLocation = etBusinessLocation.getText().toString().trim();
             strPlaceSearch = area + "," + city + "," + state + "," + country;
         } else {
-
-            int flag = 0;
+            strBusinessLocation = etBusinessLocation.getText().toString().trim();
+            getAddressFromLocation(strBusinessLocation,
+                    getApplicationContext(), new GeocoderHandler());
 
         }
         strBusinessMobile = etBusinessMobile.getText().toString().trim();
@@ -563,6 +580,11 @@ public class AddPostActivity extends AppCompatActivity {
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
                 createShop();//calling web services for create shop
                 //  alertDialog.dismiss();
             }
@@ -782,7 +804,37 @@ public class AddPostActivity extends AppCompatActivity {
                     if(shopServicesModels.size()>0) {
                         addPostProgressbar.setVisibility(View.INVISIBLE);
                         initialize();
-                        initiatePopUp(shopServicesModels, etBusinessServices);
+                        // initiatePopUp(shopServicesModels, etBusinessServices);
+                        final Dialog dialog=new Dialog(AddPostActivity.this);
+                        dialog.setContentView(R.layout.poupup_shop_services_menu);
+                        Button submit=dialog.findViewById( R.id.btnSubmit);
+                        Button cancel=dialog.findViewById( R.id.btnCancel);
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                etBusinessServices.setText("");
+                            }
+                        });
+                        dialog.show();
+
+                      /*  tvOther = dialog.findViewById(R.id.tvOther);
+                        tvOther.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                addServices();
+                            }
+                        });*/
+
+                        final ListView list = (ListView) dialog.findViewById(R.id.dropDownList);
+                        DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(getApplicationContext(), shopServicesModels, etBusinessServices);
+                        list.setAdapter(adapter);
                         if (!expanded) {
                             //display all selected values
                             String selected = "";
