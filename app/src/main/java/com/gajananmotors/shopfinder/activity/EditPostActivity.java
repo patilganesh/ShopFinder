@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -12,22 +11,24 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
@@ -35,13 +36,15 @@ import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.adapter.ShopImagesAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.common.ViewShopList;
+
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.CreateShopModel;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
+import com.gajananmotors.shopfinder.model.DeleteShopImagesModel;
+import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -50,6 +53,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +65,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 public class EditPostActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private EditText etShopName, etAddress, etMobileNumber, etServicesOffered, etShopOpeningHours, etWebsite;
@@ -74,7 +77,6 @@ public class EditPostActivity extends AppCompatActivity {
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
     private File outPutFile;
-
     private RecyclerView.LayoutManager mLayoutManager;
     private int PLACE_PICKER_REQUEST = 1;
     private Place place;
@@ -85,11 +87,15 @@ public class EditPostActivity extends AppCompatActivity {
     private int int_cat_id, int_subcat_id, owner_id, shop_id;
     private LinearLayout edit_post_layout;
     public static ArrayList<String> images = new ArrayList<>();
+    public static ArrayList<File> image_files = new ArrayList<>();
+    private String image_path = "";
+    private String shop_pic_img_name = "", image1_name = "", image2_name = "", image3_name = "", image4_name = "", image5_name = "", image6_name = "";
     private static ShopImagesAdapter adapter;
     private int position;
     private SharedPreferences sharedpreferences;
     private ProgressBar editShopProgressbar;
-
+    private ImageView shop_pic, image1, image2, image3, image4, image5, image6;
+    private ImageView shop_pic_edit, shop_img_edit1, shop_img_edit2, shop_img_edit3, shop_img_edit4, shop_img_edit5, shop_img_edit6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,28 +115,196 @@ public class EditPostActivity extends AppCompatActivity {
         btncategory = findViewById(R.id.etCategory);
         btnsubCategory = findViewById(R.id.etSubCategory);
         btnUpdate = findViewById(R.id.btnUpdate);
+        shop_pic = findViewById(R.id.shop_pic);
+        image1 = findViewById(R.id.image1);
+        image2 = findViewById(R.id.image2);
+        image3 = findViewById(R.id.image3);
+        image4 = findViewById(R.id.image4);
+        image5 = findViewById(R.id.image5);
+        image6 = findViewById(R.id.image6);
+
+        shop_pic_edit = findViewById(R.id.shop_pic_edit);
+        shop_img_edit1 = findViewById(R.id.shop_img_edit1);
+        shop_img_edit2 = findViewById(R.id.shop_img_edit2);
+        shop_img_edit3 = findViewById(R.id.shop_img_edit3);
+        shop_img_edit4 = findViewById(R.id.shop_img_edit4);
+        shop_img_edit5 = findViewById(R.id.shop_img_edit5);
+        shop_img_edit6 = findViewById(R.id.shop_img_edit6);
         Intent intent = getIntent();
         position = intent.getIntExtra("position", 0);
-        img_rcv = findViewById(R.id.img_rcv);
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        img_rcv.setLayoutManager(mLayoutManager);
-        adapter = new ShopImagesAdapter(EditPostActivity.this, AllPostsActivity.shops_list.get(position).getShop_id(), position);
-        img_rcv.setAdapter(adapter);
+        try {
+            etShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
+            etAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
+            etMobileNumber.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
+            btncategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
+            btnsubCategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
+            etServicesOffered.setText(AllPostsActivity.shops_list.get(position).getShop_details());
+            etShopOpeningHours.setText(AllPostsActivity.shops_list.get(position).getShop_timing());
+            etWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+            shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
+            image_path = "http://findashop.in/images/shop_profile/" + shop_id + "/";
+            shop_pic_img_name = AllPostsActivity.shops_list.get(position).getShop_pic();
+            if (!TextUtils.isEmpty(shop_pic_img_name) || shop_pic_img_name != null) {
+                shop_pic_edit.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + shop_pic_img_name)
+                        .fit()
+                        .into(shop_pic);
+                shop_pic_edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(shop_pic_img_name, shop_id, "shop_pic", position);
+                    }
+                });
+            } else {
+                shop_pic_edit.setVisibility(View.GONE);
+                shop_pic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            image1_name = AllPostsActivity.shops_list.get(position).getImage1();
+            if (!TextUtils.isEmpty(image1_name) || image1_name != null) {
+                shop_img_edit1.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + image1_name)
+                        .fit()
+                        .into(image1);
+                shop_img_edit1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(image1_name, shop_id, "image1", position);
+                    }
+                });
+            } else {
+                shop_img_edit1.setVisibility(View.GONE);
+                image1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            image2_name = AllPostsActivity.shops_list.get(position).getImage2();
+            if (!TextUtils.isEmpty(image2_name) || image2_name != null) {
+                shop_img_edit2.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + image2_name)
+                        .fit()
+                        .into(image2);
+                shop_img_edit2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(image2_name, shop_id, "image2", position);
+                    }
+                });
+            } else {
+                shop_img_edit2.setVisibility(View.GONE);
+                image2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            image3_name = AllPostsActivity.shops_list.get(position).getImage3();
+            if (!TextUtils.isEmpty(image3_name) || image3_name != null) {
+                shop_img_edit3.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + image3_name)
+                        .fit()
+                        .into(image3);
+                shop_img_edit3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(image3_name, shop_id, "image3", position);
+                    }
+                });
+            } else {
+                shop_img_edit3.setVisibility(View.GONE);
+                image3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            image4_name = AllPostsActivity.shops_list.get(position).getImage4();
+            if (!TextUtils.isEmpty(image4_name) || image4_name != null) {
+                shop_img_edit4.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + image4_name)
+                        .fit()
+                        .into(image4);
+                shop_img_edit4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(image4_name, shop_id, "image4", position);
+                    }
+                });
+            } else {
+                shop_img_edit4.setVisibility(View.GONE);
+                image4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            image5_name = AllPostsActivity.shops_list.get(position).getImage5();
+            if (!TextUtils.isEmpty(image5_name) || image5_name != null) {
+                shop_img_edit5.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + image5_name)
+                        .fit()
+                        .into(image5);
+                shop_img_edit5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(image5_name, shop_id, "image5", position);
+                    }
+                });
+            } else {
+                shop_img_edit5.setVisibility(View.GONE);
+                image5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            image6_name = AllPostsActivity.shops_list.get(position).getImage6();
+            if (!TextUtils.isEmpty(image6_name) || image6_name != null) {
+                shop_img_edit6.setVisibility(View.VISIBLE);
+                Picasso.with(EditPostActivity.this)
+                        .load(image_path + image6_name)
+                        .fit()
+                        .into(image6);
+                shop_img_edit6.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editDialog(image6_name, shop_id, "image6", position);
+                    }
+                });
+            } else {
+                image6.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        etShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
-        etAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
-        etMobileNumber.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
-        btncategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
-        btnsubCategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
-        etServicesOffered.setText(AllPostsActivity.shops_list.get(position).getShop_details());
-        etShopOpeningHours.setText(AllPostsActivity.shops_list.get(position).getShop_timing());
-        etWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
-        shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
         Retrofit retrofit = APIClient.getClient();
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -146,7 +320,6 @@ public class EditPostActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(EditPostActivity.this, "Fail to Load Category", Toast.LENGTH_SHORT).show();
@@ -171,11 +344,97 @@ public class EditPostActivity extends AppCompatActivity {
                 .build();
     }
 
-    public static void refresh() {
-        adapter.notifyDataSetChanged();
-
+    public void editDialog(final String image_name, final int shop_id, final String column_name, final int position) {
+        final android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(
+                EditPostActivity.this);
+        alertDialog.setTitle("Choose your option: ");
+        alertDialog.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteImages(image_name, shop_id, column_name, position);
+            }
+        });
+        alertDialog.show();
     }
 
+    public void deleteImages(String image_name, int shop_id, final String column_name, final int position) {
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        Call<DeleteShopImagesModel> call = restInterface.deleteShopImage(shop_id, image_name, column_name);
+        call.enqueue(new Callback<DeleteShopImagesModel>() {
+            @Override
+            public void onResponse(Call<DeleteShopImagesModel> call, Response<DeleteShopImagesModel> response) {
+                if (response.isSuccessful()) {
+                    DeleteShopImagesModel deleteShopImagesModel = response.body();
+                    String msg = deleteShopImagesModel.getMsg();
+                    Toast.makeText(EditPostActivity.this, "Image Deleted!" + msg, Toast.LENGTH_LONG).show();
+                    ShopsListModel shopsListModel = AllPostsActivity.shops_list.get(position);
+                    if (column_name.equals("shop_pic")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setShop_pic(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(shop_pic);
+                        shop_pic_edit.setVisibility(View.GONE);
+                    } else if (column_name.equals("image1")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage1(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(image1);
+                        shop_img_edit1.setVisibility(View.GONE);
+                    } else if (column_name.equals("image2")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage2(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(image2);
+                        shop_img_edit2.setVisibility(View.GONE);
+                    } else if (column_name.equals("image3")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage3(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(image3);
+                        shop_img_edit3.setVisibility(View.GONE);
+                    } else if (column_name.equals("image4")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage4(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(image4);
+                        shop_img_edit4.setVisibility(View.GONE);
+                    } else if (column_name.equals("image5")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage5(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(image5);
+                        shop_img_edit5.setVisibility(View.GONE);
+                    } else if (column_name.equals("image6")) {
+                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage6(null);
+                        Picasso.with(EditPostActivity.this)
+                                .load(R.drawable.ic_add_black_24dp)
+                                .into(image6);
+                        shop_img_edit6.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteShopImagesModel> call, Throwable t) {
+
+            }
+        });
+       /* call.enqueue(new Callback<DeleteShopImagesModel>() {
+            @Override
+            public void onResponse(Call<DeleteShopImagesModel> call, Response<DeleteShopImagesModel> response) {
+                if (response.isSuccessful()) {
+                    DeleteShopImagesModel deleteShopImagesModel = response.body();
+                    String msg = deleteShopImagesModel.getMsg();
+                    Toast.makeText(EditPostActivity.this, "Image Deleted!" + msg, Toast.LENGTH_LONG).show();
+                }
+            }
+        });*/
+    }
     public void update() {
         strPlaceSearch = area + "," + city + "," + state + "," + country;
         str_cat_spinner = btncategory.getText().toString();
@@ -222,9 +481,7 @@ public class EditPostActivity extends AppCompatActivity {
 
             }
         });
-
     }
-
     private void showDialog(ArrayList<String> categoryNames, final boolean flag, final String title) {
         final String[] categories = categoryNames.toArray(new String[categoryNames.size()]);
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
@@ -254,7 +511,6 @@ public class EditPostActivity extends AppCompatActivity {
         dialog.setContentView(view);
         dialog.show();
     }
-
     public void getSubCategory() {
         str_cat_spinner = btncategory.getText().toString();
         for (CategoryModel cat : category_Model_list) {
@@ -279,7 +535,6 @@ public class EditPostActivity extends AppCompatActivity {
                     editShopProgressbar.setVisibility(View.GONE);
                 }
             }
-
             @Override
             public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
             }
@@ -291,8 +546,6 @@ public class EditPostActivity extends AppCompatActivity {
             }
         });
     }
-
-
     public void selectImageOption(final String pos, String imgname) {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EditPostActivity.this);
@@ -319,8 +572,6 @@ public class EditPostActivity extends AppCompatActivity {
         });
         builder.show();
     }
-
-
     public void getEditAddress(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
         if (!detector.isConnectingToInternet())
@@ -336,7 +587,6 @@ public class EditPostActivity extends AppCompatActivity {
             }
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -372,15 +622,15 @@ public class EditPostActivity extends AppCompatActivity {
         } else if (requestCode == CROPING_CODE) {
             try {
                 if (outPutFile.exists() && resultCode == -1) {
-                    adapter.setImageInItem(pos_adpter, outPutFile, mImageCaptureUri.toString());
+                    image_files.add(outPutFile);
+                    images.set(Integer.parseInt(pos_adpter), "update_" + image_files.size());
+                    adapter.notifyItemChanged(Integer.parseInt(pos_adpter));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
-
     private void CropingIMG() {
         final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -436,18 +686,24 @@ public class EditPostActivity extends AppCompatActivity {
             }
         }
     }
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        images.clear();
-        images.add(AllPostsActivity.shops_list.get(position).getShop_pic());
-        images.add(AllPostsActivity.shops_list.get(position).getImage1());
-        images.add(AllPostsActivity.shops_list.get(position).getImage2());
-        images.add(AllPostsActivity.shops_list.get(position).getImage3());
-        images.add(AllPostsActivity.shops_list.get(position).getImage4());
-        images.add(AllPostsActivity.shops_list.get(position).getImage5());
-        images.add(AllPostsActivity.shops_list.get(position).getImage6());
+        try {
+           /*
+            if (image_files.size() == 0) {
+                images.clear();
+                images.add(AllPostsActivity.shops_list.get(position).getShop_pic());
+                images.add(AllPostsActivity.shops_list.get(position).getImage1());
+                images.add(AllPostsActivity.shops_list.get(position).getImage2());
+                images.add(AllPostsActivity.shops_list.get(position).getImage3());
+                images.add(AllPostsActivity.shops_list.get(position).getImage4());
+                images.add(AllPostsActivity.shops_list.get(position).getImage5());
+                images.add(AllPostsActivity.shops_list.get(position).getImage6());
+            }
+        */
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 }

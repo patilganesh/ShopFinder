@@ -15,10 +15,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.SearchView;
+
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -30,7 +30,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +50,7 @@ import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.common.GeocodingLocation;
+
 import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
@@ -75,7 +75,7 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+
 import java.util.List;
 import java.util.Locale;
 import okhttp3.MediaType;
@@ -310,13 +310,13 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void submit(View view) {
         strBusinessName = etBusinessName.getText().toString().trim();
+        strBusinessLocation = etBusinessLocation.getText().toString().trim();
         if (place != null) {
-            strBusinessLocation = etBusinessLocation.getText().toString().trim();
+
             strPlaceSearch = area + "," + city + "," + state + "," + country;
         } else {
-            strBusinessLocation = etBusinessLocation.getText().toString().trim();
-            getAddressFromLocation(strBusinessLocation,
-                    getApplicationContext(), new GeocoderHandler());
+
+            int flag = 0;
 
         }
         strBusinessMobile = etBusinessMobile.getText().toString().trim();
@@ -326,10 +326,11 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessHour = etBusinessHour.getText().toString().trim();
         strCategorySearch = str_cat_spinner + "," + str_subCat_spinner;
         if (checkValidation()) {
+            confirmdetails();
             try {
                 if (locationStatus.equals("sucsess")) {
-                    strPlaceSearch = area + "," + city + "," + state + "," + country;
-                    confirmdetails();
+                    //  strPlaceSearch = area + "," + city + "," + state + "," + country;
+
                 }
                 //  confirmdetails();
             } catch (Exception e) {
@@ -391,7 +392,6 @@ public class AddPostActivity extends AppCompatActivity {
         };
         thread.start();
     }
-
     private class GeocoderHandler extends Handler {
         @Override
         public void handleMessage(Message message) {
@@ -408,6 +408,7 @@ public class AddPostActivity extends AppCompatActivity {
                         pincode = bundle.getString("pincode");
                         latitude = bundle.getDouble("lat");
                         longitude = bundle.getDouble("longi");
+                        strPlaceSearch = area + "," + city + "," + state + "," + country;
                     }
                     break;
                 default:

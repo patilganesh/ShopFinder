@@ -20,7 +20,6 @@ public class Adapter_SelectedPhoto extends BaseRecyclerViewAdapter<Uri, Adapter_
     }
     @Override
     public void onBindView(SelectedPhotoHolder holder, int position) {
-        if (position <= 6) {
             Uri uri = getItem(position);
             Glide.with(imagePickerActivity)
                     .load(uri.toString())
@@ -29,8 +28,7 @@ public class Adapter_SelectedPhoto extends BaseRecyclerViewAdapter<Uri, Adapter_
                     .error(R.drawable.no_image)
                     .into(holder.selected_photo);
             holder.iv_close.setTag(uri);
-        } else
-            Toast.makeText(imagePickerActivity, "You selected more than 7 images,Maximum 7 images allowed !", Toast.LENGTH_SHORT).show();
+
     }
     @Override
     public SelectedPhotoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
