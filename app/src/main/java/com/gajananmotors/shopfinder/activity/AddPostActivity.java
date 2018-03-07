@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,6 +124,8 @@ public class AddPostActivity extends AppCompatActivity {
     private EditText etBusinessWhatsApp;
     private Address address = null;
     private String locationStatus = "";
+    private RelativeLayout relativeservice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,6 +177,8 @@ public class AddPostActivity extends AppCompatActivity {
         etBusinessServices.setInputType(InputType.TYPE_NULL);
         subcategory = findViewById(R.id.spnBusinessSubcategory);
         etBusinessHour = findViewById(R.id.etBusinessHour);
+        relativeservice = findViewById(R.id.relativeservice);
+
         mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
         View getImages = findViewById(R.id.btn_get_images);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -261,7 +266,7 @@ public class AddPostActivity extends AppCompatActivity {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
         for (int i = 0; i < sub_category_list.size(); i++) {
             SubCategoryNames.add(sub_category_list.get(i).getName().toString());
-        }
+            relativeservice.setVisibility(View.VISIBLE);        }
         ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, SubCategoryNames);
         subcategory.setAdapter(subCategoryAdapter);
@@ -897,6 +902,13 @@ public class AddPostActivity extends AppCompatActivity {
         }
 
         final ListView list = (ListView) layout.findViewById(R.id.dropDownList);
+        final TextView tvOther = (TextView) layout.findViewById(R.id.tvOther);
+        tvOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addServices();
+            }
+        });
         DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(this, items, tv);
         list.setAdapter(adapter);
     }
