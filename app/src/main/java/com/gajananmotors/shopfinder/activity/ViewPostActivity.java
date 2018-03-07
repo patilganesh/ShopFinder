@@ -138,7 +138,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     }
                     tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
                     tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
-                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_mob_no());
+                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_timing());
                     shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
                     shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
 
