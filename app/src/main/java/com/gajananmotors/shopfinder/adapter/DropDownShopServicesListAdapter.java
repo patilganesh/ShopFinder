@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gajananmotors.shopfinder.R;
@@ -75,13 +76,14 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.tv = (TextView) convertView.findViewById(R.id.SelectOption);
             holder.chkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
+            holder.linearLayout = (LinearLayout) convertView.findViewById(R.id.linearLayout1);
           //  holder.tv1 = (TextView) convertView.findViewById(R.id.tvOther);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.tv.setText(mListItems.get(position).getName());
+        holder.chkbox.setText(mListItems.get(position).getName());
 
         final int position1 = position;
 
@@ -94,7 +96,14 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
                 setText(position1);
             }
         });
+        holder.tv.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                setText(position1);
+            }
+        });
         if (AddPostActivity.checkSelected[position])
             holder.chkbox.setChecked(true);
         else
@@ -140,5 +149,6 @@ public class DropDownShopServicesListAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView tv,tv1;
         CheckBox chkbox;
+        LinearLayout linearLayout;
     }
 }

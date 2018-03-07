@@ -2,6 +2,7 @@ package com.gajananmotors.shopfinder.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -122,6 +124,8 @@ public class AddPostActivity extends AppCompatActivity {
     private TextView tvConfirm, tvWait;
     private ProgressBar subcategory_progressbar;
     private EditText etBusinessWhatsApp;
+    private TextView tvOther;
+
     private Address address = null;
     private String locationStatus = "";
     private RelativeLayout relativeservice;
@@ -141,6 +145,9 @@ public class AddPostActivity extends AppCompatActivity {
         //StringCallback stringCallback = new StringCallback() {
         subcategory_progressbar = findViewById(R.id.subcategory_progressbar);
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
+        tvOther = findViewById(R.id.tvOther);
+
+
          /*StringCallback stringCallback = new StringCallback() {
             @Override
             public void StringCallback(String s) {
@@ -226,9 +233,11 @@ public class AddPostActivity extends AppCompatActivity {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
+
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                 }
+
                 @Override
                 public void afterTextChanged(Editable s) {
                     str_cat_spinner = category.getText().toString();
@@ -248,6 +257,7 @@ public class AddPostActivity extends AppCompatActivity {
                                 getSubCategoryData();
                             }
                         }
+
                         @Override
                         public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
                         }
@@ -255,6 +265,13 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             });
         }
+
+        tvOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addServices();
+            }
+        });
         // subcategory.setAdapter(categoryAdapter);
     }
     @Override
@@ -267,6 +284,9 @@ public class AddPostActivity extends AppCompatActivity {
         for (int i = 0; i < sub_category_list.size(); i++) {
             SubCategoryNames.add(sub_category_list.get(i).getName().toString());
             relativeservice.setVisibility(View.VISIBLE);        }
+            tvOther.setVisibility(View.VISIBLE);
+
+        }
         ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, SubCategoryNames);
         subcategory.setAdapter(subCategoryAdapter);
@@ -274,7 +294,6 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
@@ -785,8 +804,39 @@ public class AddPostActivity extends AppCompatActivity {
                     if(shopServicesModels.size()>0) {
                         addPostProgressbar.setVisibility(View.INVISIBLE);
                         initialize();
-                        initiatePopUp(shopServicesModels, etBusinessServices);
+                       // initiatePopUp(shopServicesModels, etBusinessServices);
+                        final Dialog dialog=new Dialog(AddPostActivity.this);
+                        dialog.setContentView(R.layout.poupup_shop_services_menu);
+                        Button submit=dialog.findViewById( R.id.btnSubmit);
+                        Button cancel=dialog.findViewById( R.id.btnCancel);
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                        cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                etBusinessServices.setText("");
+                            }
+                        });
+                        dialog.show();
+
+                      /*  tvOther = dialog.findViewById(R.id.tvOther);
+                        tvOther.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                addServices();
+                            }
+                        });*/
+
+                        final ListView list = (ListView) dialog.findViewById(R.id.dropDownList);
+                        DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(getApplicationContext(), shopServicesModels, etBusinessServices);
+                        list.setAdapter(adapter);
                         if (!expanded) {
+
                             //display all selected values
                             String selected = "";
                             int flag = 0;
@@ -806,11 +856,12 @@ public class AddPostActivity extends AppCompatActivity {
                             expanded = false;
                         }
                     }
-                } else {
+                }else {
                     addServices();
                     addPostProgressbar.setVisibility(View.INVISIBLE);
                 }
             }
+
             @Override
             public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
 
