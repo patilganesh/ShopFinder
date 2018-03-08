@@ -13,6 +13,8 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -125,6 +127,8 @@ public class AddPostActivity extends AppCompatActivity {
     private TextView tvOther;
     private RelativeLayout relativeservices;
     private InterstitialAd mInterstitialAd;
+    private String locationStatus = "";
+    private Address address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,7 +302,7 @@ public class AddPostActivity extends AppCompatActivity {
                         int_subcat_id = subCategoryModel.getSub_category_id();
                     relativeservices.setVisibility(View.VISIBLE);
                 }
-                Toast.makeText(AddPostActivity.this, "\nId:" + int_subcat_id + "\nName:" + str_subCat_spinner, Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -332,8 +336,9 @@ public class AddPostActivity extends AppCompatActivity {
             strPlaceSearch = area + "," + city + "," + state + "," + country;
         } else {
             strBusinessLocation = etBusinessLocation.getText().toString().trim();
-            getAddressFromLocation(strBusinessLocation,
-                    getApplicationContext(), new GeocoderHandler());
+            strPlaceSearch = "";
+         /*   getAddressFromLocation(strBusinessLocation,
+                    getApplicationContext(), new GeocoderHandler());*/
 
         }
         strBusinessMobile = etBusinessMobile.getText().toString().trim();
@@ -344,15 +349,10 @@ public class AddPostActivity extends AppCompatActivity {
         strCategorySearch = str_cat_spinner + "," + str_subCat_spinner;
         if (checkValidation()) {
             confirmdetails();
-            try {
-                if (locationStatus.equals("sucsess")) {
-                    //  strPlaceSearch = area + "," + city + "," + state + "," + country;
+            //  confirmdetails();
 
-                }
-                //  confirmdetails();
-            } catch (Exception e) {
             }
-        }
+
     }
 
     public void getAddressFromLocation(final String locationAddress,
@@ -537,6 +537,7 @@ public class AddPostActivity extends AppCompatActivity {
         }
     }
     private void confirmdetails() {
+
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
         LinearLayout arealinearlayout = confirmDialog.findViewById(R.id.arealinearlayout);
@@ -855,22 +856,27 @@ public class AddPostActivity extends AppCompatActivity {
                             expanded = false;
                         }
                     }
-                } else {
+                }/* else {
                     addServices();
                     addPostProgressbar.setVisibility(View.INVISIBLE);
-                }
+                }*/
             }
             @Override
             public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
 
             }
         });
+        if (shopServicesModels.size() == 0) {
+            //addServices();
+            Toast.makeText(this, "No Services found,Add your Service!", Toast.LENGTH_SHORT).show();
+            addPostProgressbar.setVisibility(View.INVISIBLE);
+        }
     }
     public void addServices() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_addshopservice, null);
-        AppCompatButton buttonConfirm = confirmDialog.findViewById(R.id.buttonConfirm);
-        AppCompatButton buttonCancel = confirmDialog.findViewById(R.id.buttonCancel);
+        final TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
+        final TextView tvCancel = confirmDialog.findViewById(R.id.tvCancel);
         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -878,7 +884,7 @@ public class AddPostActivity extends AppCompatActivity {
         alert.setCancelable(true);
         final AlertDialog alertDialog = alert.create();
         alertDialog.show();
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -886,7 +892,8 @@ public class AddPostActivity extends AppCompatActivity {
                 addshopServices(service_name);
                 alertDialog.dismiss();
             }
-        }); buttonCancel.setOnClickListener(new View.OnClickListener() {
+        });
+        tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();

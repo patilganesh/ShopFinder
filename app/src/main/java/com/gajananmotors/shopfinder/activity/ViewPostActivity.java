@@ -59,11 +59,10 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar toolbar;
     private ProgressBar viewpost_progressbar;
     private LinearLayout linearLayout;
-    private int position;
+    private static int position;
     private String name = "";
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,13 +111,11 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
         shopCallLayout.setVisibility(View.VISIBLE);
         shopMsgLayout.setVisibility(View.VISIBLE);
         MobileAds.initialize(this, getString(R.string.admob_app_id));
-
-
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         init();
-        if (!name.isEmpty()) {
+       /* if (!name.isEmpty()) {
             if (name.equals("owner")) {
                 shopEditLayout.setVisibility(View.VISIBLE);
                 shopDeleteLayout.setVisibility(View.VISIBLE);
@@ -138,7 +135,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     }
                     tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
                     tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
-                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_timing());
+                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_mob_no());
                     shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
                     shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
 
@@ -177,7 +174,6 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             LinkShopServices(shop_id);
         }*/
     }
-
     private void init() {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -406,6 +402,60 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
+        if (!name.isEmpty()) {
+            if (name.equals("owner")) {
+                shopEditLayout.setVisibility(View.VISIBLE);
+                shopDeleteLayout.setVisibility(View.VISIBLE);
+                shopCallLayout.setVisibility(View.GONE);
+                shopMsgLayout.setVisibility(View.GONE);
+                try {
+                    tvShopName.setText(AllPostsActivity.shops_list.get(position).getShop_name());
+                    tvAddress.setText(AllPostsActivity.shops_list.get(position).getAddress());
+                    tvCategory.setText(AllPostsActivity.shops_list.get(position).getCategory_name());
+                    tvServices.setText(AllPostsActivity.shops_list.get(position).getShop_details());
+                    if (!AllPostsActivity.shops_list.get(position).getWebsite().isEmpty()) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                        tvWebsite.setText(AllPostsActivity.shops_list.get(position).getWebsite());
+                    }
+                    tvSubcategory.setText(AllPostsActivity.shops_list.get(position).getSub_category_name());
+                    tvMobile.setText(AllPostsActivity.shops_list.get(position).getShop_mob_no());
+                    tvShopTime.setText("Open : " + AllPostsActivity.shops_list.get(position).getShop_timing());
+                    shopCoverpic = AllPostsActivity.shops_list.get(position).getShop_pic();
+                    shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
+
+                } catch (Exception e) {
+                    Toast.makeText(this, "" + position + "     " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                viewShopList = getIntent().getParcelableExtra("shop_list");
+                shopEditLayout.setVisibility(View.GONE);
+                shopDeleteLayout.setVisibility(View.GONE);
+                shopCallLayout.setVisibility(View.VISIBLE);
+                shopMsgLayout.setVisibility(View.VISIBLE);
+                tvShopName.setText(viewShopList.getStrShop_name());
+                tvAddress.setText(viewShopList.getStrAddress());
+                tvCategory.setText(viewShopList.getStrCategory());
+                tvServices.setText(viewShopList.getStrservices());
+                if (!viewShopList.getStrWeburl().isEmpty()) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                    tvWebsite.setText(viewShopList.getStrWeburl());
+                }
+                tvSubcategory.setText(viewShopList.getStrSub_category());
+                tvMobile.setText(viewShopList.getStrMobile());
+                tvShopTime.setText("Open : " + viewShopList.getStrShopTime());
+                shopCoverpic = viewShopList.getStrShop_pic();
+                allimages = viewShopList.getArrayList();
+                shop_id = viewShopList.getShop_id();
+            }
+            Picasso.with(ViewPostActivity.this)
+                    .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
+                    .fit()
+                    .placeholder(R.drawable.background_splashscreen)
+                    .into(shopCoverphoto);
+
+
+        }
+
         if (mAdView != null) {
             mAdView.resume();
         }

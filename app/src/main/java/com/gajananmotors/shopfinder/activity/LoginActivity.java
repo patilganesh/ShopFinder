@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private String usertype = "google";
     private Snackbar snackbar;
     ScrollView primary_scrollView;
-
+    LinearLayout linear_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         login_progressbar = findViewById(R.id.login_progressbar);
         //  primary_scrollView = findViewById(R.id.primary_scrollView);
         //getSupportActionBar().hide();
+        linear_layout = findViewById(R.id.linear_layout);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.getString(Constant.DEVICE_TOKEN, "").isEmpty()) {
             device_token = Constant.device_token;
@@ -153,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private boolean checkValidation() {
         boolean ret = true;
-        LinearLayout linear_layout = findViewById(R.id.linear_layout);
+
         String username = etUserName.getText().toString();
         String password = etPassword.getText().toString();
 
@@ -188,7 +189,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     if (detector.isConnectingToInternet())
                         loginService();//calling Api for Authentication
                     else {
-                        Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
+                        showSnackBar("Please check your data Connection!", linear_layout);
+                        login_progressbar.setVisibility(View.GONE);
                     }
                 }
                 break;
@@ -198,7 +201,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 finish();
                 break;
             case R.id.btnSignIn:
-                signIn();
+                ConnectionDetector connectionDetector = new ConnectionDetector(LoginActivity.this);
+                if (connectionDetector.isConnectingToInternet())
+                    signIn();
+                else
+                    showSnackBar("Netwotk not available!", linear_layout);
                 break;
         }
     }
@@ -306,12 +313,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Picasso.with(LoginActivity.this)
                         .load(acct.getPhotoUrl());
             try {
-
-
                 owner_name = acct.getDisplayName();
                 owner_email = acct.getEmail();
-                //   owner_image ="";
-
                 owner_image = acct.getPhotoUrl().toString();
             }
             catch (Exception e){
@@ -320,7 +323,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 owner_name="";
             }
                 GoogleloginService();
-
             }
         }
     }

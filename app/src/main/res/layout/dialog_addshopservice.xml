@@ -20,28 +20,28 @@
                 android:weightSum="2"
                 android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/buttonCancel"
+                <TextView
+                    android:id="@+id/tvCancel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+                    android:gravity="center_horizontal"
         android:layout_weight="1"
-
-        android:background="@color/colorPrimary"
         android:padding="12dp"
         android:text="Cancel"
-        android:textColor="@android:color/white" />
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/buttonConfirm"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/tvConfirm"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:gravity="center_horizontal"
                     android:layout_weight="1"
                     android:layout_marginLeft="5dp"
-                    android:background="@color/colorPrimary"
                     android:padding="12dp"
                     android:text="Add"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/black" />
         </LinearLayout>
 
 </LinearLayout>
