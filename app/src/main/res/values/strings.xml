@@ -91,6 +91,8 @@
     <string name="rewarded_video">ca-app-pub-3940256099942544/6300978111</string>
 
     <string name="string_addtest_device">C04B1BFFB0774708339BC273F8A43708</string>
+    <string name="results">Results</string>
+    <string name="google">Google</string>
 
 
 </resources>

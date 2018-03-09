@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.activity.AllPostsActivity;
@@ -35,59 +34,64 @@ import static com.gajananmotors.shopfinder.common.GeoAddress.getAddress;
  */
 public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> implements Filterable {
     ArrayList<GoogleShopList> google_list = new ArrayList<>();
-    ArrayList<String> timingList;
-    ArrayList<String> nameList;
-    ArrayList<String> latList;
-    ArrayList<String> longList;
-    ArrayList<String> addressList;
-    ArrayList<String> iconList;
     Activity activity;
     ArrayList<ShopsListModel> list = new ArrayList<>();
 
-    private LinearLayout viewPostLayout;
     private ArrayList<String> images = new ArrayList<>();
-    private int shop_id;
-    private int index=0;
+    private int index = 0;
     public static ViewShopList viewShopList = new ViewShopList();
     private String name;
     private ArrayList<ShopsListModel> mFilteredList;
     private double lat, lng;
+
     public ShopsListAdpater(MapsActivity itemDetailsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
         mFilteredList = shops_list;
         this.activity = itemDetailsActivity;
         this.name = name;
     }
+
     public ShopsListAdpater(ItemDetailsActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
 
         this.activity = activity;
         this.list = shops_list;
         mFilteredList = shops_list;
-        this.name=name;
+        this.name = name;
     }
+
     public ShopsListAdpater(SearchActivity activity, ArrayList<ShopsListModel> shops_list, String name) {
         this.activity = activity;
         this.list = shops_list;
         mFilteredList = shops_list;
         this.name = name;
     }
+
     public ShopsListAdpater(MapsActivity mapsActivity, String googleData, ArrayList<GoogleShopList> google_shops_list) {
         this.activity = mapsActivity;
         this.name = googleData;
         this.google_list = google_shops_list;
     }
+
     public ShopsListAdpater(AllPostsActivity allPostsActivity, ArrayList<ShopsListModel> shops_list, String name) {
         this.list = shops_list;
         mFilteredList = shops_list;
         this.activity = allPostsActivity;
-        this.name=name;
+        this.name = name;
     }
+
+    public ShopsListAdpater(SearchActivity searchActivity, String googleData, ArrayList<GoogleShopList> google_shops_list) {
+        this.activity = searchActivity;
+        this.name = googleData;
+        this.google_list = google_shops_list;
+    }
+
     @Override
     public ShopsListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.activity_shops_list, parent, false);
         return new ShopsListHolder(view);
     }
+
     @Override
     public void onBindViewHolder(final ShopsListHolder holder, final int position) {
         if (name.equalsIgnoreCase("GoogleData")) {
@@ -95,38 +99,57 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             holder.image.setVisibility(View.GONE);
             holder.weburl.setVisibility(View.GONE);
             holder.type.setVisibility(View.GONE);
-            holder.name.setText(google_list.get(position).getShopName());
-            holder.address.setText(google_list.get(position).getShopAddress());
-            holder.timing.setText(google_list.get(position).getShopOpeningHours());
-            holder.lDirectionLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String lattitude = google_list.get(position).getShopLat();
-                    String longitude = google_list.get(position).getShopLong();
-                    if (!lattitude.isEmpty() && !longitude.isEmpty()) {
-                        lat = Double.parseDouble(lattitude);
-                        lng = Double.parseDouble(longitude);
+            
+            try {
+                String shopname = google_list.get(position).getShopName();
+                String shopaddress = google_list.get(position).getShopAddress();
+                if(shopname!=null && shopaddress!=null){
+                    holder.name.setText(shopname);
+                    holder.address.setText(shopaddress);
+
+                    String timing = google_list.get(position).getShopOpeningHours();
+                    if (!timing.isEmpty() && timing != null) {
+                        if (timing.equals("true")) {
+                            holder.timing.setText("Open now");
+                        } else {
+                            holder.timing.setText("");
+                        }
                     }
-                    if (!isNetworkAvailable(activity)) {
-                        displayPromptForEnablingData(activity);
-                    } else {
-                        String shopName=holder.name.getText().toString();
-                        String uriBegin = "geo:" + viewShopList.getLatitude() + "," + viewShopList.getLongitude();
-                        String query = viewShopList.getLatitude() + "," + viewShopList.getLongitude() + "(" + name + ")";
-                        String encodedQuery = Uri.encode(query);
-                        String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
-                        Uri uri = Uri.parse(uriString);
-                        String address = getAddress(lat, lng, activity);
-                        Log.d("MultiViewType", "address" + address);
-                        Uri gmmIntentUri = Uri.parse("geo:" + lat + "," + lng + "?q=" + shopName + "+" + address);
-                       // Uri gmmIntentUri = Uri.parse("geo:navigation" + 0 + "," + 0 + "?q=" + address);
-                        Log.d("uriIntent","gmmIntentUri"+gmmIntentUri);
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        activity.startActivity(mapIntent);
-                    }
+                    holder.lDirectionLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String lattitude = google_list.get(position).getShopLat();
+                            String longitude = google_list.get(position).getShopLong();
+                            if (!lattitude.isEmpty() && !longitude.isEmpty()) {
+                                lat = Double.parseDouble(lattitude);
+                                lng = Double.parseDouble(longitude);
+                            }
+                            if (!isNetworkAvailable(activity)) {
+                                displayPromptForEnablingData(activity);
+                            } else {
+                                String shopName = holder.name.getText().toString();
+                                String uriBegin = "geo:" + lattitude + "," + longitude;
+                                String query = lattitude + "," + longitude + "(" + name + ")";
+                                String encodedQuery = Uri.encode(query);
+                                String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
+                                Uri uri = Uri.parse(uriString);
+                                String address = getAddress(lat, lng, activity);
+                                Log.d("MultiViewType", "address" + address);
+                                Uri gmmIntentUri = Uri.parse("geo:" + lat + "," + lng + "?q=" + shopName + "+" + address);
+                                // Uri gmmIntentUri = Uri.parse("geo:navigation" + 0 + "," + 0 + "?q=" + address);
+                                Log.d("uriIntent", "gmmIntentUri" + gmmIntentUri);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                activity.startActivity(mapIntent);
+
+                            }
+                        }
+                    });
                 }
-            });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
           /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -139,7 +162,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                     viewShopList.setStrCategory(list.get(position).getCategory_name());
                     viewShopList.setStrSub_category(list.get(position).getSub_category_name());
                     viewShopList.setStrWeburl(list.get(position).getWebsite());
-                    viewShopList.setStrMobile(list.get(position).getShop_mob_no());
+                    viewShopList.setStrMobile(0list.get(position).getShop_mob_no());
                     viewShopList.setStrShopTime(list.get(position).getShop_timing());
                     viewShopList.setStrservices(list.get(position).getServices());
 
@@ -199,34 +222,43 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             });
         }
     }
+
     private void transition(int position) {
         Log.d("Allpost", "transition");
         Intent intent = new Intent(activity, ViewPostActivity.class);
-        intent.putExtra("position",""+position);
-        if(!name.equalsIgnoreCase("owner")) {
-            intent.putExtra("shop_list", viewShopList);
-        }
-        intent.putExtra("owner",name);
+        intent.putExtra("position", "" + position);
+        //  if(!name.equalsIgnoreCase("owner")) {
+        intent.putExtra("shop_list", viewShopList);
+        //}
+        intent.putExtra("owner", name);
         activity.startActivity(intent);
     }
+
     @Override
     public int getItemCount() {
         if (name.equalsIgnoreCase("GoogleData")) {
+
+            Log.d("ShopListAdaptger", "googlelist");
             return google_list.size();
         } else {
             if (mFilteredList == null) {
+                Log.d("ShopListAdapter", "list");
                 return list.size();
             } else {
 
+                Log.d("ShopListAdapter", "mFilteredlist");
                 return mFilteredList.size();
             }
+
         }
     }
+
     public void setFilter(ArrayList<ShopsListModel> newList) {
         list = new ArrayList<>();
         list.addAll(newList);
         notifyDataSetChanged();
     }
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -237,7 +269,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
 
                 if (newText.isEmpty()) {
 
-                    mFilteredList= list;
+                    mFilteredList = list;
                 } else {
 
                     ArrayList<ShopsListModel> filteredList = new ArrayList<>();
@@ -252,12 +284,14 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
                 }
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = mFilteredList;
+                filterResults.count = mFilteredList.size();
                 return filterResults;
             }
+
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mFilteredList = (ArrayList<ShopsListModel>) results.values;
-                AllPostsActivity.shops_list = mFilteredList;
+                // AllPostsActivity.shops_list = mFilteredList;
                 notifyDataSetChanged();
             }
         };

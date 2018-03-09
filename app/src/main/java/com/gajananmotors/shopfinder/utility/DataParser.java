@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,10 @@ public class DataParser {
         String latitude = "";
         String longitude = "";
         String reference = "";
-
+        String name = "";
+        String address = "";
+        String opening_hours = "";
+        String str_openiong_status="";
         Log.d("getPlace", "Entered");
 
         try {
@@ -65,6 +69,18 @@ public class DataParser {
             if (!googlePlaceJson.isNull("vicinity")) {
                 vicinity = googlePlaceJson.getString("vicinity");
             }
+
+            if (!googlePlaceJson.isNull("name")) {
+                name = googlePlaceJson.getString("name");
+            }
+            if (!googlePlaceJson.isNull("formatted_address")) {
+                address = googlePlaceJson.getString("formatted_address");
+            }
+            if (!googlePlaceJson.isNull("opening_hours")) {
+                opening_hours = googlePlaceJson.getString("opening_hours");
+                JSONObject jsonObject = googlePlaceJson.getJSONObject("opening_hours");
+                str_openiong_status = jsonObject.getString("open_now");
+            }
             latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
             reference = googlePlaceJson.getString("reference");
@@ -73,6 +89,9 @@ public class DataParser {
             googlePlaceMap.put("lat", latitude);
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
+            googlePlaceMap.put("name", name);
+            googlePlaceMap.put("formatted_address", address);
+            googlePlaceMap.put("opening_hours", str_openiong_status);
             Log.d("getPlace", "Putting Places");
         } catch (JSONException e) {
             Log.d("getPlace", "Error");
@@ -82,9 +101,9 @@ public class DataParser {
     }
 
 
-    public List<List<HashMap<String,String>>> parse(JSONObject jObject){
+    public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
-        List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
+        List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
         JSONArray jRoutes = null;
         JSONArray jLegs = null;
         JSONArray jSteps = null;
@@ -96,13 +115,13 @@ public class DataParser {
             jRoutes = jObject.getJSONArray("routes");
 
             /** Traversing all routes */
-            for(int i=0;i<jRoutes.length();i++){
-                jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
+            for (int i = 0; i < jRoutes.length(); i++) {
+                jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
 
                 List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
 
                 /** Traversing all legs */
-                for(int j=0;j<jLegs.length();j++){
+                for (int j = 0; j < jLegs.length(); j++) {
 
                     /** Getting distance from the json data */
                     jDistance = ((JSONObject) jLegs.get(j)).getJSONObject("distance");
@@ -120,19 +139,19 @@ public class DataParser {
                     /** Adding duration object to the path */
                     path.add(hmDuration);
 
-                    jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
+                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
 
                     /** Traversing all steps */
-                    for(int k=0;k<jSteps.length();k++){
+                    for (int k = 0; k < jSteps.length(); k++) {
                         String polyline = "";
-                        polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
+                        polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
 
                         /** Traversing all points */
-                        for(int l=0;l<list.size();l++){
+                        for (int l = 0; l < list.size(); l++) {
                             HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
-                            hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
+                            hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
+                            hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
                             path.add(hm);
                         }
                     }
@@ -141,11 +160,10 @@ public class DataParser {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return routes;
     }
-
 
 
     private List<LatLng> decodePoly(String encoded) {
@@ -181,7 +199,6 @@ public class DataParser {
 
         return poly;
     }
-
 
 
 }
