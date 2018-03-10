@@ -42,8 +42,7 @@
         <activity
             android:name=".activity.AddPostActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/string_shop_post"
-            />
+            android:label="@string/string_shop_post" />
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -51,14 +50,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.ProfileActivity"
             android:configChanges="orientation|screenSize"
-
             android:label="@string/profile" />
         <activity
             android:name=".activity.MapsActivity"
@@ -114,6 +111,15 @@
             android:name=".activity.EditPostActivity"
             android:label="@string/string_update_post" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
     </application>
 

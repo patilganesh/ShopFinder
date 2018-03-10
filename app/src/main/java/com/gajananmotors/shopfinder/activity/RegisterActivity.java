@@ -1,5 +1,4 @@
 package com.gajananmotors.shopfinder.activity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -35,6 +34,7 @@ import com.gajananmotors.shopfinder.adapter.CropingOptionAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
+import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CropingOptionModel;
 import com.gajananmotors.shopfinder.model.UserRegisterModel;
@@ -77,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar toolbar;
     private ProgressBar register_progressbar;
     private Snackbar snackbar;
-
+    private LinearLayout linear_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        linear_layout = findViewById(R.id.linear_layout);
         imgProfile = findViewById(R.id.imgProfile);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -110,7 +110,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         device_token = sharedpreferences.getString(Constant.DEVICE_TOKEN, "00000");
         //   Log.e(TAG, "savetoken" + sharedpreferences.getString(Constant.DEVICE_TOKEN,""));
-
         outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -154,12 +153,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if (name.matches("")) {
                         showSnackBar("Please Enter Username", linear_layout);
                         etName.requestFocus();
-
                     }
                 }
             }
         });
-
         etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -172,7 +169,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
-
         etDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -192,7 +188,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
-
         etContactNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -238,16 +233,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-
     void showSnackBar(String msg, View view) {
-
         snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         snackbar.show();
-
     }
-
-
     /*Calling Api and register shop owner's Data*/
     private void registerUser() {
         File shop_cover_photo = null;
@@ -266,7 +255,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         if (!flag) {
-            Toast.makeText(this, "Flag:" + flag, Toast.LENGTH_SHORT).show();
             outPutFile = null;
         }
         if (outPutFile != null) {
@@ -293,8 +281,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         } else if (outPutFile == null && profile.isEmpty()) {
             user = restInterface.userRegisterforEmptyImage(user_data.getOwner_name(), user_data.getOwner_email(), user_data.getMob_no(), user_data.getDate_of_birth(), user_data.getPassword(), user_data.getDevice_token());
         }
-
-        btnSubmit.setVisibility(View.INVISIBLE);
         register_progressbar.setVisibility(View.VISIBLE);
         register_progressbar.setIndeterminate(true);
         register_progressbar.setProgress(500);
@@ -302,8 +288,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
                 if (response.isSuccessful()) {
-                    register_progressbar.setVisibility(View.INVISIBLE);
-                    btnSubmit.setVisibility(View.VISIBLE);
+                    register_progressbar.setVisibility(View.GONE);
                     UserRegisterModel user = response.body();
                     String msg = user.getMsg();
                     String name = user.getOwner_name();
@@ -316,17 +301,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     int google=user.getGoogle();
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     if (result == 1) {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
-                        alert.setMessage("Successfully Registered\nOwner Id:" + owner_id + "\nMesg:" + msg + "\nImage:" + image + "\nName:" + name + "\nEmail:" + email + "\nResult:" + result); //display response in Alert dialog.
-                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        alert.show();
-                        //  Toast.makeText(RegisterActivity.this, "msg:" + msg + "\nImage:" + image + "\nMobile No:" + mobile, Toast.LENGTH_LONG).show();
-                        //Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
-                             /*  setting values to sharedpreferences keys.*/
                         editor.putInt(Constant.OWNER_ID, owner_id);
                         editor.putString(Constant.OWNER_NAME, name);
                         editor.putString(Constant.OWNWER_EMAIL, email);
@@ -361,19 +335,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         intent.setComponent(new ComponentName(RegisterActivity.this, AddPostActivity.class));
                         startActivity(intent);
                         finish();
-                    }
+                    } else
                         Toast.makeText(RegisterActivity.this, "User Already Registered With This Mobile Number!", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<UserRegisterModel> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
-                Log.e("failure", "onFailure: " + t.toString());
+                register_progressbar.setVisibility(View.GONE);
             }
         });
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -399,8 +370,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnSubmit:
               /*  if (checkValidation()) {*/
                 //Toast.makeText(this, "Registration.....", Toast.LENGTH_SHORT).show();
-                if (checkValidation())
-                    registerUser();//calling register method for web services
+
+                if (checkValidation()) {
+                    ConnectionDetector detector = new ConnectionDetector(this);
+                    if (detector.isConnectingToInternet())
+                        registerUser();//calling register method for web services
+                    else {
+                        //Toast.makeText(this, "Please check your data Connection.", Toast.LENGTH_LONG).show();
+                        showSnackBar("Netwotk not available!", linear_layout);
+                        register_progressbar.setVisibility(View.GONE);
+                    }
+
+                }
                 // }
                 break;
             case R.id.imgProfile:
@@ -408,7 +389,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
-
     private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
@@ -434,7 +414,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
         builder.show();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -454,7 +433,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onSuccess() {
                         }
-
                         @Override
                         public void onError() {
                         }
@@ -492,7 +470,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
     private void CropingIMG() {
         final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -548,14 +525,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
 
     }
-
     private void validation() {
         etPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -592,7 +567,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
     /*
         public void saveData() {
             LayoutInflater inflater = LayoutInflater.from(this);
@@ -635,7 +609,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     */
     private boolean checkValidation() {
         boolean ret = true;
-
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         LinearLayout linear_layout = findViewById(R.id.linear_layout);
         String name = etName.getText().toString();

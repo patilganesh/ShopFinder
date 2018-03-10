@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -129,17 +130,19 @@ public class AddPostActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd;
     private String locationStatus = "";
     private Address address;
-
+    private ShopServicesListModel listModel;
+    private Snackbar snackbar;
+    private LinearLayout linear_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         MobileAds.initialize(this, getString(R.string.admob_app_id));
-
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
@@ -152,19 +155,6 @@ public class AddPostActivity extends AppCompatActivity {
         addPostProgressbar = findViewById(R.id.addPostProgressbar);
         tvOther = findViewById(R.id.tvOther);
         relativeservices = findViewById(R.id.relativeservices);
-
-         /*StringCallback stringCallback = new StringCallback() {
-            @Override
-            public void StringCallback(String s) {
-                if (TextUtils.equals(s,"1")){
-                    for(int i=0;i<category_Model_list.size();i++)
-                        categoryNames.add(category_Model_list.get(i).getName().toString());
-                    category_Model_list.clear();
-                    flag=true;
-                }
-            }
-        };
-        category_Model_list = AllCategory.getCategories(AddPostActivity.this,stringCallback);*/
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
             @Override
@@ -231,45 +221,57 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void getCategoryData() {
         ArrayList<String> categoryNames = new ArrayList<>();
-        for (int i = 0; i < category_Model_list.size(); i++) {
-            categoryNames.add(category_Model_list.get(i).getName().toString());
+        if (category_Model_list.size() > 0) {
+            for (int i = 0; i < category_Model_list.size(); i++) {
+                categoryNames.add(category_Model_list.get(i).getName().toString());
+            }
         }
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, categoryNames);
-        if (categoryNames.size() != 0) {
+        if (categoryNames.size() > 0) {
             category.setAdapter(categoryAdapter);
-            category.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                    str_cat_spinner = category.getText().toString();
-                    for (CategoryModel cat : category_Model_list) {
-                        if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
-                            int_cat_id = cat.getCategory_id();
-                        }
+            try {
+                category.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
-                    Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
-                    sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
-                        @Override
-                        public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
-                            if (response.isSuccessful()) {
-                                subcategory.setVisibility(View.VISIBLE);
-                                SubCategoryListModel list = response.body();
-                                sub_category_list = list.getSubcategory();
-                                getSubCategoryData();
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        try {
+                            str_cat_spinner = category.getText().toString();
+                            for (CategoryModel cat : category_Model_list) {
+                                if (TextUtils.equals(cat.getName().toString().toLowerCase(), str_cat_spinner.toLowerCase())) {
+                                    int_cat_id = cat.getCategory_id();
+                                }
                             }
+                        } catch (Exception e) {
                         }
-                        @Override
-                        public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
-                        }
-                    });
-                }
-            });
+                        Call<SubCategoryListModel> sub_cat_list = restInterface.getSubCategoryList(int_cat_id);
+                        sub_cat_list.enqueue(new Callback<SubCategoryListModel>() {
+                            @Override
+                            public void onResponse(Call<SubCategoryListModel> call, Response<SubCategoryListModel> response) {
+                                if (response.isSuccessful()) {
+                                    subcategory.setVisibility(View.VISIBLE);
+                                    SubCategoryListModel list = response.body();
+                                    sub_category_list = list.getSubcategory();
+                                    getSubCategoryData();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<SubCategoryListModel> call, Throwable t) {
+                            }
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                Toast.makeText(this, "List is loading,please wait!", Toast.LENGTH_SHORT).show();
+            }
         }
         // subcategory.setAdapter(categoryAdapter);
     }
@@ -280,8 +282,10 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void getSubCategoryData() {
         ArrayList<String> SubCategoryNames = new ArrayList<>();
-        for (int i = 0; i < sub_category_list.size(); i++) {
-            SubCategoryNames.add(sub_category_list.get(i).getName().toString());
+        if (sub_category_list.size() > 0) {
+            for (int i = 0; i < sub_category_list.size(); i++) {
+                SubCategoryNames.add(sub_category_list.get(i).getName().toString());
+            }
         }
         ArrayAdapter<String> subCategoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, SubCategoryNames);
@@ -290,7 +294,6 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
@@ -302,7 +305,6 @@ public class AddPostActivity extends AppCompatActivity {
                         int_subcat_id = subCategoryModel.getSub_category_id();
                     relativeservices.setVisibility(View.VISIBLE);
                 }
-
             }
         });
     }
@@ -330,6 +332,12 @@ public class AddPostActivity extends AppCompatActivity {
         }
     }
     public void submit(View view) {
+        ConnectionDetector detector = new ConnectionDetector(this);
+        if (!detector.isConnectingToInternet()) {
+            Snackbar snackbar = Snackbar
+                    .make(linear_layout, "Netwotk not available!", Snackbar.LENGTH_LONG);
+        }
+
         strBusinessName = etBusinessName.getText().toString().trim();
         if (place != null) {
             strBusinessLocation = etBusinessLocation.getText().toString().trim();
@@ -337,9 +345,6 @@ public class AddPostActivity extends AppCompatActivity {
         } else {
             strBusinessLocation = etBusinessLocation.getText().toString().trim();
             strPlaceSearch = "";
-         /*   getAddressFromLocation(strBusinessLocation,
-                    getApplicationContext(), new GeocoderHandler());*/
-
         }
         strBusinessMobile = etBusinessMobile.getText().toString().trim();
         strBusinessWebUrl = etBusinessWebUrl.getText().toString().trim();
@@ -348,13 +353,15 @@ public class AddPostActivity extends AppCompatActivity {
         strBusinessHour = etBusinessHour.getText().toString().trim();
         strCategorySearch = str_cat_spinner + "," + str_subCat_spinner;
         if (checkValidation()) {
-            confirmdetails();
-            //  confirmdetails();
+            if (detector.isConnectingToInternet())
+                confirmdetails();
+            else {
+                Snackbar snackbar = Snackbar
+                        .make(linear_layout, "Netwotk not available!", Snackbar.LENGTH_LONG);
 
             }
-
+        }
     }
-
     public void getAddressFromLocation(final String locationAddress,
                                        final Context context, final Handler handler) {
 
@@ -537,7 +544,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
     }
     private void confirmdetails() {
-
         LayoutInflater inflater = LayoutInflater.from(this);
         View confirmDialog = inflater.inflate(R.layout.dialog_confirmatiom, null);
         LinearLayout arealinearlayout = confirmDialog.findViewById(R.id.arealinearlayout);
@@ -581,13 +587,14 @@ public class AddPostActivity extends AppCompatActivity {
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mInterstitialAd.isLoaded()) {
+             /*   if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
+                    createShop();
                 } else {
                     Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
+                }*/
                 createShop();//calling web services for create shop
-                //  alertDialog.dismiss();
+                alertDialog.dismiss();
             }
         });
     }
@@ -595,13 +602,18 @@ public class AddPostActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = null;
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        for (int i = 0; i < new_image_path.size(); i++) {
+        /*for (int i = 0; i < new_image_path.size(); i++) {
             String path = new_image_path.get(i);
             if (!path.equalsIgnoreCase(getImages)) {
                 image_path.add(path);
             }
-        }
-        if (!getImages.equals("")) {
+        }*/
+        shopModelCall = restInterface.createShopforEmptyImage(
+                int_cat_id, int_subcat_id, str_cat_spinner, str_subCat_spinner, strCategorySearch, owner_id, strBusinessName,
+                strBusinessHour, strBusinessLocation, strBusinessServices,
+                String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
+                strPlaceSearch, strBusinessWebUrl, strBusinessMobile);
+       /* if (!getImages.equals("")) {
             File filePath = new File(getImages);
             try {
                 RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
@@ -620,24 +632,31 @@ public class AddPostActivity extends AppCompatActivity {
                     strBusinessHour, strBusinessLocation, strBusinessServices,
                     String.valueOf(latitude), String.valueOf(longitude), area, city, state, country, pincode,
                     strPlaceSearch, strBusinessWebUrl, strBusinessMobile);
-        }
+        }*/
         /*addPostProgressbar.setVisibility(View.VISIBLE);
         addPostProgressbar.setIndeterminate(true);
         addPostProgressbar.setProgress(500);*/
         tvWait.setVisibility(View.VISIBLE);
-        tvConfirm.setVisibility(View.INVISIBLE);
+        tvConfirm.setVisibility(View.GONE);
         shopModelCall.enqueue(new Callback<CreateShopModel>() {
             @Override
             public void onResponse(Call<CreateShopModel> call, Response<CreateShopModel> response) {
                 if (response.isSuccessful()) {
                     shop = response.body();
-                    if (shop.getResult() == 1) {
+                    tvConfirm.setVisibility(View.VISIBLE);
+                    tvWait.setVisibility(View.GONE);
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(Constant.SHOP_ID, shop.getShop_id());
                         editor.apply();
+                        /*Intent intent = new Intent();
+                        intent.setComponent(new ComponentName(AddPostActivity.this, MainActivity.class));
+                        startActivity(intent);*/
+                    startActivity(new Intent(AddPostActivity.this, MainActivity.class));
+                    finish();
+                    Toast.makeText(AddPostActivity.this, "Shop Created Success...", Toast.LENGTH_LONG).show();
                         //Toast.makeText(AddPostActivity.this, "Shop Created Success..." + shop.getMsg(), Toast.LENGTH_LONG).show();
-                        uploadShopImages(count);
-                    }
+                    //    uploadShopImages(count);
+
                 }
             }
             @Override
@@ -667,8 +686,9 @@ public class AddPostActivity extends AppCompatActivity {
                 public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
                     if (response.isSuccessful()) {
                         UploadShopImagesModel uploadShopImagesModel = response.body();
-                        if (uploadShopImagesModel.getResult() == 1)
-                            uploadShopImages(uploadShopImagesModel.getCount());
+                        if (uploadShopImagesModel.getResult() == 1) {
+                        }
+                        //      uploadShopImages(uploadShopImagesModel.getCount());
                     }
                 }
                 @Override
@@ -690,7 +710,7 @@ public class AddPostActivity extends AppCompatActivity {
     private boolean checkValidation() {
         boolean ret = true;
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        LinearLayout linear_layout = findViewById(R.id.linear_layout);
+        linear_layout = findViewById(R.id.linear_layout);
         String name = etBusinessName.getText().toString();
         String email = etBusinessEmail.getText().toString();
         String location = etBusinessLocation.getText().toString();
@@ -766,15 +786,7 @@ public class AddPostActivity extends AppCompatActivity {
         }
         return ret;
     }
-
     private void initialize() {
-        //data source for drop-down list
-       /* shopServicesList = new ArrayList<String>();
-        shopServicesList.add("Punjabi");
-        shopServicesList.add("Pure Vegetarian");
-        shopServicesList.add("Chinese");
-        shopServicesList.add("Parking Available");
-        shopServicesList.add("Home Delivery");*/
         checkSelected = new boolean[shopServicesModels.size()];
         //initialize all values of list to 'unselected' initially
         for (int i = 0; i < checkSelected.length; i++) {
@@ -800,7 +812,9 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ShopServicesListModel> call, Response<ShopServicesListModel> response) {
                 if(response.isSuccessful()){
-                    ShopServicesListModel listModel=response.body();
+
+                    listModel = response.body();
+
                     shopServicesModels = listModel.getShopServicesModels();
                     if(shopServicesModels.size()>0) {
                         addPostProgressbar.setVisibility(View.INVISIBLE);
@@ -824,16 +838,7 @@ public class AddPostActivity extends AppCompatActivity {
                             }
                         });
                         dialog.show();
-
-                      /*  tvOther = dialog.findViewById(R.id.tvOther);
-                        tvOther.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                addServices();
-                            }
-                        });*/
-
-                        final ListView list = (ListView) dialog.findViewById(R.id.dropDownList);
+                        final ListView list = dialog.findViewById(R.id.dropDownList);
                         DropDownShopServicesListAdapter adapter = new DropDownShopServicesListAdapter(getApplicationContext(), shopServicesModels, etBusinessServices);
                         list.setAdapter(adapter);
                         if (!expanded) {
@@ -856,21 +861,17 @@ public class AddPostActivity extends AppCompatActivity {
                             expanded = false;
                         }
                     }
-                }/* else {
+                }
+            /* else {
                     addServices();
                     addPostProgressbar.setVisibility(View.INVISIBLE);
                 }*/
             }
             @Override
             public void onFailure(Call<ShopServicesListModel> call, Throwable t) {
-
+                addPostProgressbar.setVisibility(View.INVISIBLE);
             }
         });
-        if (shopServicesModels.size() == 0) {
-            //addServices();
-            Toast.makeText(this, "No Services found,Add your Service!", Toast.LENGTH_SHORT).show();
-            addPostProgressbar.setVisibility(View.INVISIBLE);
-        }
     }
     public void addServices() {
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -878,7 +879,6 @@ public class AddPostActivity extends AppCompatActivity {
         final TextView tvConfirm = confirmDialog.findViewById(R.id.tvConfirm);
         final TextView tvCancel = confirmDialog.findViewById(R.id.tvCancel);
         final EditText etAddservices = confirmDialog.findViewById(R.id.etAddservices);
-
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setView(confirmDialog);
         alert.setCancelable(true);
@@ -912,7 +912,6 @@ public class AddPostActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),addShopServicesModel.getMsg(),Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<AddShopServicesModel> call, Throwable t) {
 
@@ -974,5 +973,4 @@ public class AddPostActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
-
 }

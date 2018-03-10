@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -12,6 +13,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -19,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +40,7 @@ import com.gajananmotors.shopfinder.adapter.ShopImagesAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 
+import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
 import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
@@ -47,6 +51,7 @@ import com.gajananmotors.shopfinder.model.DeleteShopImagesModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
+import com.gajananmotors.shopfinder.model.UploadShopImagesModel;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,10 +66,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
 public class EditPostActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private EditText etShopName, etAddress, etMobileNumber, etServicesOffered, etShopOpeningHours, etWebsite;
@@ -76,7 +85,7 @@ public class EditPostActivity extends AppCompatActivity {
     private RecyclerView img_rcv;
     private static final int CAMERA_CODE = 101, GALLERY_CODE = 201, CROPING_CODE = 301;
     private Uri mImageCaptureUri;
-    private File outPutFile;
+    private File outPutFile = null;
     private RecyclerView.LayoutManager mLayoutManager;
     private int PLACE_PICKER_REQUEST = 1;
     private Place place;
@@ -88,7 +97,7 @@ public class EditPostActivity extends AppCompatActivity {
     private LinearLayout edit_post_layout;
     public static ArrayList<String> images = new ArrayList<>();
     public static ArrayList<File> image_files = new ArrayList<>();
-    private String image_path = "";
+    private String image_path = "", column_name = "";
     private String shop_pic_img_name = "", image1_name = "", image2_name = "", image3_name = "", image4_name = "", image5_name = "", image6_name = "";
     private static ShopImagesAdapter adapter;
     private int position;
@@ -96,6 +105,8 @@ public class EditPostActivity extends AppCompatActivity {
     private ProgressBar editShopProgressbar;
     private ImageView shop_pic, image1, image2, image3, image4, image5, image6;
     private ImageView shop_pic_edit, shop_img_edit1, shop_img_edit2, shop_img_edit3, shop_img_edit4, shop_img_edit5, shop_img_edit6;
+    private ProgressBar pb_shop_pic_edit, pb_shop_img_edit1, pb_shop_img_edit2, pb_shop_img_edit3, pb_shop_img_edit4, pb_shop_img_edit5, pb_shop_img_edit6;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +126,7 @@ public class EditPostActivity extends AppCompatActivity {
         btncategory = findViewById(R.id.etCategory);
         btnsubCategory = findViewById(R.id.etSubCategory);
         btnUpdate = findViewById(R.id.btnUpdate);
+        outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
         shop_pic = findViewById(R.id.shop_pic);
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -130,6 +142,15 @@ public class EditPostActivity extends AppCompatActivity {
         shop_img_edit4 = findViewById(R.id.shop_img_edit4);
         shop_img_edit5 = findViewById(R.id.shop_img_edit5);
         shop_img_edit6 = findViewById(R.id.shop_img_edit6);
+
+
+        pb_shop_pic_edit = findViewById(R.id.pb_shop_pic_edit);
+        pb_shop_img_edit1 = findViewById(R.id.pb_shop_img_edit1);
+        pb_shop_img_edit2 = findViewById(R.id.pb_shop_img_edit2);
+        pb_shop_img_edit3 = findViewById(R.id.pb_shop_img_edit3);
+        pb_shop_img_edit4 = findViewById(R.id.pb_shop_img_edit4);
+        pb_shop_img_edit5 = findViewById(R.id.pb_shop_img_edit5);
+        pb_shop_img_edit6 = findViewById(R.id.pb_shop_img_edit6);
         Intent intent = getIntent();
         position = intent.getIntExtra("position", 0);
         try {
@@ -144,7 +165,7 @@ public class EditPostActivity extends AppCompatActivity {
             shop_id = AllPostsActivity.shops_list.get(position).getShop_id();
             image_path = "http://findashop.in/images/shop_profile/" + shop_id + "/";
             shop_pic_img_name = AllPostsActivity.shops_list.get(position).getShop_pic();
-            if (!TextUtils.isEmpty(shop_pic_img_name) || shop_pic_img_name != null) {
+            if (!TextUtils.isEmpty(shop_pic_img_name) && shop_pic_img_name != null) {
                 shop_pic_edit.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + shop_pic_img_name)
@@ -153,7 +174,9 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_pic_edit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(shop_pic_img_name, shop_id, "shop_pic", position);
+                        column_name = "shop_pic";
+                        pb_shop_pic_edit.setVisibility(View.VISIBLE);
+                        editDialog(shop_pic_img_name, shop_id, position);
                     }
                 });
             } else {
@@ -161,12 +184,14 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_pic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "shop_pic";
+                        selectImageOption();
+                        pb_shop_pic_edit.setVisibility(View.VISIBLE);
                     }
                 });
             }
             image1_name = AllPostsActivity.shops_list.get(position).getImage1();
-            if (!TextUtils.isEmpty(image1_name) || image1_name != null) {
+            if (!TextUtils.isEmpty(image1_name) && image1_name != null) {
                 shop_img_edit1.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + image1_name)
@@ -175,7 +200,9 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_img_edit1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(image1_name, shop_id, "image1", position);
+                        column_name = "image1";
+                        pb_shop_img_edit1.setVisibility(View.VISIBLE);
+                        editDialog(image1_name, shop_id, position);
                     }
                 });
             } else {
@@ -183,12 +210,14 @@ public class EditPostActivity extends AppCompatActivity {
                 image1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "image1";
+                        selectImageOption();
+                        pb_shop_img_edit1.setVisibility(View.VISIBLE);
                     }
                 });
             }
             image2_name = AllPostsActivity.shops_list.get(position).getImage2();
-            if (!TextUtils.isEmpty(image2_name) || image2_name != null) {
+            if (!TextUtils.isEmpty(image2_name) && image2_name != null) {
                 shop_img_edit2.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + image2_name)
@@ -197,7 +226,9 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_img_edit2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(image2_name, shop_id, "image2", position);
+                        column_name = "image2";
+                        pb_shop_img_edit2.setVisibility(View.VISIBLE);
+                        editDialog(image2_name, shop_id, position);
                     }
                 });
             } else {
@@ -205,12 +236,14 @@ public class EditPostActivity extends AppCompatActivity {
                 image2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "image2";
+                        selectImageOption();
+                        pb_shop_img_edit2.setVisibility(View.VISIBLE);
                     }
                 });
             }
             image3_name = AllPostsActivity.shops_list.get(position).getImage3();
-            if (!TextUtils.isEmpty(image3_name) || image3_name != null) {
+            if (!TextUtils.isEmpty(image3_name) && image3_name != null) {
                 shop_img_edit3.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + image3_name)
@@ -219,7 +252,9 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_img_edit3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(image3_name, shop_id, "image3", position);
+                        column_name = "image3";
+                        pb_shop_img_edit3.setVisibility(View.VISIBLE);
+                        editDialog(image3_name, shop_id, position);
                     }
                 });
             } else {
@@ -227,12 +262,14 @@ public class EditPostActivity extends AppCompatActivity {
                 image3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "image3";
+                        selectImageOption();
+                        pb_shop_img_edit3.setVisibility(View.VISIBLE);
                     }
                 });
             }
             image4_name = AllPostsActivity.shops_list.get(position).getImage4();
-            if (!TextUtils.isEmpty(image4_name) || image4_name != null) {
+            if (!TextUtils.isEmpty(image4_name) && image4_name != null) {
                 shop_img_edit4.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + image4_name)
@@ -241,7 +278,9 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_img_edit4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(image4_name, shop_id, "image4", position);
+                        column_name = "image4";
+                        pb_shop_img_edit4.setVisibility(View.VISIBLE);
+                        editDialog(image4_name, shop_id, position);
                     }
                 });
             } else {
@@ -249,12 +288,15 @@ public class EditPostActivity extends AppCompatActivity {
                 image4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "image4";
+
+                        selectImageOption();
+                        pb_shop_img_edit4.setVisibility(View.VISIBLE);
                     }
                 });
             }
             image5_name = AllPostsActivity.shops_list.get(position).getImage5();
-            if (!TextUtils.isEmpty(image5_name) || image5_name != null) {
+            if (!TextUtils.isEmpty(image5_name) && image5_name != null) {
                 shop_img_edit5.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + image5_name)
@@ -263,7 +305,9 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_img_edit5.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(image5_name, shop_id, "image5", position);
+                        column_name = "image5";
+                        pb_shop_img_edit5.setVisibility(View.VISIBLE);
+                        editDialog(image5_name, shop_id, position);
                     }
                 });
             } else {
@@ -271,12 +315,14 @@ public class EditPostActivity extends AppCompatActivity {
                 image5.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "image5";
+                        selectImageOption();
+                        pb_shop_img_edit5.setVisibility(View.VISIBLE);
                     }
                 });
             }
             image6_name = AllPostsActivity.shops_list.get(position).getImage6();
-            if (!TextUtils.isEmpty(image6_name) || image6_name != null) {
+            if (!TextUtils.isEmpty(image6_name) && image6_name != null) {
                 shop_img_edit6.setVisibility(View.VISIBLE);
                 Picasso.with(EditPostActivity.this)
                         .load(image_path + image6_name)
@@ -285,14 +331,18 @@ public class EditPostActivity extends AppCompatActivity {
                 shop_img_edit6.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editDialog(image6_name, shop_id, "image6", position);
+                        column_name = "image6";
+                        pb_shop_img_edit6.setVisibility(View.VISIBLE);
+                        editDialog(image6_name, shop_id, position);
                     }
                 });
             } else {
                 image6.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditPostActivity.this, "Add", Toast.LENGTH_SHORT).show();
+                        column_name = "image6";
+                        selectImageOption();
+                        pb_shop_img_edit6.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -306,7 +356,7 @@ public class EditPostActivity extends AppCompatActivity {
             }
         });
         Retrofit retrofit = APIClient.getClient();
-        outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
+
         RestInterface restInterface = retrofit.create(RestInterface.class);
         Call<CategoryListModel> call = restInterface.getCategoryList();
         call.enqueue(new Callback<CategoryListModel>() {
@@ -320,6 +370,7 @@ public class EditPostActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<CategoryListModel> call, Throwable t) {
                 Toast.makeText(EditPostActivity.this, "Fail to Load Category", Toast.LENGTH_SHORT).show();
@@ -344,12 +395,13 @@ public class EditPostActivity extends AppCompatActivity {
                 .build();
     }
 
-    public void editDialog(final String image_name, final int shop_id, final String column_name, final int position) {
+    public void editDialog(final String image_name, final int shop_id, final int position) {
         final android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(
                 EditPostActivity.this);
         alertDialog.setTitle("Choose your option: ");
         alertDialog.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                selectImageOption();
             }
         });
         alertDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
@@ -358,9 +410,121 @@ public class EditPostActivity extends AppCompatActivity {
                 deleteImages(image_name, shop_id, column_name, position);
             }
         });
+
         alertDialog.show();
     }
 
+    public void EditImage() {
+        MultipartBody.Part fileToUpload = null;
+        Retrofit retrofit = APIClient.getClient();
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+        File f = null;
+        String imagePath = "";
+        if (outPutFile != null) {
+            try {
+                imagePath = outPutFile.getAbsolutePath();
+                File file = new File(imagePath);
+                if (file.length() > 51200) {
+                    imagePath = ImageCompressor.compressImage(imagePath);
+                }
+                f = new File(imagePath);
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
+                fileToUpload = MultipartBody.Part.createFormData("image", f.getName(), mFile);
+                Call<UploadShopImagesModel> call = restInterface.updateShopImages(shop_id, fileToUpload, column_name);
+                call.enqueue(new Callback<UploadShopImagesModel>() {
+                    @Override
+                    public void onResponse(Call<UploadShopImagesModel> call, Response<UploadShopImagesModel> response) {
+                        if (response.isSuccessful()) {
+                            ShopsListModel shopsListModel = AllPostsActivity.shops_list.get(position);
+                            UploadShopImagesModel model = response.body();
+                            switch (column_name) {
+                                case "shop_pic":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setShop_pic(model.getImage());
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getShop_pic())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(shop_pic);
+                                    //http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
+                                    //  Picasso.with(EditPostActivity.this).load(outPutFile).skipMemoryCache().into(shop_pic);
+                                    pb_shop_pic_edit.setVisibility(View.GONE);
+                                    break;
+                                case "image1":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setImage1(model.getImage());
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getImage1())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(image1);
+                                    // Picasso.with(EditPostActivity.this).load(outPutFile).skipMemoryCache().into(image1);
+                                    pb_shop_img_edit1.setVisibility(View.GONE);
+                                    break;
+                                case "image2":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setImage2(model.getImage());
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getImage2())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(image2);
+                                    pb_shop_img_edit2.setVisibility(View.GONE);
+                                    break;
+                                case "image3":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setImage3(model.getImage());
+                                    //Picasso.with(EditPostActivity.this).load(outPutFile).skipMemoryCache().into(image3);
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getImage3())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(image3);
+                                    pb_shop_img_edit3.setVisibility(View.GONE);
+                                    break;
+                                case "image4":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setImage4(model.getImage());
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getImage4())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(image4);
+                                    pb_shop_img_edit4.setVisibility(View.GONE);
+                                    break;
+                                case "image5":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setImage5(model.getImage());
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getImage5())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(image5);
+                                    pb_shop_img_edit5.setVisibility(View.GONE);
+                                    break;
+                                case "image6":
+                                    AllPostsActivity.shops_list.set(position, shopsListModel).setImage6(model.getImage());
+                                    Picasso.with(EditPostActivity.this)
+                                            .load(image_path + AllPostsActivity.shops_list.get(position).getImage6())
+                                            .fit()
+                                            .skipMemoryCache()
+                                            .into(image6);
+                                    pb_shop_img_edit6.setVisibility(View.GONE);
+                                    break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UploadShopImagesModel> call, Throwable t) {
+                        pb_shop_pic_edit.setVisibility(View.GONE);
+                        pb_shop_img_edit1.setVisibility(View.GONE);
+                        pb_shop_img_edit2.setVisibility(View.GONE);
+                        pb_shop_img_edit3.setVisibility(View.GONE);
+                        pb_shop_img_edit4.setVisibility(View.GONE);
+                        pb_shop_img_edit5.setVisibility(View.GONE);
+                        pb_shop_img_edit6.setVisibility(View.GONE);
+                    }
+                });
+            } catch (Exception e) {
+                Toast.makeText(this, "Resposnse is slow!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     public void deleteImages(String image_name, int shop_id, final String column_name, final int position) {
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -373,67 +537,64 @@ public class EditPostActivity extends AppCompatActivity {
                     String msg = deleteShopImagesModel.getMsg();
                     Toast.makeText(EditPostActivity.this, "Image Deleted!" + msg, Toast.LENGTH_LONG).show();
                     ShopsListModel shopsListModel = AllPostsActivity.shops_list.get(position);
-                    if (column_name.equals("shop_pic")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setShop_pic(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(shop_pic);
-                        shop_pic_edit.setVisibility(View.GONE);
-                    } else if (column_name.equals("image1")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage1(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(image1);
-                        shop_img_edit1.setVisibility(View.GONE);
-                    } else if (column_name.equals("image2")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage2(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(image2);
-                        shop_img_edit2.setVisibility(View.GONE);
-                    } else if (column_name.equals("image3")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage3(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(image3);
-                        shop_img_edit3.setVisibility(View.GONE);
-                    } else if (column_name.equals("image4")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage4(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(image4);
-                        shop_img_edit4.setVisibility(View.GONE);
-                    } else if (column_name.equals("image5")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage5(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(image5);
-                        shop_img_edit5.setVisibility(View.GONE);
-                    } else if (column_name.equals("image6")) {
-                        AllPostsActivity.shops_list.set(position, shopsListModel).setImage6(null);
-                        Picasso.with(EditPostActivity.this)
-                                .load(R.drawable.ic_add_black_24dp)
-                                .into(image6);
-                        shop_img_edit6.setVisibility(View.GONE);
+                    switch (column_name) {
+                        case "shop_pic":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setShop_pic(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(shop_pic);
+                            shop_pic_edit.setVisibility(View.GONE);
+                            break;
+                        case "image1":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setImage1(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(image1);
+                            shop_img_edit1.setVisibility(View.GONE);
+                            break;
+                        case "image2":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setImage2(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(image2);
+                            shop_img_edit2.setVisibility(View.GONE);
+                            break;
+                        case "image3":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setImage3(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(image3);
+                            shop_img_edit3.setVisibility(View.GONE);
+                            break;
+                        case "image4":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setImage4(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(image4);
+                            shop_img_edit4.setVisibility(View.GONE);
+                            break;
+                        case "image5":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setImage5(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(image5);
+                            shop_img_edit5.setVisibility(View.GONE);
+                            break;
+                        case "image6":
+                            AllPostsActivity.shops_list.set(position, shopsListModel).setImage6(null);
+                            Picasso.with(EditPostActivity.this)
+                                    .load(R.drawable.ic_add_black_24dp)
+                                    .into(image6);
+                            shop_img_edit6.setVisibility(View.GONE);
+                            break;
                     }
+
                 }
             }
-
             @Override
             public void onFailure(Call<DeleteShopImagesModel> call, Throwable t) {
-
             }
         });
-       /* call.enqueue(new Callback<DeleteShopImagesModel>() {
-            @Override
-            public void onResponse(Call<DeleteShopImagesModel> call, Response<DeleteShopImagesModel> response) {
-                if (response.isSuccessful()) {
-                    DeleteShopImagesModel deleteShopImagesModel = response.body();
-                    String msg = deleteShopImagesModel.getMsg();
-                    Toast.makeText(EditPostActivity.this, "Image Deleted!" + msg, Toast.LENGTH_LONG).show();
-                }
-            }
-        });*/
     }
     public void update() {
         strPlaceSearch = area + "," + city + "," + state + "," + country;
@@ -475,7 +636,6 @@ public class EditPostActivity extends AppCompatActivity {
                     Toast.makeText(EditPostActivity.this, "Shop Updated Success!", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<CreateShopModel> call, Throwable t) {
 
@@ -546,26 +706,35 @@ public class EditPostActivity extends AppCompatActivity {
             }
         });
     }
-    public void selectImageOption(final String pos, String imgname) {
+
+    private void selectImageOption() {
         final CharSequence[] items = {"Capture Photo", "Choose from Gallery", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EditPostActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                pos_adpter = pos;
                 if (items[item].equals("Capture Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp1.jpg");
-                    mImageCaptureUri = Uri.fromFile(outPutFile);
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        mImageCaptureUri = FileProvider.getUriForFile(EditPostActivity.this, com.gajananmotors.shopfinder.BuildConfig.APPLICATION_ID + ".provider", outPutFile);
+                    } else {
+                        mImageCaptureUri = Uri.fromFile(outPutFile);
+                    }
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
-                    //cameraIntent();
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
-                    // galleryIntent();
                 } else if (items[item].equals("Cancel")) {
+                    pb_shop_pic_edit.setVisibility(View.GONE);
+                    pb_shop_img_edit1.setVisibility(View.GONE);
+                    pb_shop_img_edit2.setVisibility(View.GONE);
+                    pb_shop_img_edit3.setVisibility(View.GONE);
+                    pb_shop_img_edit4.setVisibility(View.GONE);
+                    pb_shop_img_edit5.setVisibility(View.GONE);
+                    pb_shop_img_edit6.setVisibility(View.GONE);
                     dialog.dismiss();
                 }
             }
@@ -590,47 +759,39 @@ public class EditPostActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                place = PlacePicker.getPlace(data, this);
-                etAddress.setText(place.getAddress());
-                String address1 = place.getName().toString();
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    state = addresses.get(0).getAdminArea().toString();
-                    city = addresses.get(0).getLocality().toString();
-                    area = addresses.get(0).getSubLocality().toString();
-                    country = addresses.get(0).getCountryName();
-                    pincode = addresses.get(0).getPostalCode();
-                    latitude = place.getLatLng().latitude;
-                    longitude = place.getLatLng().longitude;
-                    // Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area+"\nCountry:"+country, Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK && data != null) {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            place = PlacePicker.getPlace(data, this);
+            etAddress.setText(place.getAddress());
+            String address1 = place.getName().toString();
+            try {
+                List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                state = addresses.get(0).getAdminArea().toString();
+                city = addresses.get(0).getLocality().toString();
+                area = addresses.get(0).getSubLocality().toString();
+                country = addresses.get(0).getCountryName();
+                pincode = addresses.get(0).getPostalCode();
+                latitude = place.getLatLng().latitude;
+                longitude = place.getLatLng().longitude;
+                // Toast.makeText(this, "State:" + state + "\nCity:" + city + "\nArea:" + area+"\nCountry:"+country, Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } else if (requestCode == GALLERY_CODE && resultCode == RESULT_OK && null != data) {
             mImageCaptureUri = data.getData();
-            System.out.println("Gallery Image URI : " + mImageCaptureUri);
+
             CropingIMG();
         } else if (requestCode == CAMERA_CODE && resultCode == Activity.RESULT_OK) {
-            System.out.println("Camera Image URI : " + mImageCaptureUri);
+
             CropingIMG();
-
-
         } else if (requestCode == CROPING_CODE) {
-            try {
-                if (outPutFile.exists() && resultCode == -1) {
-                    image_files.add(outPutFile);
-                    images.set(Integer.parseInt(pos_adpter), "update_" + image_files.size());
-                    adapter.notifyItemChanged(Integer.parseInt(pos_adpter));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (outPutFile.exists() && resultCode == -1) {
+
+                EditImage();
             }
         }
     }
+
     private void CropingIMG() {
         final ArrayList<CropingOptionModel> cropOptions = new ArrayList<CropingOptionModel>();
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -678,6 +839,14 @@ public class EditPostActivity extends AppCompatActivity {
                         if (mImageCaptureUri != null) {
                             getContentResolver().delete(mImageCaptureUri, null, null);
                             mImageCaptureUri = null;
+                            pb_shop_pic_edit.setVisibility(View.GONE);
+                            pb_shop_img_edit1.setVisibility(View.GONE);
+                            pb_shop_img_edit2.setVisibility(View.GONE);
+                            pb_shop_img_edit3.setVisibility(View.GONE);
+                            pb_shop_img_edit4.setVisibility(View.GONE);
+                            pb_shop_img_edit5.setVisibility(View.GONE);
+                            pb_shop_img_edit6.setVisibility(View.GONE);
+                            // outPutFile = new File(android.os.Environment.getExternalStorageDirectory(), ".temp.jpg");
                         }
                     }
                 });
@@ -686,6 +855,7 @@ public class EditPostActivity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();

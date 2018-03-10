@@ -202,12 +202,12 @@ public interface RestInterface {
             @Part("count") int count
     );
 
-    @FormUrlEncoded
+    @Multipart
     @POST("index.php/mobile_api/upload_shop_images")
     Call<UploadShopImagesModel> updateShopImages(
-            @Field("shop_id") int shop_id,
-            @Field("action") String action,
-            @Field("index_name") int index_name
+            @Part("shop_id") int shop_id,
+            @Part MultipartBody.Part image,
+            @Part("index_name") String index_name
     );
     @FormUrlEncoded
     @POST("index.php/mobile_api/view_single_shop")

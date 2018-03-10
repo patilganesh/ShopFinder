@@ -16,6 +16,16 @@ public class ShopServicesModel {
     private String name;
     @SerializedName("status")
     private String status;
+    @SerializedName("result")
+    private int result;
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
+    }
 
     public String getServiceId() {
         return serviceId;

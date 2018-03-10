@@ -27,6 +27,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
@@ -84,8 +85,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private int owner_id;
     private Toolbar toolbar;
     private AdView mAdView;
-    InterstitialAd mInterstitialAd;
-
+    private InterstitialAd mInterstitialAd;
+    private ProgressBar pb_profile_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +104,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         });
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         //    permissionStatus = getSharedPreferences("permissionStatus",MODE_PRIVATE);
+        pb_profile_edit = findViewById(R.id.pb_profile_edit);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
@@ -114,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnEdit.setOnClickListener(this);
         etDate.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
-init();
+        init();
         Button btnEdit = findViewById(R.id.btnEdit);
 
         MobileAds.initialize(this,getString(R.string.admob_app_id));
@@ -186,8 +188,6 @@ init();
 
         mAdView.loadAd(adRequest);
     }
-
-
     public void checkConnection(final String service) {
         final ConnectionDetector detector = new ConnectionDetector(ProfileActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -201,7 +201,11 @@ init();
                     if (service.equalsIgnoreCase("update")) {
                         if (detector.isConnectingToInternet()) {
                             dialog.dismiss();
+                            pb_profile_edit.setVisibility(View.VISIBLE);
+                            pb_profile_edit.setProgress(500);
+                            pb_profile_edit.setIndeterminate(true);
                             updateUser();
+
                         } else {
                             checkConnection("update");
                         }
@@ -224,17 +228,23 @@ init();
             });
             alertDialog.show();
         } else {
-            if (service.equalsIgnoreCase("update"))
+            if (service.equalsIgnoreCase("update")) {
+                pb_profile_edit.setVisibility(View.VISIBLE);
+                pb_profile_edit.setProgress(500);
+                pb_profile_edit.setIndeterminate(true);
                 updateUser();
-            else
+            } else {
+                pb_profile_edit.setVisibility(View.VISIBLE);
+                pb_profile_edit.setProgress(500);
+                pb_profile_edit.setIndeterminate(true);
                 deleteOwnerService();
+            }
         }
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnEdit:
-
                 if (btnEdit.getText().toString().equals("Edit")) {
                     RelativeLayout deleteLayout = findViewById(R.id.btn_deleteLayout);
                     deleteLayout.setVisibility(View.GONE);
@@ -362,6 +372,7 @@ init();
         updateUserModel.setOwner_id(sharedpreferences.getInt(Constant.OWNER_ID, 0));
         retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
+        Log.i("outFile", "EditImage: " + outPutFile.getName() + outPutFile.getPath());
         if (!flag) {
             outPutFile = null;
         }
@@ -392,6 +403,7 @@ init();
                     int owner_id = user.getOwner_id();
                     int result = user.getResult();
                     if (result == 1 && name != null) {
+                        pb_profile_edit.setVisibility(View.GONE);
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(Constant.OWNER_ID, owner_id);
                         editor.putString(Constant.OWNER_NAME, name);
@@ -409,16 +421,12 @@ init();
                         startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                         finish();
                         Toast.makeText(ProfileActivity.this, "" + msg, Toast.LENGTH_LONG).show();
-
-                    } else {
-                        Toast.makeText(ProfileActivity.this, "Error!", Toast.LENGTH_LONG).show();
                     }
                 }
             }
             @Override
             public void onFailure(Call<UpdateUserModel> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
-                Log.e("failure", "onFailure: " + t.toString());
+                pb_profile_edit.setVisibility(View.GONE);
             }
         });
     }
@@ -436,8 +444,6 @@ init();
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
                     startActivityForResult(intent, CAMERA_CODE);
                     //cameraIntent();
-
-
                 } else if (items[item].equals("Choose from Gallery")) {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, GALLERY_CODE);
