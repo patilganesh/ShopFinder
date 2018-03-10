@@ -8,10 +8,13 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
+
     <include layout="@layout/toolbar" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,6 +22,7 @@
             app:cardCornerRadius="4dp"
             app:cardElevation="10dp"
             app:cardUseCompatPadding="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -247,7 +251,7 @@
                         android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
 
-                <!--<Button
+                <Button
                     android:id="@+id/btn_get_images"
                     style="@style/Base.Widget.AppCompat.Button.Colored"
                     android:layout_width="wrap_content"
@@ -255,20 +259,7 @@
                     android:onClick="getPhotos"
 
                     android:text="Select Photo"
-                    android:textColor="#ffffff" />-->
-                <Button
-                    android:id="@+id/btn_get_images"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    style="@style/Base.Widget.AppCompat.Button.Colored"
-                    android:background="@drawable/my_button_bg"
-                    android:paddingBottom="-1050dp"
-                    android:paddingTop="-1050dp"
-                    android:visibility="gone"
-                    android:onClick="getPhotos"
-                    android:text="Select Photo"
-                    android:textColor="@color/ButtonTextColor" />
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:id="@+id/tvHeading"
@@ -290,7 +281,7 @@
 
                     <LinearLayout
                         android:id="@+id/selected_photos_container"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:layout_marginBottom="20dp"
@@ -298,34 +289,22 @@
                         android:animateLayoutChanges="true"
                         android:gravity="left"
                         android:orientation="horizontal"
-                        android:visibility="gone"></LinearLayout>
+                        android:visibility="visible"></LinearLayout>
                 </HorizontalScrollView>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <Button
+                    android:id="@+id/btnSubmit"
+                    style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:onClick="submit"
+                    android:text="Submit"
+                    android:textAlignment="center"
+                    android:textColor="#ffffff" />
 
-                    <!--<Button
-                        android:id="@+id/btnSubmit"
-                        style="@style/Base.Widget.AppCompat.Button.Colored"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="submit"
-                        android:text="Submit"
-                        android:textColor="#ffffff" />-->
-                    <Button
-                        android:id="@+id/btnSubmit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:textAlignment="center"
-                        style="@style/Base.Widget.AppCompat.Button.Colored"
-                        android:background="@drawable/my_button_bg"
-                        android:layout_alignParentBottom="true"
-                        android:text="@string/String_Submit"
-                        android:textColor="@color/ButtonTextColor"
-                        android:onClick="submit" />
-                </RelativeLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </ScrollView>
