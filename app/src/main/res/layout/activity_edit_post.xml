@@ -36,6 +36,7 @@
                 android:id="@+id/etShopName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/catregory_border"
@@ -60,6 +61,7 @@
                     android:id="@+id/etAddress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="0.9"
                     android:background="@drawable/catregory_border"
@@ -94,6 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:maxLength="10"
+                android:inputType="phone"
+                android:digits="0123456789"
                 android:background="@drawable/catregory_border"
                 android:padding="5dp" />
             <!-- <TextView
@@ -179,6 +184,7 @@
                 android:id="@+id/etServicesOffered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/catregory_border"
@@ -218,6 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:inputType="text"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/catregory_border"
                 android:padding="5dp" />
