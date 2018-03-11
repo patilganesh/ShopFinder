@@ -113,7 +113,7 @@ public class GallaryActivity extends AppCompatActivity {
         Picasso.with(GallaryActivity.this)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shop_pic)
                 .fit()
-                .placeholder(R.drawable.background_splashscreen)
+                .placeholder(R.drawable.no_image_found)
                 .into(selectedImageView);
     }
     @Override

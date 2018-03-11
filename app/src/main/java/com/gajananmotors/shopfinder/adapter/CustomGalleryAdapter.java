@@ -58,7 +58,7 @@ public class CustomGalleryAdapter extends BaseAdapter {
         Picasso.with(context)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + images.get(position))
                 .fit()
-                .placeholder(R.drawable.background_splashscreen)
+                .placeholder(R.drawable.no_image_found)
                 .into(imageView);
         //imageView.setImageResource(images[position]); // set image in ImageView*/
         imageView.setLayoutParams(new Gallery.LayoutParams(300, 300)); // set ImageView param

@@ -242,7 +242,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                     Picasso.with(ViewPostActivity.this)
                             .load("http://findashop.in/images/shop_profile/" + "shop_id" + "/" +shop_id)
                             .fit()
-                            .placeholder(R.drawable.background_splashscreen)
+                            .placeholder(R.drawable.no_image_found)
                             .into(shopCoverphoto);
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 
@@ -263,21 +263,35 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 if (!isNetworkAvailable(this)) {
                     displayPromptForEnablingData(this);
                 } else {
-                    if(name.equals("owner")){
-                        String address = getAddress(Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()), Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_long()), this);
-                       // Log.d("MultiViewType", "address" + address);
-                        Uri gmmIntentUri = Uri.parse("geo:" + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "," +Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "?q=" + address);
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
-                    }
-                    else {
-                        String address = getAddress(viewShopList.getLatitude(), viewShopList.getLongitude(), this);
-                        Log.d("MultiViewType", "address" + address);
-                        Uri gmmIntentUri = Uri.parse("geo:" + viewShopList.getLatitude() + "," + viewShopList.getLatitude() + "?q=" + address);
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
+                    if (!isNetworkAvailable(this)) {
+                        displayPromptForEnablingData(this);
+                    } else {
+                        if(name.equals("owner")){
+                            if(Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat())>=0 &&  Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_long())>0) {
+
+
+                                String address = getAddress(Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()), Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_long()), this);
+                                // Log.d("MultiViewType", "address" + address);
+                                Uri gmmIntentUri = Uri.parse("geo:" + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "," + Double.parseDouble(AllPostsActivity.shops_list.get(position).getShop_lat()) + "?q=" + address);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }else{
+                                Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            if(viewShopList.getLatitude()>=0 &&  viewShopList.getLongitude()>0){
+                                String address = getAddress(viewShopList.getLatitude(), viewShopList.getLongitude(), this);
+                                Log.d("MultiViewType", "address" + address);
+                                Uri gmmIntentUri = Uri.parse("geo:" + viewShopList.getLatitude() + "," + viewShopList.getLatitude() + "?q=" + address);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }else{
+                                Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
                 }
                 break;
@@ -450,7 +464,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             Picasso.with(ViewPostActivity.this)
                     .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + shopCoverpic)
                     .fit()
-                    .placeholder(R.drawable.background_splashscreen)
+                    .placeholder(R.drawable.no_image_found)
                     .into(shopCoverphoto);
 
 

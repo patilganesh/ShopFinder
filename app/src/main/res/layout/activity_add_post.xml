@@ -257,7 +257,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="getPhotos"
-
+                    android:visibility="gone"
                     android:text="Select Photo"
                     android:textColor="#ffffff" />
 
@@ -277,7 +277,8 @@
                     android:layout_height="wrap_content"
                     android:fillViewport="false"
                     android:foregroundGravity="left"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:ignore="NewApi">
 
                     <LinearLayout
                         android:id="@+id/selected_photos_container"

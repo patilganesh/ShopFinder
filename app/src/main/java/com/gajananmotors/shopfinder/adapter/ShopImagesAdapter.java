@@ -1,17 +1,12 @@
 package com.gajananmotors.shopfinder.adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,28 +15,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gajananmotors.shopfinder.R;
-import com.gajananmotors.shopfinder.activity.AddPostActivity;
 import com.gajananmotors.shopfinder.activity.AllPostsActivity;
 import com.gajananmotors.shopfinder.activity.EditPostActivity;
-import com.gajananmotors.shopfinder.activity.MainActivity;
-import com.gajananmotors.shopfinder.activity.RegisterActivity;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
-import com.gajananmotors.shopfinder.helper.Constant;
 import com.gajananmotors.shopfinder.model.DeleteShopImagesModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Ashwin on 2/12/2018.
@@ -104,10 +92,10 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
                     alertDialog.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //  EditImages(position,shop_id);
-                            image_name = EditPostActivity.images.get(position);
+                          /*  image_name = EditPostActivity.images.get(position);
                             //int a = Integer.parseInt(EditPostActivity.images.get(position));
                             ((EditPostActivity) context).selectImageOption(EditPostActivity.images.get(position).toString(), image_name);
-
+*/
                             //((Activity) context).startActivityForResult(Intent.createChooser(cameraIntent, "Select Picture"), CAMERA_CODE);
                             //selectImageOption(position, shop_id);
                         }
@@ -140,7 +128,7 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
         //selectImageOption(position, shop_id);
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
-        restInterface.updateShopImages(shop_id, "update", position);
+       // restInterface.updateShopImages(shop_id, "update", position);
     }
 
    /* public void selectImageOption(int position, int shop_id) {
@@ -216,7 +204,7 @@ public class ShopImagesAdapter extends RecyclerView.Adapter<ShopImagesAdapter.My
                         AllPostsActivity.shops_list.set(shop_position, shopsListModel).setImage6("");
                     }
                     EditPostActivity.images.set(position, "");
-                    EditPostActivity.refresh();
+                   // EditPostActivity.refresh();
                 }
             }
 

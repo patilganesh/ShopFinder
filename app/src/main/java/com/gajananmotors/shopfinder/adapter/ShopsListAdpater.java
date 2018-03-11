@@ -179,7 +179,7 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             Picasso.with(activity)
                     .load("http://findashop.in/images/shop_profile/" + mFilteredList.get(position).getShop_id() + "/" + mFilteredList.get(position).getShop_pic())
                     .fit()
-                    .placeholder(R.drawable.background_splashscreen)
+                    .placeholder(R.drawable.no_image_found)
                     .into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -1,4 +1,5 @@
 package com.gajananmotors.shopfinder.activity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +18,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -46,12 +46,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.DropDownShopServicesListAdapter;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
-import com.gajananmotors.shopfinder.common.GeocodingLocation;
 import com.gajananmotors.shopfinder.common.ImageCompressor;
 import com.gajananmotors.shopfinder.helper.Config;
 import com.gajananmotors.shopfinder.helper.ConnectionDetector;
@@ -76,11 +76,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -127,7 +129,7 @@ public class AddPostActivity extends AppCompatActivity {
     private EditText etBusinessWhatsApp;
     private TextView tvOther;
     private RelativeLayout relativeservices;
-    private InterstitialAd mInterstitialAd;
+
     private String locationStatus = "";
     private Address address;
     private ShopServicesListModel listModel;
@@ -142,10 +144,7 @@ public class AddPostActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
         retrofit = APIClient.getClient();
         restInterface = retrofit.create(RestInterface.class);
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -333,10 +332,6 @@ public class AddPostActivity extends AppCompatActivity {
     }
     public void submit(View view) {
         ConnectionDetector detector = new ConnectionDetector(this);
-        if (!detector.isConnectingToInternet()) {
-            Snackbar snackbar = Snackbar
-                    .make(linear_layout, "Netwotk not available!", Snackbar.LENGTH_LONG);
-        }
 
         strBusinessName = etBusinessName.getText().toString().trim();
         if (place != null) {
@@ -587,19 +582,14 @@ public class AddPostActivity extends AppCompatActivity {
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             /*   if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                    createShop();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }*/
+
                 createShop();//calling web services for create shop
                 alertDialog.dismiss();
             }
         });
     }
     public void createShop() {
-        MultipartBody.Part fileToUpload = null;
+       // MultipartBody.Part fileToUpload = null;
         Retrofit retrofit = APIClient.getClient();
         RestInterface restInterface = retrofit.create(RestInterface.class);
         /*for (int i = 0; i < new_image_path.size(); i++) {
@@ -667,6 +657,9 @@ public class AddPostActivity extends AppCompatActivity {
     int index2 = 1;
     public void uploadShopImages(int index) {
         if (image_path.size() > index) {
+
+
+
             File file_path = new File(image_path.get(index));
             MultipartBody.Part fileToUpload = null;
             if (file_path != null) {

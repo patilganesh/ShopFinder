@@ -61,7 +61,7 @@ public class CustomAdapterForGallary extends RecyclerView.Adapter<CustomAdapterF
                 Picasso.with(context)
                         .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + imageList.get(position))
                         .fit()
-                        .placeholder(R.drawable.background_splashscreen)
+                        .placeholder(R.drawable.no_image_found)
                         .into(imgView);
                 //  context.startActivity(new Intent(context, SubCategoryActivity.class));
             }
@@ -69,7 +69,7 @@ public class CustomAdapterForGallary extends RecyclerView.Adapter<CustomAdapterF
         Picasso.with(context)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + imageList.get(position))
                 .fit()
-                .placeholder(R.drawable.background_splashscreen)
+                .placeholder(R.drawable.no_image_found)
                 .into(holder.images);
     }
     @Override
@@ -83,7 +83,7 @@ public class CustomAdapterForGallary extends RecyclerView.Adapter<CustomAdapterF
         Picasso.with(context)
                 .load("http://findashop.in/images/shop_profile/" + shop_id + "/" + imageList.get(position))
                 .fit()
-                .placeholder(R.drawable.background_splashscreen)
+                .placeholder(R.drawable.no_image_found)
                 .into(imageView);
         //imageView.setImageResource(images[position]); // set image in ImageView*/
         imageView.setLayoutParams(new Gallery.LayoutParams(300, 300)); // set ImageView param
