@@ -12,6 +12,8 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +23,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -93,6 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int seekvalue = 10;
     String data = "search";
     private View viewMainNearBy, viewGoogleNearby;
+    private LinearLayout layoutBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         viewMainNearBy = findViewById(R.id.viewMain_search);
         viewGoogleNearby = findViewById(R.id.viewGoogle_search);
         txtemptylistnearbysearch = findViewById(R.id.txtemptylist_search);
+        iv_sheet_action_map = findViewById(R.id.iv_sheet_action_map);
         nearby_search_list_progressbar = findViewById(R.id.list_progressbar_search);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         searchnearbyrecyclerview = findViewById(R.id.recyclerview__search);
@@ -126,6 +132,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (!gps_enabled && !network_enabled) {
             displayPromptForEnablingGPS(this);
         }
+
+        layoutBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
         Intent intent = getIntent();
         nearbyPlace = intent.getStringExtra("search_keyword");
         SeekBar seek = findViewById(R.id.seek);
@@ -133,6 +142,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         distance = seekvalue;
         mapFragment.getMapAsync(this);
 
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+//                        btnBottomSheet.setText("Close Sheet");
+                        iv_sheet_action_map.setImageDrawable(getResources().getDrawable(R.mipmap.arrow_down));
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+//                        btnBottomSheet.setText("Expand Sheet");
+                        iv_sheet_action_map.setImageDrawable(getResources().getDrawable(R.mipmap.arrow_up));
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        iv_sheet_action_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleBottomSheet();
+            }
+        });
     }
 
     private boolean CheckGooglePlayServices() {
@@ -500,6 +545,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             googlesearchnearbyrecyclerview.setLayoutManager(mLayoutManager);
                             googlesearchnearbyrecyclerview.setItemAnimator(new DefaultItemAnimator());
                             googlesearchnearbyrecyclerview.setAdapter(adapter);
+                            txtemptylistnearbysearch.setVisibility(View.GONE);
                         } else {
                             nearby_search_list_progressbar.setVisibility(View.GONE);
                             txtemptylistnearbysearch.setVisibility(View.VISIBLE);
@@ -679,6 +725,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     getplacesBykm(distance, nearbyPlace);
                 }
                 break;
+        }
+    }
+    private BottomSheetBehavior sheetBehavior;
+    private ImageView iv_sheet_action_map;
+    public void toggleBottomSheet() {
+        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            //btnBottomSheet.setText("Close sheet");
+        } else {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            //btnBottomSheet.setText("Expand sheet");
         }
     }
 }

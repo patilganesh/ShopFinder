@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinate_layout_main"
@@ -14,12 +15,73 @@
         android:orientation="vertical"
         tools:context=".activity.MainActivity">
 
-        <include layout="@layout/toolbar" />
+        <include
+            layout="@layout/toolbar"
+            android:visibility="gone" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingTop="59dp" />
+
+                    <ProgressBar
+                        android:id="@+id/category_progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:theme="@style/CircularProgress"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    ads:adSize="BANNER"
+                    ads:adUnitId="@string/banner_home_footer" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/black"
+                android:visibility="gone" />
+
+            <com.arlib.floatingsearchview.FloatingSearchView
+                android:id="@+id/floating_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="2dp"
+                ads:floatingSearch_menu="@menu/main_drawer"
+                app:floatingSearch_close_search_on_keyboard_dismiss="true"
+                app:floatingSearch_leftActionMode="showHamburger"
+                app:floatingSearch_searchHint="Search..."
+                app:floatingSearch_suggestionsListAnimDuration="250" />
+        </RelativeLayout>
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,21 +93,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:theme="@style/AppTheme.AppBarOverlay">
+
                     <FrameLayout
                         android:id="@+id/dim_background"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/white">
-
-                        <com.arlib.floatingsearchview.FloatingSearchView
-                            android:id="@+id/floating_search_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="-30dp"
-                            app:floatingSearch_close_search_on_keyboard_dismiss="true"
-                            app:floatingSearch_leftActionMode="showSearch"
-                            app:floatingSearch_searchHint="Search..."
-                            app:floatingSearch_suggestionsListAnimDuration="250" />
 
                         <ImageView
                             android:id="@+id/ivSearch"
@@ -57,6 +110,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/icon_search"
                             android:visibility="gone" />
+
                         <ImageView
                             android:id="@+id/ivNearby"
                             android:layout_width="wrap_content"
@@ -68,25 +122,7 @@
                             android:visibility="gone" />
                     </FrameLayout>
                 </android.support.design.widget.AppBarLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycler_view_vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/activity_horizontal_top_margin"
-                        android:descendantFocusability="beforeDescendants"
-                        android:fadingEdgeLength="1px" />
 
-                <ProgressBar
-                    android:id="@+id/category_progressbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:theme="@style/CircularProgress"
-                    android:visibility="gone" />
-                </RelativeLayout>
 
             </LinearLayout>
 

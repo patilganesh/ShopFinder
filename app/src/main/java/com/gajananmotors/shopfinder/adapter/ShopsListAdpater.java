@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,7 +176,14 @@ public class ShopsListAdpater extends RecyclerView.Adapter<ShopsListHolder> impl
             holder.distance.setText(mFilteredList.get(position).getCity() + "/" + mFilteredList.get(position).getState() + "/" + mFilteredList.get(position).getCountry());
             holder.timing.setText(mFilteredList.get(position).getShop_timing());
             holder.type.setText(mFilteredList.get(position).getShop_mob_no());
-            holder.weburl.setText(mFilteredList.get(position).getWebsite());
+            if (TextUtils.isEmpty(mFilteredList.get(position).getWebsite())|| TextUtils.equals("null",mFilteredList.get(position).getWebsite())){
+                holder.weburl.setVisibility(View.GONE);
+            }else {
+                holder.weburl.setVisibility(View.VISIBLE);
+                holder.weburl.setText(mFilteredList.get(position).getWebsite());
+
+            }
+
             Picasso.with(activity)
                     .load("http://findashop.in/images/shop_profile/" + mFilteredList.get(position).getShop_id() + "/" + mFilteredList.get(position).getShop_pic())
                     .fit()

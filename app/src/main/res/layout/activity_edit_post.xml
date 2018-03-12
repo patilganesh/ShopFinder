@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGraylight"
+    android:background="@color/white"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
@@ -16,462 +16,433 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/edit_post_layout"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Shop Name"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/etShopName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Address"
-                android:textColor="#000000" />
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp">
 
             <LinearLayout
+                android:id="@+id/edit_post_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_margin="16dp"
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/etAddress"
-                    android:layout_width="0dp"
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="0.9"
-                    android:background="@drawable/catregory_border"
-                    android:padding="5dp" />
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
 
-                <ImageView
-                    android:layout_width="0dp"
+                    <EditText
+                        android:id="@+id/etShopName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Shop Name:"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+
+                    <requestFocus />
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="-5dp"
-                    android:layout_weight="0.1"
-                    android:clickable="true"
-                    android:onClick="getEditAddress"
-                    android:src="@drawable/google_map" />
-            </LinearLayout>
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Mobile Number"
-                android:textColor="#000000" />
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        app:hintTextAppearance="@style/MyAppearance">
 
-            <EditText
-                android:id="@+id/etMobileNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:maxLength="10"
-                android:inputType="phone"
-                android:digits="0123456789"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
-            <!-- <TextView
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginBottom="2dp"
-                 android:layout_marginLeft="20dp"
-                 android:layout_marginRight="20dp"
-                 android:layout_marginTop="15dp"
-                 android:text="Email"
-                 android:textColor="#000000" />
+                        <EditText
+                            android:id="@+id/etAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:hint="e.g Virbhadra nagar,Baner,Pune,Maharashtra-411015,India"
+                            android:textSize="14sp" />
+                    </android.support.design.widget.TextInputLayout>
 
-             <EditText
-                 android:id="@+id/etEmail"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginLeft="20dp"
-                 android:layout_marginRight="20dp"
-                 android:background="@drawable/catregory_border"
-                 android:padding="5dp" />-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Category"
-                android:textColor="#000000" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:clickable="true"
+                        android:onClick="getEditAddress"
+                        android:src="@drawable/google_map" />
+                </LinearLayout>
 
-            <Button
-                android:id="@+id/etCategory"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/catregory_border"
-                android:drawableRight="@drawable/navigation_arrow" />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Sub Category"
-                android:textColor="#000000" />
+                    <EditText
+                        android:id="@+id/etMobileNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="0123456789"
+                        android:hint="Mobile Number:"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+                <!-- <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginBottom="2dp"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="20dp"
+                     android:layout_marginTop="15dp"
+                     android:text="Email"
+                     android:textColor="#000000" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                 <EditText
+                     android:id="@+id/etEmail"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="20dp"
+                     android:background="@drawable/catregory_border"
+                     android:padding="5dp" />-->
+
 
                 <Button
-                    android:id="@+id/etSubCategory"
+                    android:id="@+id/etCategory"
                     style="@style/Base.Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/catregory_border"
-                    android:drawableRight="@drawable/navigation_arrow" />
+                    android:layout_margin="10dp"
+                    android:background="@drawable/textlines"
+                    android:drawableRight="@drawable/navigation_arrow"
+                    android:hint="Category"
+                    android:textSize="14sp" />
 
-                <ProgressBar
-                    android:id="@+id/editShopProgressbar"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
-            </RelativeLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Services Offered"
-                android:textColor="#000000" />
-            <EditText
-                android:id="@+id/etServicesOffered"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+                    android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Shop Opening Hours"
-                android:textColor="#000000" />
+                    <Button
+                        android:id="@+id/etSubCategory"
+                        style="@style/Base.Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/textlines"
+                        android:hint="Sub Category"
+                        android:drawableRight="@drawable/navigation_arrow"
+                        android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/etShopOpeningHours"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
+                    <ProgressBar
+                        android:id="@+id/editShopProgressbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+                </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Website (Optional)"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/etWebsite"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:inputType="text"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/catregory_border"
-                android:padding="5dp" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:scrollbars="horizontal">
-
-                <android.support.v7.widget.CardView
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardUseCompatPadding="true">
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
 
-                    <LinearLayout
-                        android:id="@+id/editimagelayout"
+                    <EditText
+                        android:id="@+id/etServicesOffered"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="6dp"
-                        android:orientation="horizontal">
+                        android:editable="false"
+                        android:focusable="true"
+                        android:focusableInTouchMode="false"
+                        android:hint="Select Services"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/etShopOpeningHours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Shop Opening Hours:"
+                        android:inputType="textUri"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:hintTextAppearance="@style/MyAppearance">
+
+                    <EditText
+                        android:id="@+id/etWebsite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Website (Optional)"
+                        android:inputType="textUri"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:scrollbars="horizontal">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:id="@+id/editimagelayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
 
-                            <ImageView
-                                android:id="@+id/shop_pic"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/shop_pic"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_pic_edit"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_pic_edit"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_pic_edit"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_pic_edit"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/image1"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/image1"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_img_edit1"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_img_edit1"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_img_edit1"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_img_edit1"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/image2"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/image2"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_img_edit2"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_img_edit2"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_img_edit2"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_img_edit2"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/image3"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/image3"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_img_edit3"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_img_edit3"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_img_edit3"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_img_edit3"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/image4"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/image4"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_img_edit4"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_img_edit4"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_img_edit4"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_img_edit4"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/image5"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/image5"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_img_edit5"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_img_edit5"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_img_edit5"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_img_edit5"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/image6"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_marginLeft="6dp"
-                                android:layout_marginRight="6dp"
-                                android:src="@drawable/ic_add_black_24dp" />
+                                <ImageView
+                                    android:id="@+id/image6"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginRight="6dp"
+                                    android:src="@drawable/ic_add_black_24dp" />
 
-                            <ImageView
-                                android:id="@+id/shop_img_edit6"
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginLeft="60dp"
-                                android:src="@drawable/edit"
-                                android:visibility="gone" />
+                                <ImageView
+                                    android:id="@+id/shop_img_edit6"
+                                    android:layout_width="50dp"
+                                    android:layout_height="40dp"
+                                    android:layout_marginLeft="60dp"
+                                    android:src="@drawable/edit"
+                                    android:visibility="gone" />
 
-                            <ProgressBar
-                                android:id="@+id/pb_shop_img_edit6"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:visibility="gone"
-                                android:layout_centerInParent="true" />
-                        </RelativeLayout>
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
-            </HorizontalScrollView>
+                                <ProgressBar
+                                    android:id="@+id/pb_shop_img_edit6"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_centerInParent="true"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+                </HorizontalScrollView>
 
-            <!-- <Button
-                 android:id="@+id/btnUpdate"
-                 style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="center_horizontal"
-                 android:layout_margin="10dp"
-                 android:background="@color/colorPrimaryDark"
-                 android:text="Update"
-                 android:textAlignment="center"
-                 android:textColor="#ffffff" />-->
+                <!-- <Button
+                     android:id="@+id/btnUpdate"
+                     style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center_horizontal"
+                     android:layout_margin="10dp"
+                     android:background="@color/colorPrimaryDark"
+                     android:text="Update"
+                     android:textAlignment="center"
+                     android:textColor="#ffffff" />-->
 
-            <Button
-                android:id="@+id/btnUpdate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textAlignment="center"
-                style="@style/Base.Widget.AppCompat.Button.Colored"
-                android:background="@drawable/my_button_bg"
-                android:layout_margin="10dp"
-                android:layout_alignParentBottom="true"
-                android:text="Update"
-                android:textColor="@color/ButtonTextColor" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btnUpdate"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/my_button_bg"
+                    android:text="Update"
+                    android:textAlignment="center"
+                    android:textColor="@color/ButtonTextColor" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
     </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

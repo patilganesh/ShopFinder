@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<item
+        android:id="@+id/action_change_city"
+        android:title="Pune"
+        app:showAsAction="ifRoom" />-->
+    <!-- <item
+          android:id="@+id/action_nearby"
+          android:icon="@mipmap/gmap1"
+          android:title="Nearby"
+          app:showAsAction="ifRoom" />-->
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@mipmap/search_"
+        android:title="@string/srch"
+        android:visible="false"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+    <item
+        android:id="@+id/action_nearby"
+        android:icon="@mipmap/location_on"
+        android:title="@string/srch"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+</menu>

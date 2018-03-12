@@ -353,13 +353,13 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
                 startActivity(intent);
                 break;
             case R.id.shopShareLayout:
-                Toast.makeText(getApplicationContext(), "Coming soon...", Toast.LENGTH_SHORT).show();
-               /* Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+               // Toast.makeText(getApplicationContext(), "Coming soon...", Toast.LENGTH_SHORT).show();
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBodyText = "http://www.findashop.in/index.php/mobile_api/upload_shop_images"+shop_id;
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
-                startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));*/
+                startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
                 break;
         }
     }
@@ -399,7 +399,7 @@ public class ViewPostActivity extends AppCompatActivity implements View.OnClickL
             allimages.clear();
         }
         if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
+            //mInterstitialAd.show();
         } else {
             Log.d("TAG", "The interstitial wasn't loaded yet.");
         }

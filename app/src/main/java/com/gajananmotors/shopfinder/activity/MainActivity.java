@@ -17,14 +17,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,7 +35,6 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.gajananmotors.shopfinder.R;
 import com.gajananmotors.shopfinder.adapter.CustomAdapterForVerticalGridViewAdapter;
 import com.gajananmotors.shopfinder.adapter.SectionRecyclerViewAdapter;
-import com.gajananmotors.shopfinder.adapter.ShopsListAdpater;
 import com.gajananmotors.shopfinder.apiinterface.RestInterface;
 import com.gajananmotors.shopfinder.common.APIClient;
 import com.gajananmotors.shopfinder.helper.CircleImageView;
@@ -48,18 +45,16 @@ import com.gajananmotors.shopfinder.helper.RecyclerViewType;
 import com.gajananmotors.shopfinder.model.CategoryListModel;
 import com.gajananmotors.shopfinder.model.CategoryModel;
 import com.gajananmotors.shopfinder.model.ShopsListModel;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.gajananmotors.shopfinder.model.SubCategoryListModel;
 import com.gajananmotors.shopfinder.model.SubCategoryModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -124,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         coordinate_layout = findViewById(R.id.coordinate_layout);
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Log.e("Refreshed token:", refreshedToken);
-        Constant.device_token=refreshedToken;
+        Constant.device_token = refreshedToken;
         sharedpreferences = getSharedPreferences(Constant.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString(Constant.DEVICE_TOKEN, refreshedToken);
@@ -147,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toolbar.setVisibility(View.GONE);
 
             }
+
             @Override
             public void onFocusCleared() {
                 toolbar.setVisibility(View.VISIBLE);
@@ -164,7 +160,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onSearchAction(String currentQuery) {
                 // Toast.makeText(MainActivity.this, "Text:"+currentQuery, Toast.LENGTH_SHORT).show();
+
                 getSearchService(currentQuery);
+
+
             }
         });
 
@@ -196,12 +195,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
+        searchView.attachNavigationDrawerToMenuButton(drawer);
         searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
-                search_keyword = newQuery;
 
+
+                search_keyword = newQuery;
                 Log.d("search_keyword", "newQuery" + newQuery);
                 nearBy.setVisibility(View.VISIBLE);
                 ivSearch.setVisibility(View.VISIBLE);
@@ -211,6 +211,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 getSearchService(search_keyword);
+            }
+        });
+
+
+        searchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_nearby:
+                        if (!isNetworkAvailable(getApplicationContext())) {
+                            displayPromptForEnablingData(MainActivity.this);
+                        } else {
+
+                            if (!search_keyword.isEmpty()) {
+
+                                Log.d("search_keywordOnCLick", "search_keyword" + search_keyword);
+                                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                                intent.putExtra("search_keyword", search_keyword);
+                                intent.putExtra("owner", "search");
+                                startActivity(intent);
+
+                            } else {
+
+                                Toast.makeText(MainActivity.this, "Please Type something", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                        break;
+                }
             }
         });
     }
@@ -261,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra("owner", "search");
         startActivity(intent);
     }
+
     private void setUpRecyclerView() {
         recyclerView = findViewById(R.id.recycler_view_vertical);
         recyclerView.setNestedScrollingEnabled(false);
@@ -269,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(linearLayoutManager);
         populateRecyclerView();
     }
+
     //populate recycler view
     private void populateRecyclerView() {
         ArrayList<HomeItems> sectionModelArrayList = new ArrayList<>();
@@ -281,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
         category_progressbar.setVisibility(View.GONE);
     }
+
     public void getCategory() {
         Call<CategoryListModel> call = restInterface.getCategoryList();
         category_progressbar.setVisibility(View.VISIBLE);
@@ -338,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
     public void checkConnection() {
         final ConnectionDetector detector = new ConnectionDetector(MainActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -366,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getCategory();
         }
     }
+
     public void setadapter(ArrayList<String> arrayList_name, ArrayList<String> arrayList_image, ArrayList<Integer> arrayList_id, String name) {
         gridAdapter = new CustomAdapterForVerticalGridViewAdapter(this, arrayList_name, arrayList_image, arrayList_id, name);
         // recycler_view_vertical.setAdapter(gridAdapter);
@@ -376,27 +410,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-            if (event.getDownTime() - lastPressedTime < PERIOD) {
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
-                finish();
+        if (event.getDownTime() - lastPressedTime < PERIOD) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
             } else {
-                Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (mInterstitialAd.isLoaded()) {
-                            mInterstitialAd.show();
-                        } else {
-                            Log.d("TAG", "The interstitial wasn't loaded yet.");
-                        }
-                        finish();
-                    }
-                }).show();
-                lastPressedTime = event.getEventTime();
+                Log.d("TAG", "The interstitial wasn't loaded yet.");
             }
+            finish();
+        } else {
+            Snackbar.make(coordinate_layout, "Are you Sure wants to exit!", Snackbar.LENGTH_SHORT).setAction("Yes", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    } else {
+                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+                    }
+                    finish();
+                }
+            }).show();
+            lastPressedTime = event.getEventTime();
+        }
 
         return true;
     }
@@ -455,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }*/
         return super.onOptionsItemSelected(item);
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -464,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_aboutus) {
 
-        }  else if (id == R.id.nav_addpost) {
+        } else if (id == R.id.nav_addpost) {
             if (sharedpreferences.getString(Constant.OWNER_NAME, "").isEmpty()) {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             } else {
@@ -496,6 +531,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -528,7 +564,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         super.onPause();
     }
-
 
 
     @Override

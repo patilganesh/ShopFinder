@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinate_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity"
-    android:id="@+id/coordinate_layout">
-
+    tools:context=".activity.MainActivity">
     <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
@@ -15,19 +12,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:layout_marginBottom="55dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginBottom="55dp"
         android:backgroundTint="@color/red_light"
         android:src="@drawable/fab" />
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        android:layout_gravity="bottom|center_horizontal"
-        ads:adUnitId="@string/banner_home_footer">
-    </com.google.android.gms.ads.AdView>
+
 </android.support.design.widget.CoordinatorLayout>
 
