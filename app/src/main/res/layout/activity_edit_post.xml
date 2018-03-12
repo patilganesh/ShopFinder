@@ -26,7 +26,6 @@
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="2dp"
             app:cardElevation="4dp">
-
             <LinearLayout
                 android:id="@+id/edit_post_layout"
                 android:layout_width="match_parent"
@@ -124,10 +123,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_margin="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:textAlignment="viewStart"
                     android:background="@drawable/textlines"
                     android:drawableRight="@drawable/navigation_arrow"
                     android:hint="Category"
-                    android:textSize="14sp" />
+                    android:textSize="12sp"
+                    android:gravity="start" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -141,8 +144,12 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/textlines"
                         android:hint="Sub Category"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="10dp"
+                        android:textAlignment="textStart"
                         android:drawableRight="@drawable/navigation_arrow"
-                        android:textSize="14sp" />
+                        android:textSize="12sp"
+                        android:gravity="start" />
 
                     <ProgressBar
                         android:id="@+id/editShopProgressbar"
@@ -220,8 +227,6 @@
                             <RelativeLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
-
-
                                 <ImageView
                                     android:id="@+id/shop_pic"
                                     android:layout_width="90dp"

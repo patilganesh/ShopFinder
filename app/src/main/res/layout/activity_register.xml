@@ -190,6 +190,7 @@
                             android:id="@+id/etConfirmPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
                             android:hint="@string/String_Confirm_Password"
                             android:inputType="textPassword"
                             android:textColorHint="@color/colorBlack"
@@ -198,7 +199,7 @@
 
                     <Button
                         android:id="@+id/btnSubmit"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginBottom="20dp"

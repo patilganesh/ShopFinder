@@ -123,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+     //   mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
